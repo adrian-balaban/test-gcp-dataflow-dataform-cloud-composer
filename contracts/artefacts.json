@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "_comment": [
+    "The cross-language surface: object naming and the BigQuery column names that Python",
+    "writers and Java readers must agree on. This file is the single source for both —",
+    "pipelines/common/artefacts.py reads it at runtime, apps/common Artefacts.java loads it",
+    "from the classpath (Maven copies it out of this directory at build time).",
+    "Before it existed the convention was duplicated in both languages and kept in step by",
+    "a comment, so a rename in one was invisible to the other until a run failed."
+  ],
+
+  "lanes": { "extraction": "extraction", "load": "load" },
+  "prefix": "{lane}/{run_id}/",
+
+  "artefacts": {
+    "dat": "{record}.{sequence}.DAT",
+    "chs": "{record}.CHS",
+    "err": "{record}.ERR",
+    "rpt": "{record}.RPT",
+    "flg": "{record}.FLG",
+    "bundle": "{record}.tar.gz.pgp"
+  },
+
+  "_artefacts_comment": [
+    ".DAT is sequenced so a large extract can be produced in parts; the sequence is",
+    "zero-padded to `dat_sequence_width` digits by whichever side formats the name.",
+    ".FLG is written last and outside the encrypted bundle, so a consumer can detect",
+    "'the extract is complete' without holding a decryption key."
+  ],
+  "dat_sequence_width": 3,
+
+  "columns": {
+    "src": {
+      "run_id": "_run_id",
+      "batch_id": "_batch_id",
+      "source_file": "_source_file",
+      "source_key": "_source_key",
+      "account_key": "_account_key",
+      "ingested_at": "_ingested_at"
+    },
+    "target": {
+      "run_id": "run_id",
+      "account_id": "account_id",
+      "account_key": "account_key"
+    }
+  },
+
+  "_columns_comment": [
+    "The underscore prefix on the src columns marks pipeline-added metadata, keeping it",
+    "apart from the contract's own TDS fields. The target table drops the prefix because",
+    "those columns are part of the published document, not metadata about it.",
+    "recon-service reads both sets by name (ReconService.java), which is why they belong",
+    "here rather than in either language's source."
+  ]
+}

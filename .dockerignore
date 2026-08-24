@@ -1,0 +1,36 @@
+# Keep the target-system-mock build context lean. Anything not needed to compile
+# the Java apps is excluded — most of this repo is Python/infra/data.
+
+.git
+.venv
+.uv
+.pytest_cache
+apps/**/target
+
+node_modules
+.terraform
+*.tfstate*
+
+# Local runtime state and secrets.
+local/keys
+local/state
+local/data
+out
+.env
+.env.example
+
+# Irrelevant to a Java image build.
+docs
+contracts
+# …except the cross-language manifest: apps/common embeds it as a classpath resource, so
+# a jar built without it compiles fine and then fails on first use. Excluding the rest of
+# contracts/ keeps the Java build context lean, which is what this file is for.
+!contracts/artefacts.json
+pipelines
+harness
+tests
+composer
+dataform
+terraform
+.remember
+.claude

@@ -1,0 +1,28 @@
+# Ignore rules for the Dataflow Flex Template image ONLY (Dockerfile.dataflow).
+# The root .dockerignore serves the Java target-system-mock build and excludes
+# pipelines/ and contracts/ — exactly what this image needs. Both podman/buildah
+# and Docker BuildKit prefer <Dockerfile>.dockerignore over the root file.
+
+.git
+.venv
+.uv
+.pytest_cache
+apps
+node_modules
+.terraform
+*.tfstate*
+
+local
+out
+.env
+.env.example
+
+docs
+harness
+tests
+composer
+dataform
+terraform
+.remember
+.claude
+

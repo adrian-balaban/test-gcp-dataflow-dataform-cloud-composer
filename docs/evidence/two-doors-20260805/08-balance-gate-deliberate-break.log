@@ -1,0 +1,9 @@
+Deliberately corrupting one count to prove the gate still fails loudly.
+
+gate fired as expected (pipelines.common.doors.BalanceError):
+  balancing equation failed for initial-deliberate-break: src_read=526 != migrated=399 + not_migrated=126 (excluded=100, rejected=6, deduplicated=20) = 525, off by 1
+
+Same corruption through the DAG gate's message path (assert_run_balanced):
+  run X does not balance: src_read=526 != migrated=399 + not_migrated=126 (excluded=100, rejected=6, deduplicated=20)
+
+CONCLUSION: the balancing gate still fails a broken run under the two-door framing.

@@ -1,0 +1,27 @@
+[1mengine fingerprint before project2[0m
+  9d87d40a4e985683cd6cfcee6796438f7f05b2a7b21667abb903a2bba78a3e71
+
+[1mrunning project1[0m (contracts/mappings/mapping-project1.yaml)
+  project      : project1
+  layout       : fixed  (record ACCOUNT)
+  target       : TARGET_SYSTEM_ACCOUNT
+  doors        : {"accounted": 422, "balances": true, "by_reason": {"MAP_UNMAPPED_ENUM_VALUE": 1, "PARSE_BAD_DATE": 1, "PARSE_BAD_NUMERIC": 1, "PARSE_INVALID_JSON": 1, "PARSE_SHORT_RECORD": 1, "SCHEMA_INVALID": 1}, "deduplicated": 16, "excluded": 80, "imbalance": 0, "rejected": 6, "src_read": 422, "written": 320}
+  batches      : 2 (size 200)
+  balances     : True
+  sample keys  : ['accountId', 'attributes', 'balance', 'currency', 'customerId', 'migration', 'openedOn', 'productCode', 'status']
+
+[1mrunning project2[0m (contracts/mappings/mapping-project2.yaml)
+  project      : project2
+  layout       : csv  (record DEPOSIT)
+  target       : TARGET_SYSTEM_DEPOSIT
+  doors        : {"accounted": 422, "balances": true, "by_reason": {"MAP_UNMAPPED_ENUM_VALUE": 1, "PARSE_BAD_COLUMN_COUNT": 1, "PARSE_BAD_DATE": 1, "PARSE_BAD_NUMERIC": 1, "PARSE_INVALID_JSON": 1, "SCHEMA_INVALID": 1}, "deduplicated": 10, "excluded": 239, "imbalance": 0, "rejected": 6, "src_read": 422, "written": 167}
+  batches      : 1 (size 200)
+  balances     : True
+  sample keys  : ['currency', 'depositId', 'holder', 'migration', 'origination', 'principal', 'reference', 'startedOn', 'state']
+
+[1mengine fingerprint after project2[0m
+  9d87d40a4e985683cd6cfcee6796438f7f05b2a7b21667abb903a2bba78a3e71
+  git: no modifications under pipelines apps
+
+[32mPASS[0m — project2 runs end-to-end with zero engine-code diff.
+      Only contracts/ files were added: TDS x2, mapping YAML, TARGET JSON Schema.

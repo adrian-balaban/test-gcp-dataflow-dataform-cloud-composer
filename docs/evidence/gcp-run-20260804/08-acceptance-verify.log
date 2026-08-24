@@ -1,0 +1,12 @@
+[1mverify — run initial-20260804-163113[0m
+
+  [32m✓[0m 1. balancing equation closes (whole lane): 76 = 40 written + 10 excluded + 6 rejected + 20 deduplicated
+  [32m✓[0m 2. excluded count matches the harness exactly: 10 == 10 seeded
+  [32m✓[0m 3. seeded malformed records rejected with correct reason codes: 6 reason codes, all matching: MAP_UNMAPPED_ENUM_VALUE, PARSE_BAD_DATE, PARSE_BAD_NUMERIC, PARSE_INVALID_JSON, PARSE_SHORT_RECORD, SCHEMA_INVALID
+  [32m✓[0m 4. every TARGET document validates against the JSON Schema: 40/40 documents valid
+  [32m✓[0m 5. TARGET emitted in 200-element batches: 1 batches of 200 (1 GCS files; Kafka assertions skipped — run used sinks=gcs)
+  [32m✓[0m 6. every key appears exactly once in TARGET: 40 keys, each present exactly once, 0 orphans
+  [32m✓[0m 7. all five artefact types present in both lanes: extraction 2 + 3, load 4; .FLG vouches for 4
+  [32m✓[0m 8. .CHS checksums verify on both sides: extraction 1 entries parsed, load 1 files re-hashed and matching
+
+[32m[1mVERIFY PASSED[0m — all 8 acceptance criteria hold for run initial-20260804-163113.

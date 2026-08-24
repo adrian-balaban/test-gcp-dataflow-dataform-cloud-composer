@@ -1,0 +1,36 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0 -- /home/adrianb/_/ai-assisted/github/test-gcp-dataflow-dataform-cloud-composer/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/adrianb/_/ai-assisted/github/test-gcp-dataflow-dataform-cloud-composer
+plugins: anyio-4.14.2
+collecting ... collected 27 items
+
+tests/test_engine.py::test_tds_declares_both_dat_and_json_fields PASSED  [  3%]
+tests/test_engine.py::test_tds_format_defaults_to_dat PASSED             [  7%]
+tests/test_engine.py::test_src_and_target_tds_are_separate_definitions PASSED [ 11%]
+tests/test_engine.py::test_resolve_path_returns_sentinel_for_missing PASSED [ 14%]
+tests/test_engine.py::test_fixed_width_parse PASSED                      [ 18%]
+tests/test_engine.py::test_csv_layout_yields_identical_fields PASSED     [ 22%]
+tests/test_engine.py::test_open_date_parsed_from_yyyymmdd PASSED         [ 25%]
+tests/test_engine.py::test_map_produces_schema_valid_target_document PASSED [ 29%]
+tests/test_engine.py::test_transform_is_deterministic PASSED             [ 33%]
+tests/test_engine.py::test_dedup_key_is_stable_and_deterministic PASSED  [ 37%]
+tests/test_engine.py::test_excluded_client_types_are_filtered PASSED     [ 40%]
+tests/test_engine.py::test_each_malformed_kind_produces_its_enumerated_reason[short_record] PASSED [ 44%]
+tests/test_engine.py::test_each_malformed_kind_produces_its_enumerated_reason[bad_numeric] PASSED [ 48%]
+tests/test_engine.py::test_each_malformed_kind_produces_its_enumerated_reason[bad_date] PASSED [ 51%]
+tests/test_engine.py::test_each_malformed_kind_produces_its_enumerated_reason[invalid_json] PASSED [ 55%]
+tests/test_engine.py::test_each_malformed_kind_produces_its_enumerated_reason[unmapped_status] PASSED [ 59%]
+tests/test_engine.py::test_each_malformed_kind_produces_its_enumerated_reason[schema_violation] PASSED [ 62%]
+tests/test_engine.py::test_reject_reasons_are_enumerated_not_free_text PASSED [ 66%]
+tests/test_engine.py::test_counters_balance_arithmetic PASSED            [ 70%]
+tests/test_engine.py::test_two_doors_partition_every_disposition PASSED  [ 74%]
+tests/test_engine.py::test_end_to_end_counts_match_the_seeded_manifest[fixed] PASSED [ 77%]
+tests/test_engine.py::test_end_to_end_counts_match_the_seeded_manifest[csv] PASSED [ 81%]
+tests/test_engine.py::test_batches_are_200_written_documents PASSED      [ 85%]
+tests/test_engine.py::test_beam_intake_and_router_agree_on_every_record PASSED [ 88%]
+tests/test_engine.py::test_dedup_survivor_rule_is_shared_and_replay_stable PASSED [ 92%]
+tests/test_engine.py::test_beam_dofn_actually_delegates_to_the_shared_door PASSED [ 96%]
+tests/test_engine.py::test_route_intake_does_not_run_the_map_door PASSED [100%]
+
+============================== 27 passed in 3.04s ==============================

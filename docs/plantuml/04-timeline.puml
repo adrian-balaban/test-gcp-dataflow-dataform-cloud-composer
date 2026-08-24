@@ -1,0 +1,65 @@
+@startgantt
+' PlantUML equivalent of docs/inputs/diagrams/04-timeline.mmd
+title MVP (Sept) -> hardening (Oct) -> integration (Nov)
+
+Project starts 2026-08-03
+saturday are closed
+sunday are closed
+
+printscale weekly
+
+-- Asks to Other Team --
+[Draft contract (DDL, TDS, sample)] lasts 10 days
+[Draft contract (DDL, TDS, sample)] starts 2026-08-03
+[Draft contract (DDL, TDS, sample)] is colored in #f2dede/#a94442
+
+[Masked sample file] lasts 20 days
+[Masked sample file] starts 2026-08-03
+[Masked sample file] is colored in #f2dede/#a94442
+
+-- Our Team (MVP) --
+[TDS + JSON extension] lasts 12 days
+[TDS + JSON extension] starts 2026-08-03
+
+[Transformation engine] lasts 15 days
+[Transformation engine] starts at [TDS + JSON extension]'s end
+
+[Synthetic harness] lasts 10 days
+[Synthetic harness] starts 2026-08-17
+
+[Rejects + balancing recon] lasts 8 days
+[Rejects + balancing recon] starts at [Transformation engine]'s end
+
+[Kafka producer stub] lasts 6 days
+[Kafka producer stub] starts at [Transformation engine]'s end
+
+[Throughput benchmark] lasts 5 days
+[Throughput benchmark] starts at [Kafka producer stub]'s end
+
+[2nd mapping (extensibility proof)] lasts 3 days
+[2nd mapping (extensibility proof)] starts at [Rejects + balancing recon]'s end
+
+[Buffer + demo dry-run] lasts 5 days
+[Buffer + demo dry-run] starts at [2nd mapping (extensibility proof)]'s end
+
+[MVP demo (synthetic)] happens 2026-09-30
+[MVP demo (synthetic)] is colored in #a94442
+
+-- hardening --
+[Restartability + checkpointing] lasts 12 days
+[Restartability + checkpointing] starts 2026-10-01
+
+[Delta / incremental design] lasts 12 days
+[Delta / incremental design] starts 2026-10-01
+
+[Contract adapter hardening] lasts 10 days
+[Contract adapter hardening] starts 2026-10-19
+
+-- Other Team --
+[Real data & structures] happens 2026-11-02
+[Real data & structures] is colored in #a94442
+
+-- Integration --
+[Wire real contracts] lasts 22 days
+[Wire real contracts] starts 2026-11-02
+@endgantt

@@ -1,0 +1,31 @@
+@startuml readme-09-gcp-architecture
+' PlantUML equivalent of README.md "Slide 11 — Real GCP architecture implemented"
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam database {
+    BackgroundColor #fcf8e3
+    BorderColor #8a6d3b
+    FontColor #1b1b1b
+}
+
+rectangle "GCP — applied & run (europe-west1)" as gcp #eef4fa {
+    database  "GCS\nlanding · artefacts"                                as GCS
+    rectangle "Dataflow\nfile_processor · enrichment · json_producer"    as DFL #dff0d8
+    database  "BigQuery\nextraction · transformation · recon"            as BQ
+    rectangle "Dataform\nSQL transformation"                             as DF  #dff0d8
+    rectangle "Managed Kafka"                                            as KFK #dff0d8
+    rectangle "Cloud Composer 2\nmigration DAG"                          as CMP #dff0d8
+    rectangle "Cloud Run\ntarget-system-mock"                            as VCM #dff0d8
+}
+
+CMP ..> DFL : KubernetesPodOperator pods
+CMP ..> DF  : Dataform operators
+GCS --> DFL : landing\ninput
+DFL --> BQ
+BQ  --> DF
+DF  --> BQ
+DFL --> GCS : TARGET JSON\nartefacts
+DFL ..> KFK : optional sink
+GCS --> VCM : TARGET JSON
+@enduml

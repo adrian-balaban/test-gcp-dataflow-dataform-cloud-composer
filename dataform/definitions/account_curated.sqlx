@@ -1,0 +1,82 @@
+config {
+  type: "table",
+  schema: "bq_transformation",
+  name: "account_curated",
+  description: "SQL batch transformation: SRC account records normalised and enriched into the shape the JSON Data Producer maps to Target System documents.",
+  columns: {
+    account_id: "Source account identifier, trimmed",
+    customer_id: "Owning customer",
+    product_code: "Source product code",
+    currency: "ISO-4217, normalised to upper case",
+    opened_on: "Account opening date",
+    status_code: "Raw single-character source status",
+    balance_minor: "Balance in minor units, as INT64 — derived here so downstream arithmetic is exact",
+    balance_amount: "Balance as a fixed 2dp string, the form the TARGET schema requires",
+    segment: "Customer segment — NULL; the homogeneous DAT source (D6) carries no reference data. A real integration would join this from a reference dataset.",
+    branch: "Originating branch — NULL for the same reason as segment.",
+    risk_rating: "1-10 risk band — NULL for the same reason as segment.",
+    balance_band: "Derived bucketing used by reconciliation reports",
+    account_age_years: "Derived from opened_on, for migrability reporting",
+    run_id: "The run that produced this row",
+    account_key: "Stable deterministic key — the join key for reconciliation"
+  }
+}
+
+-- The SQL Transformation step in architecture diagram.
+--
+-- The engine has two doors only (docs/PLAN-CHANGES-21082026.md D1) — parse and
+-- schema/map, both settled elsewhere in the lane. There is no filter or dedup stage
+-- left to keep out of this model.
+--
+-- Scoped to a single run id — every run is one full snapshot, not a window
+-- (D5).
+
+WITH src AS (
+  -- Cast BALANCE once to FLOAT64; every downstream expression (minor-units
+  -- conversion, the 2dp render, the balance-band CASE) reads _balance_f instead of
+  -- re-casting. The source column is a fixed 2dp string to avoid float drift.
+  SELECT
+    *,
+    CAST(BALANCE AS FLOAT64) AS _balance_f
+  FROM ${ref("account_src")}
+  WHERE
+    ${when(dataform.projectConfig.vars.runId != "",
+           `_run_id = '${dataform.projectConfig.vars.runId}'`,
+           `TRUE`)}
+)
+
+SELECT
+    TRIM(ACCT_ID)                                        AS account_id,
+    TRIM(CUST_ID)                                        AS customer_id,
+    TRIM(PRODUCT_CODE)                                   AS product_code,
+    UPPER(TRIM(CURRENCY))                                AS currency,
+    OPEN_DATE                                            AS opened_on,
+    TRIM(STATUS)                                         AS status_code,
+
+    -- Balance arrives as a fixed 2dp string to avoid float drift. Convert to minor
+    -- units for exact integer arithmetic, then render back to the 2dp string the
+    -- TARGET JSON Schema demands. _balance_f is cast once in the CTE above.
+    CAST(ROUND(_balance_f * 100) AS INT64)               AS balance_minor,
+    FORMAT('%.2f', _balance_f)                           AS balance_amount,
+
+    -- The homogeneous DAT source (docs/PLAN-CHANGES-21082026.md D6) carries no
+    -- reference-data fields any more — no JSON side-channel to read segment/branch/
+    -- riskRating from. A real integration would join these from a reference dataset;
+    -- out of scope for this plan, so they are NULL until that lands.
+    CAST(NULL AS STRING)                                 AS segment,
+    CAST(NULL AS STRING)                                 AS branch,
+    CAST(NULL AS INT64)                                  AS risk_rating,
+
+    CASE
+        WHEN _balance_f <      0 THEN 'OVERDRAWN'
+        WHEN _balance_f <   1000 THEN 'LOW'
+        WHEN _balance_f < 100000 THEN 'MEDIUM'
+        ELSE                          'HIGH'
+    END                                                  AS balance_band,
+
+    DATE_DIFF(CURRENT_DATE(), OPEN_DATE, YEAR)           AS account_age_years,
+
+    _run_id                                              AS run_id,
+    _account_key                                           AS account_key
+
+FROM src

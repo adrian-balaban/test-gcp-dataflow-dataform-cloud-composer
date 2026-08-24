@@ -1,0 +1,121 @@
+.venv/bin/python local/scripts/run_pipeline.py --mode initial
+
+▶ harness generating 500 accounts (copybook) for initial
+526 records -> local/data/mainframe/initial/ACCOUNT.src  (migrated=400 not_migrated=126: excluded=100 rejected=6 dup=20)
+  (0.1s)
+
+▶ E — Extractor App 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=initial-20260805-163903 kind=initial records=526 dat_files=2 extraction_errors=0 -> gs://mig-landing/extraction/initial-20260805-163903/
+  (1.6s)
+
+▶ T — Dataflow File Processor decrypt, verify .CHS, TDS parse, filter + dedup → BigQuery
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+file_processor: {"accounted": 526, "balances": true, "by_reason": {}, "deduplicated": 20, "excluded": 100, "imbalance": 0, "migrated": 402, "not_migrated": 124, "rejected": 4, "src_read": 526, "written": 402}
+  (6.9s)
+
+▶ T — Dataform SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=initial-20260805-163903)
+  1 declaration(s), 1 action(s)
+  → mig-local.bq_transformation.account_curated
+  ✓ mig-local.bq_transformation.account_curated: 402 rows
+dataform complete.
+  (7.4s)
+
+▶ T — Dataflow Data Enrichment reference-data join
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+data_enrichment: {"enriched": 402, "read": 402, "reference_unmatched": 0}
+  (6.3s)
+
+▶ T — Dataflow JSON Data Producer map + schema, emit to both, batches of 200
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+json_producer: {"batch_size": 200, "batches": 2, "rejected": 2, "sinks": {"sinks": [{"batches": 2, "messages": 400, "sink": "kafka", "topic": "target-system-target"}, {"batches": 2, "bucket": "mig-json-out", "documents": 400, "files": ["json/initial-20260805-163903/ACCOUNT.00000.json", "json/initial-20260805-163903/ACCOUNT.00001.json"], "prefix": "json/initial-20260805-163903/", "sink": "gcs-json"}]}, "written": 400}
+  (7.7s)
+
+▶ L — Loader App download JSON → Target System APIs with retries → load artefacts
+loader: run=initial-20260805-163903 files=2 documents=400 accepted=400 duplicates=0 errors=0 retries=81 -> gs://mig-recon/load/initial-20260805-163903/
+  (99.3s)
+
+▶ R — Reconciliation Services source + transformation/load recon, migrability reports
+{
+  "runId" : "initial-20260805-163903",
+  "runKind" : "initial",
+  "windowFrom" : "1970-01-01T00:00:00Z",
+  "windowTo" : "2026-08-01T00:00:00Z",
+  "generatedAt" : "2026-08-05T16:41:17.307653748Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 526,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 402,
+    "distinctDedupKeys" : 402,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 402,
+    "enrichedRows" : 402,
+    "targetDocuments" : 400,
+    "targetDistinctKeys" : 400,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 400,
+    "loaderErrors" : 0
+  },
+  "balancingEquation" : {
+    "srcRead" : 526,
+    "written" : 400,
+    "excluded" : 100,
+    "rejected" : 6,
+    "duplicates" : 20,
+    "accounted" : 526,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_INVALID_JSON",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_SHORT_RECORD",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 526,
+    "migrated" : 400,
+    "excludedByPolicy" : 100,
+    "blockedByDataQuality" : 6,
+    "migrabilityRate" : 93.9,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 322
+    }, {
+      "band" : "LOW",
+      "count" : 4
+    }, {
+      "band" : "MEDIUM",
+      "count" : 73
+    }, {
+      "band" : "OVERDRAWN",
+      "count" : 3
+    } ]
+  }
+}
+recon: reports at gs://mig-recon/reconciliation/initial-20260805-163903/
+recon: balancing equation closes; key-level reconciliation clean.
+  (4.7s)
+
+run: initial-20260805-163903

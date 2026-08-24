@@ -1,0 +1,114 @@
+
+[1m▶ harness[0m generating 50 accounts (copybook) for initial
+76 records -> local/data/mainframe/initial/ACCOUNT.src  (written=40 excluded=10 rejected=6 dup=20)
+  (0.1s)
+
+[1m▶ E — Extractor App[0m 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=initial-20260804-163113 kind=initial records=76 dat_files=1 extraction_errors=0 -> gs://mig-000001-1-dev-landing/extraction/initial-20260804-163113/
+  (2.8s)
+
+[1m▶ T — Dataflow File Processor[0m decrypt, verify .CHS, TDS parse, doors 1-3 → BigQuery
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+file_processor: {"accounted": 76, "balances": true, "by_reason": {}, "deduplicated": 20, "excluded": 10, "imbalance": 0, "rejected": 4, "src_read": 76, "written": 42}
+  (16.1s)
+
+[1m▶ T — Dataform[0m SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=initial-20260804-163113)
+  1 declaration(s), 1 action(s)
+  → mig-000001-1-dev.bq_transformation.account_curated
+  ✓ mig-000001-1-dev.bq_transformation.account_curated: 42 rows
+dataform complete.
+  (8.8s)
+
+[1m▶ T — Dataflow Data Enrichment[0m reference-data join
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+data_enrichment: {"enriched": 42, "read": 42, "reference_unmatched": 0}
+  (8.5s)
+
+[1m▶ T — Dataflow JSON Data Producer[0m door 4 + emit to gcs, batches of 200
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+json_producer: {"batch_size": 200, "batches": 1, "rejected": 2, "sinks": {"batches": 1, "bucket": "mig-000001-1-dev-json-out", "documents": 40, "files": ["json/initial-20260804-163113/ACCOUNT.00000.json"], "prefix": "json/initial-20260804-163113/", "sink": "gcs-json"}, "written": 40}
+  (10.8s)
+
+[1m▶ L — Loader App[0m download JSON → Target System APIs with retries → load artefacts
+loader: run=initial-20260804-163113 files=1 documents=40 accepted=40 duplicates=0 errors=0 retries=3 -> gs://mig-000001-1-dev-recon/load/initial-20260804-163113/
+  (7.7s)
+
+[1m▶ R — Reconciliation Services[0m source + transformation/load recon, migrability reports
+{
+  "runId" : "initial-20260804-163113",
+  "runKind" : "initial",
+  "windowFrom" : "1970-01-01T00:00:00Z",
+  "windowTo" : "2026-08-01T00:00:00Z",
+  "generatedAt" : "2026-08-04T16:32:16.256787865Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 76,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 42,
+    "distinctDedupKeys" : 42,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 42,
+    "enrichedRows" : 42,
+    "targetDocuments" : 40,
+    "targetDistinctKeys" : 40,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 40,
+    "loaderErrors" : 0
+  },
+  "balancingEquation" : {
+    "srcRead" : 76,
+    "written" : 40,
+    "excluded" : 10,
+    "rejected" : 6,
+    "duplicates" : 20,
+    "accounted" : 76,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_INVALID_JSON",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_SHORT_RECORD",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 76,
+    "migrated" : 40,
+    "excludedByPolicy" : 10,
+    "blockedByDataQuality" : 6,
+    "migrabilityRate" : 60.61,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 33
+    }, {
+      "band" : "MEDIUM",
+      "count" : 9
+    } ]
+  }
+}
+recon: reports at gs://mig-000001-1-dev-recon/reconciliation/initial-20260804-163113/
+recon: balancing equation closes; key-level reconciliation clean.
+  (7.3s)
+
+[1mrun:[0m initial-20260804-163113

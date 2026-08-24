@@ -1,0 +1,55 @@
+@startuml architecture-01-c3-file-processor
+' PlantUML equivalent of ARCHITECTURE.md "C3 — Components (File Processor Pipeline)"
+!pragma layout smetana
+!include <C4/C4_Component>
+
+title C3 — Components: File Processor Pipeline
+
+ContainerDb(LAKE, "Object Store", "GCS", "")
+ContainerDb(BQ,   "Analytics Warehouse", "BigQuery", "")
+Container(CONTRACTS, "Contract Store", "Git", "")
+
+Container_Boundary(FP, "File Processor Pipeline [Apache Beam / Python]") {
+    Component(RUNNER,  "Runner Selector", "runner.py", "Turns cfg.runner into Beam flags")
+    Component(CONFIG,  "Config Resolver", "config.py", "Resolves one Backend + Runner; rejects incoherent combinations")
+    Component(READ,    "ReadBundleFn", "beam.DoFn, pipeline.py:122", "Waits on .FLG, verifies .CHS checksums, decrypts PGP, emits raw lines")
+    Component(PARSE,   "ParseAndFilterFn", "beam.DoFn, pipeline.py:199", "Delegates to route_intake; splits into 3 tagged outputs: keyed / REJECTED / EXCLUDED")
+    Component(GBK,     "GroupByDedupKey", "beam.GroupByKey", "Distributed dedup — key space need not fit on one worker")
+    Component(DEDUP,   "DedupFn", "beam.DoFn, pipeline.py:265", "Keeps lowest survivor_rank; emits unique / DUPLICATES")
+    Component(WRITE,   "WriteRowsFn", "beam.DoFn, pipeline.py:293", "Batched insertAll — the stage that should become FILE_LOADS")
+    Component(ENGINE,  "Intake Engine", "common/engine.py", "route_intake + survivor_rank — shared with RecordRouter so paths can't drift")
+    Component(DOORS,   "Door Taxonomy", "common/doors.py", "Exit/Door/Stage/Reason enums, Counters, require_balance")
+    Component(MAPPING, "Transform Engine", "common/mapping.py", "parse / source_key / dedup_key / is_excluded from contract YAML")
+    Component(LEDGER,  "Ledger Writer", "run_pipeline, pipeline.py:396-423", "Reads Beam counters, asserts balance, persists run_ledger")
+    Component(SINK,    "BigQuery Sink Adapter", "common/sinks.py + storage.py", "insertAll on the emulator; GCS-staged load jobs on real BigQuery")
+    Component(LINEAGE, "Lineage Register", "doors.Lineage + WriteRowsFn", "Names every not-migrated record: door / stage / reason / source key")
+}
+
+Rel_D(CONTRACTS, MAPPING, "TDS layouts, mappings", "YAML")
+Rel(CONFIG, READ, "endpoints, credentials")
+Rel(CONFIG, SINK, "dataset names")
+Rel(RUNNER, READ, "instantiates the pipeline on Direct or Dataflow")
+
+Rel(LAKE,    READ,   "reads .FLG/.CHS/PGP bundle")
+Rel(READ,    PARSE,  "(record_name, raw_line)")
+Rel(MAPPING, ENGINE, "parse, is_excluded, dedup_key, source_key")
+Rel(ENGINE,  PARSE,  "Outcome(door, dedup_key, doc)")
+Rel(DOORS,   ENGINE, "Door/Reason enums, RecordError")
+
+Rel(PARSE, GBK,   "main='keyed' (dedup_key, doc)")
+Rel(GBK,   DEDUP, "(dedup_key, [docs])")
+Rel(DEDUP, WRITE, "main='unique'")
+Rel_D(PARSE, WRITE, "REJECTED tag")
+Rel(WRITE, SINK,  "account_src + reject rows", "insertAll")
+Rel(SINK,  BQ,    "rows")
+
+Rel_D(PARSE, LINEAGE, "EXCLUDED tag")
+Rel_D(DEDUP, LINEAGE, "DUPLICATES tag")
+Rel_D(PARSE, LINEAGE, "REJECTED tag (projected)")
+Rel(LINEAGE, BQ, "record_lineage rows", "insertAll")
+
+Rel(DOORS,  LEDGER, "Counters, require_balance")
+Rel(LEDGER, BQ,     "run_ledger row", "insertAll")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,31 @@
+gantt
+    title MVP (Sept) → hardening (Oct) → integration (Nov)
+    dateFormat YYYY-MM-DD
+    axisFormat %d %b
+    excludes weekends
+
+    section Asks to Other Team
+    Draft contract (DDL, TDS, sample)  :crit, ask1, 2026-08-03, 10d
+    Masked sample file                 :crit, ask2, 2026-08-03, 20d
+
+    section Our Team (MVP)
+    TDS + JSON extension               :tds,  2026-08-03, 12d
+    Transformation engine              :eng,  after tds, 15d
+    Synthetic harness                  :harn, 2026-08-17, 10d
+    Rejects + balancing recon          :rec,  after eng, 8d
+    Kafka producer stub                :kaf,  after eng, 6d
+    Throughput benchmark               :perf, after kaf, 5d
+    2nd mapping (extensibility proof)  :ext,  after rec, 3d
+    Buffer + demo dry-run              :buf,  after ext, 5d
+    MVP demo (synthetic)               :milestone, crit, 2026-09-30, 0d
+
+    section hardening
+    Restartability + checkpointing     :2026-10-01, 12d
+    Delta / incremental design         :2026-10-01, 12d
+    Contract adapter hardening         :2026-10-19, 10d
+
+    section Other Team
+    Real data & structures             :milestone, crit, 2026-11-02, 0d
+
+    section Integration
+    Wire real contracts                :2026-11-02, 22d

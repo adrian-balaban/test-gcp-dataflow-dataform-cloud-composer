@@ -1,0 +1,38 @@
+# Ignore rules for the smoke-gcp toolbox image ONLY (Dockerfile.toolbox).
+#
+# The root .dockerignore serves the Java image builds and excludes pipelines/,
+# contracts/, harness/ and dataform/ — all of which this image needs, because it runs
+# local/scripts/run_pipeline.py across both the Python and the Java lanes. Both
+# podman/buildah and Docker BuildKit prefer <Dockerfile>.dockerignore over the root file.
+#
+# Kept in the context: apps/ (the jar build stage), pipelines, contracts, harness,
+# dataform, local/scripts, requirements.txt.
+
+.git
+.venv
+.uv
+.pytest_cache
+apps/**/target
+
+node_modules
+.terraform
+*.tfstate*
+
+# Runtime state and secrets. local/keys is mounted at run time, never baked in;
+# local/scripts is needed, so `local` cannot be excluded wholesale.
+local/keys
+local/state
+local/data
+local/docker-compose.yml
+local/docker-compose.airflow.yml
+out
+.env
+.env.example
+
+docs
+tests
+composer
+terraform
+.remember
+.claude
+

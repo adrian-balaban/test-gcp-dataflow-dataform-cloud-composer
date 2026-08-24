@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "mig-local",
+  schema: "bq_extraction",
+  name: "account_src",
+  description: "SRC records loaded by the Dataflow File Processor, after the parse door. One row per surviving source record, stamped with its run id — one full snapshot per run, no window (docs/PLAN-CHANGES-21082026.md D5)."
+}

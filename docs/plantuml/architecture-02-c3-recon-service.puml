@@ -1,0 +1,63 @@
+@startuml architecture-02-c3-recon-service
+' PlantUML equivalent of ARCHITECTURE.md "C3 — Components (Recon Service)"
+!pragma layout smetana
+!include <C4/C4_Component>
+
+title C3 — Components: Recon Service
+
+ContainerDb(BQ,   "Analytics Warehouse", "BigQuery", "")
+ContainerDb(LAKE, "Object Store", "GCS", "")
+Container(CONTRACTS, "Contract Store", "Git", "")
+ContainerQueue(BUS, "Event Bus", "Kafka / Redpanda", "")
+System_Ext(VC, "Target System", "")
+
+Container_Boundary(RECON, "Recon Service [Java, Maven]") {
+    Component(ARGS,    "Args", "ReconService.java:363", "Parses CLI, validates identifiers, binds run_id as a query parameter")
+    Component(STORE,   "Object Store Client", "common/HttpObjectStore", "GCS REST — reads .RPT, writes reports")
+    Component(BQC,     "BigQuery Client", "common/BigQueryRest", "Count / key / breakdown queries; run_id parameterised, identifiers validated")
+    Component(ART,     "Artefacts", "common/Artefacts", "Contract-driven column, prefix and .RPT names")
+    Component(LEDGER,  "Ledger Reader", "ReconService.main:148-164", "Reads run_ledger + record_lineage; refuses to reconcile against nothing")
+    Component(BAL,     "Balance", "ReconService.java:307", "The balancing equation — every term read where it was recorded, not re-derived")
+    Component(REPORT,  "Report Builder", "ReconService.main:192-254", "Assembles reconciliation-report.json: source, load, equation, agreement, migrability")
+    Component(HTML,    "Html Renderer", "Html.java", "Renders the human-readable report")
+    Component(VERDICT, "Verdict", "ReconService.main:265-289", "Exits non-zero on imbalance, ledger/lineage disagreement, or orphan keys")
+}
+
+Container_Boundary(CONFEDGE, "Reconciliation with Target System — wired") {
+    Component(CONF,   "Confirmation Consumer", "ReconService.java:437", "KafkaConsumer, fresh group recon-<runId>, auto.offset.reset=earliest, JSON events")
+    Component(DECODE, "Confirmation Decoder", "ReconService.java:437", "Parses {runId,accountId,accountKey,confirmedAt}; collects the set of accountKeys")
+    Component(MATCH,  "Confirmation Matcher", "ReconService.java:383", "Set-differences account_target keys vs confirmation keys; flags unconfirmed rows")
+}
+
+Rel(CONTRACTS, ART, "column, prefix, .RPT names", "JSON")
+Rel(ART, BQC,    "column names")
+Rel(ART, LEDGER, "column names")
+
+Rel(LAKE,  STORE,  "extractor .RPT, loader .RPT")
+Rel(STORE, BAL,    "srcRead (extractor .RPT)")
+Rel(STORE, REPORT, "loadedDocuments, errors")
+
+Rel(BQ,  BQC, "run_ledger, record_lineage, reject_log, account_src/target/curated/enriched", "BigQuery REST")
+Rel(BQC, LEDGER, "ledger + lineage rows")
+Rel(BQC, REPORT, "counts + breakdowns")
+Rel(BQC, BAL,    "written (account_target), rejected")
+Rel(BQC, MATCH,  "targetKeys (account_target)")
+Rel(LEDGER, BAL, "ledger tallies (excluded, duplicates)")
+Rel(BAL, REPORT, "equation + imbalance")
+Rel(BAL, VERDICT, "balances?")
+Rel(LEDGER, VERDICT, "agrees?")
+Rel(BQC, VERDICT, "orphanTargets")
+Rel(REPORT, HTML,  "report object")
+Rel(REPORT, STORE, "report JSON")
+Rel(HTML,   STORE, "report HTML")
+Rel(STORE,  LAKE,  "writes recon bucket", "GCS REST")
+
+Rel(VC,  BUS,  "confirmation / audit events", "JSON")
+Rel(BUS, CONF, "confirmations", "JSON")
+Rel(CONF,   DECODE, "raw events")
+Rel(DECODE, MATCH,  "normalized confirmations")
+Rel(MATCH, REPORT,  "unconfirmed / unconfirmedAccountKeys")
+Rel(MATCH, VERDICT, "confirmation verdict (allConfirmed?)")
+
+SHOW_LEGEND()
+@enduml

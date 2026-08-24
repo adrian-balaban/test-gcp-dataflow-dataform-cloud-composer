@@ -1,0 +1,25 @@
+flowchart TB
+    SRC["SRC records<br/>.DAT + JSON"] --> P["Parse via SRC-TDS"]
+    P -- "parse error" --> RJ["Reject file<br/>key + reason code"]
+    P -- ok --> F{"Filter<br/>exclude CORP /<br/>PRIVATE_BANK?"}
+    F -- excluded --> DROP["Excluded<br/>(counted for recon)"]
+    F -- kept --> M["Map SRC → TARGET<br/>via YAML mappings"]
+    M -- "mapping / schema error" --> RJ
+    M --> T["Deterministic<br/>transform functions"]
+    T --> B["Batch<br/>size = 200"]
+    B --> CK["Checkpoint<br/>batch committed"]
+    CK --> OUT["TARGET records<br/>→ Kafka stub"]
+
+    MAP["mapping-projectN.yaml<br/>(data, not code)"] -.-> F
+    MAP -.-> M
+    STDS["tds-src.def"] -.-> P
+    TTDS["tds-target.def"] -.-> M
+
+    classDef reject fill:#f2dede,stroke:#a94442,color:#1b1b1b;
+    classDef excluded fill:#fcf3d7,stroke:#8a6d3b,color:#1b1b1b;
+    classDef config fill:#eef4fa,stroke:#31708f,color:#1b1b1b;
+    classDef out fill:#dff0d8,stroke:#3c763d,color:#1b1b1b;
+    class RJ reject;
+    class DROP excluded;
+    class MAP,STDS,TTDS config;
+    class OUT,CK out;

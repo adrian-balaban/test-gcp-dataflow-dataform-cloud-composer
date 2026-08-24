@@ -1,0 +1,25 @@
+# TARGET-TDS — project2 (Target System deposit documents).
+#
+# A different target shape from project1: deposits rather than accounts, a nested
+# `holder` object, a constant `channel` and a composite `reference` — so the mapping
+# exercises transforms project1 does not use.
+
+record TARGET_SYSTEM_DEPOSIT
+  layout json
+
+  field depositId  path=$.depositId              type=string   required=true
+  field reference  path=$.reference              type=string   required=true
+  field holderId  path=$.holder.id              type=string   required=true
+  field holderTier  path=$.holder.tier            type=string
+  field currency  path=$.currency               type=string   required=true
+  field startedOn  path=$.startedOn              type=date     required=true
+  field state  path=$.state                  type=string   required=true
+  field principal  path=$.principal.amount       type=decimal  scale=2  required=true
+  field principalCcy  path=$.principal.currency     type=string   required=true
+  field channel  path=$.origination.channel    type=string   required=true
+  field outlet  path=$.origination.outlet     type=string
+  field riskBand  path=$.origination.riskBand   type=int
+
+  field runId  path=$.migration.runId        type=string   required=true
+  field sourceKey  path=$.migration.sourceKey    type=string   required=true
+  field dedupKey  path=$.migration.dedupKey     type=string   required=true

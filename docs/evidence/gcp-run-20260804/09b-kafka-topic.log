@@ -1,0 +1,11 @@
+=== target-system-target topic (the one Terraform created) ===
+{
+  "name": "projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka/topics/target-system-target",
+  "partitionCount": 12,
+  "replicationFactor": 3,
+  "configs": {
+    "max.message.bytes": "1048576",
+    "cleanup.policy": "delete",
+    "retention.ms": "604800000"
+  }
+}

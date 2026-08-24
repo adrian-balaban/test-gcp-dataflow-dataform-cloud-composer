@@ -1,0 +1,22 @@
+# Local suite alongside the GCP run
+
+```
+33 passed in 2.67s
+[INFO] Rule 0: org.apache.maven.enforcer.rules.files.RequireFilesExist passed
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.391 s -- in ro.mig.common.ArtefactsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.064 s -- in ro.mig.common.ChecksumsTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.238 s -- in ro.mig.common.HttpObjectStoreTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+  ✓ 1. balancing equation closes (whole lane): 526 = 400 migrated + 126 not migrated
+  ✓ 2. excluded count matches the harness exactly: 100 == 100 seeded
+  ✓ 3. seeded malformed records rejected with correct reason codes: 6 reason codes, all matching: MAP_UNMAPPED_ENUM_VALUE, PARSE_BAD_DATE, PARSE_BAD_NUMERIC, PARSE_INVALID_JSON, PARSE_SHORT_RECORD, SCHEMA_INVALID
+  ✓ 4. every TARGET document validates against the JSON Schema: 400/400 documents valid
+  ✓ 5. TARGET emitted in 200-element batches (Kafka too, when that sink ran): 2 batches of 200 (2 GCS files, 2480 Kafka messages on the topic)
+  ✓ 6. every key appears exactly once in TARGET: 400 keys, each present exactly once, 0 orphans
+  ✓ 7. every not-migrated record is named in record_lineage: 126 not-migrated records named (excluded=100, deduplicated=20, rejected=6)
+  ✓ 8. all five artefact types present in both lanes: extraction 2 + 3, load 4; .FLG vouches for 5
+  ✓ 10. delta run balances and stays inside its window: delta delta-20260819-151343 balances (111 read, 29 not migrated, 31 named); initial run intact at 402 rows, 2 key(s) updated across both windows
+  ✓ 9. .CHS checksums verify on both sides: extraction 2 entries parsed, load 2 files re-hashed and matching
+VERIFY PASSED — all 10 acceptance criteria hold for run initial-20260819-151343.
+```

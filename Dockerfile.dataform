@@ -1,0 +1,48 @@
+# Dataform runner image — compiles the SQLX models and executes them against BigQuery.
+#
+# Why this exists rather than the Dataform operators. The DAG originally used
+# DataformCreateCompilationResultOperator with `git_commitish: "main"`, which requires the
+# Dataform repository to be **linked to a git remote**. It is not — the repository is
+# unlinked (review finding H7 left that path deliberately unwired), so every compile
+# failed with:
+#
+#   400 The git reference 'main' could not be resolved.
+#
+# The unlinked path — `dataform compile --json` plus a small executor — is the one that is
+# actually deployed and exercised, and it is what local/scripts/run_dataform.py already
+# does. Packaging it as a pod image runs *that* path on Composer, instead of assuming a
+# linked repository that does not exist.
+#
+# Needs both runtimes: Node for the Dataform CLI (invoked via npx), Python for the
+# executor that orders the compiled actions and submits them to BigQuery.
+
+FROM docker.io/node:20-bookworm-slim
+
+WORKDIR /app
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 python3-pip ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
+# --break-system-packages: this is a single-purpose container, so there is no other
+# environment for pip to conflict with, and a venv would only add indirection.
+RUN pip3 install --no-cache-dir --break-system-packages \
+      "google-cloud-bigquery>=3.25" "google-cloud-storage>=2.18" "google-auth>=2.30"
+
+# Warm the CLI into the image so the pod does not download it on every run. The version
+# is pinned: run_dataform.py's default is @latest, which would make a rebuild silently
+# change the compiler — the same class of problem as an unpinned image tag (M13).
+RUN npx -y @dataform/cli@3.0.0 help >/dev/null 2>&1 || true
+
+COPY dataform/ ./dataform/
+COPY local/scripts/run_dataform.py ./run_dataform.py
+# run_dataform.py imports pipelines.common.{config,storage}; storage pulls the GCS and
+# BigQuery clients, which is why google-cloud-storage is installed above.
+COPY pipelines/ ./pipelines/
+
+# Real GCP only — see Dockerfile.dataflow for why the profile must be baked in.
+ENV TARGET_PROFILE=real \
+    BQ_TARGET=real \
+    PYTHONPATH=/app
+
+ENTRYPOINT ["python3", "/app/run_dataform.py"]

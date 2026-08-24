@@ -1,0 +1,33 @@
+Mutation test — proving the new drift guard is load-bearing, not decorative.
+
+Sabotage applied to pipelines/common/engine.py: RecordRouter.route stops delegating
+to the shared route_intake for door 2 and re-implements the filter rule divergently
+(excluding only CORP, not PRIV) — exactly the regression the collapse is meant to
+make impossible.
+
+$ .venv/bin/python -m pytest tests/test_engine.py -q -k "agree"
+
+            elif intake.door is Door.EXCLUDED:
+                # Exclusion precedes dedup, so an excluded record is EXCLUDED on both paths
+                # even when it is also a duplicate (doors.py principle 3).
+>               assert routed.door is Door.EXCLUDED
+E               assert <Door.WRITTEN: 'written'> is <Door.EXCLUDED: 'excluded'>
+E                +  where <Door.WRITTEN: 'written'> = Outcome(door=<Door.WRITTEN: 'written'>,
+                     raw='ACC000000444CUS0000444PRIVSAV001EUR20231210D+00000442241.39...
+
+tests/test_engine.py:287: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_engine.py::test_beam_intake_and_router_agree_on_every_record
+1 failed, 23 deselected in 0.23s
+
+Sabotage reverted; 24/24 green again. The guard catches divergence with a precise
+diagnostic naming the record and the two disagreeing doors.
+
+--------------------------------------------------------------------------------
+SUPERSEDED, in part. The check above was hand-run and is not reproducible — nothing
+re-executes it, so it cannot fail a build.
+
+test_beam_dofn_actually_delegates_to_the_shared_door (see 05-delegation-guard.log) now
+asserts the same property as a standing test, and covers a case this manual check did
+not: a duplicate implementation that agrees behaviourally. This transcript is kept as
+the record of how the drift guard was originally validated.

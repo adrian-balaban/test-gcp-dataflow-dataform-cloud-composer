@@ -1,0 +1,37 @@
+@startuml readme-06-tds-dat-or-json
+' PlantUML equivalent of README.md "Slide 8 — TDS carries .DAT or JSON"
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+file "TDS definition — pipe-delimited .DAT\ntds-src.def" as TDS1 #eef4fa
+file "TDS definition — JSON\ntds-src-json.def"          as TDS2 #eef4fa
+
+rectangle "header row:\nACCT_ID|CUST_ID|...|BALANCE" as H
+rectangle "ACCT_ID · col=0"      as F1
+rectangle "CLIENT_TYPE · col=2"  as F2
+rectangle "BALANCE · col=7"      as F3
+rectangle "$.accountId"  as J1
+rectangle "$.clientType" as J2
+rectangle "$.balance"    as J3
+
+rectangle "One parser"   as P   #dff0d8
+rectangle "Typed record" as OUT #dff0d8
+
+TDS1 --> H
+TDS1 --> F1
+TDS1 --> F2
+TDS1 --> F3
+TDS2 --> J1
+TDS2 --> J2
+TDS2 --> J3
+
+F1 --> P
+F2 --> P
+F3 --> P
+J1 --> P
+J2 --> P
+J3 --> P
+P  --> OUT
+@enduml

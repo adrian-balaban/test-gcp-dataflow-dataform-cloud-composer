@@ -1,0 +1,236 @@
+.venv/bin/python local/scripts/run_pipeline.py --mode delta
+
+▶ harness generating 500 accounts (copybook) for initial
+526 records -> local/data/mainframe/initial/ACCOUNT.src  (migrated=400 not_migrated=126: excluded=100 rejected=6 dup=20)
+  (0.1s)
+
+▶ E — Extractor App 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=initial-20260805-164252 kind=initial records=526 dat_files=2 extraction_errors=0 -> gs://mig-landing/extraction/initial-20260805-164252/
+  (1.5s)
+
+▶ T — Dataflow File Processor decrypt, verify .CHS, TDS parse, filter + dedup → BigQuery
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+file_processor: {"accounted": 526, "balances": true, "by_reason": {}, "deduplicated": 20, "excluded": 100, "imbalance": 0, "migrated": 402, "not_migrated": 124, "rejected": 4, "src_read": 526, "written": 402}
+  (7.4s)
+
+▶ T — Dataform SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=initial-20260805-164252)
+  1 declaration(s), 1 action(s)
+  → mig-local.bq_transformation.account_curated
+  ✓ mig-local.bq_transformation.account_curated: 402 rows
+dataform complete.
+  (7.1s)
+
+▶ T — Dataflow Data Enrichment reference-data join
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+data_enrichment: {"enriched": 402, "read": 402, "reference_unmatched": 0}
+  (6.8s)
+
+▶ T — Dataflow JSON Data Producer map + schema, emit to both, batches of 200
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+json_producer: {"batch_size": 200, "batches": 2, "rejected": 2, "sinks": {"sinks": [{"batches": 2, "messages": 400, "sink": "kafka", "topic": "target-system-target"}, {"batches": 2, "bucket": "mig-json-out", "documents": 400, "files": ["json/initial-20260805-164252/ACCOUNT.00000.json", "json/initial-20260805-164252/ACCOUNT.00001.json"], "prefix": "json/initial-20260805-164252/", "sink": "gcs-json"}]}, "written": 400}
+  (8.0s)
+
+▶ L — Loader App download JSON → Target System APIs with retries → load artefacts
+loader: run=initial-20260805-164252 files=2 documents=400 accepted=400 duplicates=0 errors=0 retries=81 -> gs://mig-recon/load/initial-20260805-164252/
+  (94.7s)
+
+▶ R — Reconciliation Services source + transformation/load recon, migrability reports
+{
+  "runId" : "initial-20260805-164252",
+  "runKind" : "initial",
+  "windowFrom" : "1970-01-01T00:00:00Z",
+  "windowTo" : "2026-08-01T00:00:00Z",
+  "generatedAt" : "2026-08-05T16:45:10.210138807Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 526,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 402,
+    "distinctDedupKeys" : 402,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 402,
+    "enrichedRows" : 402,
+    "targetDocuments" : 400,
+    "targetDistinctKeys" : 400,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 400,
+    "loaderErrors" : 0
+  },
+  "balancingEquation" : {
+    "srcRead" : 526,
+    "written" : 400,
+    "excluded" : 100,
+    "rejected" : 6,
+    "duplicates" : 20,
+    "accounted" : 526,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_INVALID_JSON",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_SHORT_RECORD",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 526,
+    "migrated" : 400,
+    "excludedByPolicy" : 100,
+    "blockedByDataQuality" : 6,
+    "migrabilityRate" : 93.9,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 322
+    }, {
+      "band" : "LOW",
+      "count" : 4
+    }, {
+      "band" : "MEDIUM",
+      "count" : 73
+    }, {
+      "band" : "OVERDRAWN",
+      "count" : 3
+    } ]
+  }
+}
+recon: reports at gs://mig-recon/reconciliation/initial-20260805-164252/
+recon: balancing equation closes; key-level reconciliation clean.
+  (12.1s)
+
+▶ harness generating 100 accounts (copybook) for delta
+111 records -> local/data/mainframe/delta/ACCOUNT.src  (migrated=80 not_migrated=31: excluded=20 rejected=6 dup=5)
+  (0.1s)
+
+▶ E — Extractor App 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=delta-20260805-164252 kind=delta records=111 dat_files=1 extraction_errors=0 -> gs://mig-landing/extraction/delta-20260805-164252/
+  (1.6s)
+
+▶ T — Dataflow File Processor decrypt, verify .CHS, TDS parse, filter + dedup → BigQuery
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+file_processor: {"accounted": 111, "balances": true, "by_reason": {}, "deduplicated": 5, "excluded": 20, "imbalance": 0, "migrated": 82, "not_migrated": 29, "rejected": 4, "src_read": 111, "written": 82}
+  (7.2s)
+
+▶ T — Dataform SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=delta-20260805-164252)
+  1 declaration(s), 1 action(s)
+  → mig-local.bq_transformation.account_curated
+  ✓ mig-local.bq_transformation.account_curated: 82 rows
+dataform complete.
+  (7.5s)
+
+▶ T — Dataflow Data Enrichment reference-data join
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+data_enrichment: {"enriched": 82, "read": 82, "reference_unmatched": 0}
+  (6.0s)
+
+▶ T — Dataflow JSON Data Producer map + schema, emit to both, batches of 200
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+json_producer: {"batch_size": 200, "batches": 1, "rejected": 2, "sinks": {"sinks": [{"batches": 1, "messages": 80, "sink": "kafka", "topic": "target-system-target"}, {"batches": 1, "bucket": "mig-json-out", "documents": 80, "files": ["json/delta-20260805-164252/ACCOUNT.00000.json"], "prefix": "json/delta-20260805-164252/", "sink": "gcs-json"}]}, "written": 80}
+  (8.2s)
+
+▶ L — Loader App download JSON → Target System APIs with retries → load artefacts
+loader: run=delta-20260805-164252 files=1 documents=80 accepted=80 duplicates=0 errors=0 retries=11 -> gs://mig-recon/load/delta-20260805-164252/
+  (14.3s)
+
+▶ R — Reconciliation Services source + transformation/load recon, migrability reports
+{
+  "runId" : "delta-20260805-164252",
+  "runKind" : "delta",
+  "windowFrom" : "2026-08-01T00:00:00Z",
+  "windowTo" : "2026-08-03T00:00:00Z",
+  "generatedAt" : "2026-08-05T16:46:08.572752584Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 111,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 82,
+    "distinctDedupKeys" : 82,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 82,
+    "enrichedRows" : 82,
+    "targetDocuments" : 80,
+    "targetDistinctKeys" : 80,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 80,
+    "loaderErrors" : 0
+  },
+  "balancingEquation" : {
+    "srcRead" : 111,
+    "written" : 80,
+    "excluded" : 20,
+    "rejected" : 6,
+    "duplicates" : 5,
+    "accounted" : 111,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_INVALID_JSON",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_SHORT_RECORD",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 111,
+    "migrated" : 80,
+    "excludedByPolicy" : 20,
+    "blockedByDataQuality" : 6,
+    "migrabilityRate" : 87.91,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 67
+    }, {
+      "band" : "LOW",
+      "count" : 1
+    }, {
+      "band" : "MEDIUM",
+      "count" : 14
+    } ]
+  }
+}
+recon: reports at gs://mig-recon/reconciliation/delta-20260805-164252/
+recon: balancing equation closes; key-level reconciliation clean.
+  (13.5s)
+
+runs: initial=initial-20260805-164252  delta=delta-20260805-164252

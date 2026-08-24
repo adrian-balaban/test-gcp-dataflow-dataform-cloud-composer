@@ -1,0 +1,27 @@
+# TARGET-TDS — project1 (Target System account documents)
+#
+# Kept as a definition distinct from the SRC side (mvp-plan §3 / requirement F2);
+# the mapping YAML is the only thing that references both.
+# Every TARGET field is JSON — Target System consumes documents, not flat files.
+
+record TARGET_SYSTEM_ACCOUNT
+  layout json
+
+  field accountId  path=$.accountId              type=string   required=true
+  field customerId  path=$.customerId             type=string   required=true
+  field productCode  path=$.productCode            type=string   required=true
+  field currency  path=$.currency               type=string   required=true
+  field openedOn  path=$.openedOn               type=date     required=true
+  field status  path=$.status                 type=string   required=true
+  field balanceAmount  path=$.balance.amount         type=decimal  scale=2  required=true
+  field balanceCcy  path=$.balance.currency       type=string   required=true
+  field segment  path=$.attributes.segment     type=string
+  field branch  path=$.attributes.branch      type=string
+  field riskRating  path=$.attributes.riskRating  type=int
+  # Contributed by the Dataflow Data Enrichment stage, not by the source record.
+  field branchName  path=$.attributes.branchName  type=string
+
+  # Migration provenance — how reconciliation ties a TARGET document back to its SRC record.
+  field runId  path=$.migration.runId        type=string   required=true
+  field sourceKey  path=$.migration.sourceKey    type=string   required=true
+  field dedupKey  path=$.migration.dedupKey     type=string   required=true

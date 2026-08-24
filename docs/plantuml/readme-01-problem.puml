@@ -1,0 +1,16 @@
+@startuml readme-01-problem
+' PlantUML equivalent of README.md "Slide 1 — The problem"
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+database "Mainframe" as DB #fcf8e3
+hexagon "Migration\npipeline" as P #eef4fa
+database "Target System" as VC #fcf8e3
+rectangle "Reconciliation\nreports" as R #dff0d8
+
+DB --> P : Million accounts\nBillion transactions
+P  --> VC
+P  ..> R
+@enduml

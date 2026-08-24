@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/mig-000001-1/target-deposit.schema.json",
+  "title": "Target System deposit document (TARGET, project2)",
+  "description": "A deliberately different target contract from project1's account document — the extensibility proof needs the second project to differ in shape, not just in field names.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["depositId", "reference", "holder", "currency", "startedOn", "state", "principal", "origination", "migration"],
+  "properties": {
+    "depositId": { "type": "string", "minLength": 1, "maxLength": 12, "pattern": "^[A-Z0-9]+$" },
+    "reference": { "type": "string", "minLength": 1 },
+    "holder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 10 },
+        "tier": { "type": "string" }
+      }
+    },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "startedOn": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "state": { "type": "string", "enum": ["OPEN", "MATURED", "FROZEN"] },
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "string", "pattern": "^-?[0-9]+\\.[0-9]{2}$" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+      }
+    },
+    "origination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channel"],
+      "properties": {
+        "channel": { "type": "string", "enum": ["MIGRATION", "BRANCH", "ONLINE"] },
+        "outlet": { "type": "string" },
+        "riskBand": { "type": "integer", "minimum": 1, "maximum": 10 }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runId", "sourceKey", "dedupKey"],
+      "properties": {
+        "runId": { "type": "string", "minLength": 1 },
+        "sourceKey": { "type": "string", "minLength": 1 },
+        "dedupKey": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

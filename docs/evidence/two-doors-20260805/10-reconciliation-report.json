@@ -1,0 +1,90 @@
+{
+    "runId": "initial-20260805-164252",
+    "runKind": "initial",
+    "windowFrom": "1970-01-01T00:00:00Z",
+    "windowTo": "2026-08-01T00:00:00Z",
+    "generatedAt": "2026-08-05T16:45:10.210138807Z",
+    "sourceReconciliation": {
+        "extractorReportedRecords": 526,
+        "extractionErrors": 0,
+        "loadedToExtractionDataset": 402,
+        "distinctDedupKeys": 402,
+        "duplicateKeysInExtraction": 0
+    },
+    "transformationLoadReconciliation": {
+        "curatedRows": 402,
+        "enrichedRows": 402,
+        "targetDocuments": 400,
+        "targetDistinctKeys": 400,
+        "orphanTargetKeys": 0,
+        "loaderDocumentsRead": 400,
+        "loaderErrors": 0
+    },
+    "balancingEquation": {
+        "srcRead": 526,
+        "written": 400,
+        "excluded": 100,
+        "rejected": 6,
+        "duplicates": 20,
+        "accounted": 526,
+        "balances": true,
+        "imbalance": 0
+    },
+    "rejectsByReason": [
+        {
+            "stage": "map",
+            "reason": "MAP_UNMAPPED_ENUM_VALUE",
+            "count": 1
+        },
+        {
+            "stage": "parse",
+            "reason": "PARSE_BAD_DATE",
+            "count": 1
+        },
+        {
+            "stage": "parse",
+            "reason": "PARSE_BAD_NUMERIC",
+            "count": 1
+        },
+        {
+            "stage": "parse",
+            "reason": "PARSE_INVALID_JSON",
+            "count": 1
+        },
+        {
+            "stage": "parse",
+            "reason": "PARSE_SHORT_RECORD",
+            "count": 1
+        },
+        {
+            "stage": "schema",
+            "reason": "SCHEMA_INVALID",
+            "count": 1
+        }
+    ],
+    "migrability": {
+        "candidates": 526,
+        "migrated": 400,
+        "excludedByPolicy": 100,
+        "blockedByDataQuality": 6,
+        "migrabilityRate": 93.9,
+        "balanceBands": [
+            {
+                "band": "HIGH",
+                "count": 322
+            },
+            {
+                "band": "LOW",
+                "count": 4
+            },
+            {
+                "band": "MEDIUM",
+                "count": 73
+            },
+            {
+                "band": "OVERDRAWN",
+                "count": 3
+            }
+        ]
+    }
+}

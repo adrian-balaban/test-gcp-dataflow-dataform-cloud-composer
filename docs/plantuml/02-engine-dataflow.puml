@@ -1,0 +1,58 @@
+@startuml 02-engine-dataflow
+' PlantUML equivalent of docs/inputs/diagrams/02-engine-dataflow.mmd
+' Activity diagram (beta syntax) — rendered natively, no Graphviz needed.
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam ArrowColor #555555
+skinparam activity {
+    BackgroundColor #ffffff
+    BorderColor #666666
+    FontColor #1b1b1b
+    DiamondBackgroundColor #ffffff
+    DiamondBorderColor #666666
+    DiamondFontColor #1b1b1b
+}
+skinparam note {
+    BackgroundColor #eef4fa
+    BorderColor #31708f
+    FontColor #1b1b1b
+}
+
+start
+:SRC records\n.DAT + JSON;
+:Parse via SRC-TDS;
+note right: tds-src.def
+
+if (parse error?) then (yes)
+    #f2dede:Reject file\nkey + reason code;
+    stop
+else (ok)
+endif
+
+if (Filter\nexclude CORP /\nPRIVATE_BANK?) then (excluded)
+    #fcf3d7:Excluded\n(counted for recon);
+    stop
+else (kept)
+endif
+
+:Map SRC -> TARGET\nvia YAML mappings;
+note right
+  mapping-projectN.yaml
+  (data, not code)
+  drives Filter + Map
+  tds-target.def
+end note
+
+if (mapping / schema error?) then (yes)
+    #f2dede:Reject file\nkey + reason code;
+    stop
+else (ok)
+endif
+
+:Deterministic\ntransform functions;
+:Batch\nsize = 200;
+#dff0d8:Checkpoint\nbatch committed;
+#dff0d8:TARGET records\n-> Kafka stub;
+stop
+@enduml

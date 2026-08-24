@@ -1,0 +1,26 @@
+=== run id: initial-20260804-163113 ===
+
+=== load-lane .RPT (per-run load numbers) ===
+{
+  "lane" : "load",
+  "record" : "ACCOUNT",
+  "runId" : "initial-20260804-163113",
+  "runKind" : "initial",
+  "windowFrom" : "1970-01-01T00:00:00Z",
+  "windowTo" : "2026-08-01T00:00:00Z",
+  "generatedAt" : "2026-08-04T16:32:08.630450088Z",
+  "jsonFilesRead" : 1,
+  "documentsRead" : 40,
+  "accepted" : 40,
+  "duplicatesIgnored" : 0,
+  "errors" : 0,
+  "retriesPerformed" : 3,
+  "sourceFiles" : [ "json/initial-20260804-163113/ACCOUNT.00000.json" ]
+}
+=== load-lane .FLG (semaphore, written last) ===
+{
+  "runId" : "initial-20260804-163113",
+  "runKind" : "initial",
+  "completedAt" : "2026-08-04T16:32:09.125107532Z",
+  "artefacts" : [ "ACCOUNT.CHS", "ACCOUNT.ERR", "ACCOUNT.RPT" ]
+}

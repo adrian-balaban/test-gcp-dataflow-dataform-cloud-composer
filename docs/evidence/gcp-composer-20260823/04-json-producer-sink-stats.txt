@@ -1,0 +1,1 @@
+[base] json_producer: {"batch_size": 200, "batches": 1, "rejected": 2, "sinks": {"sinks": [{"batches": 1, "messages": 50, "sink": "kafka", "topic": "target-system-target"}, {"batches": 1, "bucket": "mig-000001-1-dev-json-out", "documents": 50, "files": ["json/run-dag-20260823-0230/ACCOUNT.00000.json"], "prefix": "json/run-dag-20260823-0230/", "sink": "gcs-json"}]}, "written": 50}

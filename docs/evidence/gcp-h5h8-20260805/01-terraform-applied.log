@@ -1,0 +1,29 @@
+=== H6: composer-runner impersonation grants on dataflow-worker ===
+{
+  "bindings": [
+    {
+      "members": [
+        "serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+      ],
+      "role": "roles/iam.serviceAccountTokenCreator"
+    },
+    {
+      "members": [
+        "serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+      ],
+      "role": "roles/iam.serviceAccountUser"
+    }
+  ],
+  "etag": "BwZYRE4R4kc=",
+  "version": 1
+}
+
+=== H8: env_file output now carries KAFKA_BOOTSTRAP_SERVERS ===
+TARGET_PROFILE=real
+GCP_PROJECT=mig-000001-1-dev
+GCS_LANDING_BUCKET=mig-000001-1-dev-landing
+GCS_JSON_BUCKET=mig-000001-1-dev-json-out
+GCS_RECON_BUCKET=mig-000001-1-dev-recon
+BQ_TARGET=real
+KAFKA_SECURITY_PROTOCOL=SASL_SSL
+KAFKA_BOOTSTRAP_SERVERS=

@@ -1,0 +1,10 @@
+# Local suite, 2026-08-20 — 34 Python + 10 Java
+
+34 passed in 2.68s
+[INFO] Rule 0: org.apache.maven.enforcer.rules.files.RequireFilesExist passed
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.386 s -- in ro.mig.common.ArtefactsTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s -- in ro.mig.common.ChecksumsTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.234 s -- in ro.mig.common.HttpObjectStoreTest
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+make test exit=0

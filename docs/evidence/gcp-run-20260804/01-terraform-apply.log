@@ -1,0 +1,223 @@
+[0m[1mmodule.composer.google_project_service.gke[0]: Creating...[0m[0m
+[0m[1mmodule.composer.google_project_iam_member.composer_service_agent_ext[0]: Creating...[0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Creating...[0m[0m
+[0m[1mmodule.composer.google_project_service.gke[0]: Creation complete after 5s [id=mig-000001-1-dev/container.googleapis.com][0m
+[0m[1mmodule.composer.google_project_iam_member.composer_service_agent_ext[0]: Creation complete after 10s [id=mig-000001-1-dev/roles/composer.ServiceAgentV2Ext/serviceAccount:service-818861037691@cloudcomposer-accounts.iam.gserviceaccount.com][0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Creating...[0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [1m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [1m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [1m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [2m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [2m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [2m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [2m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [2m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [2m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [3m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [3m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [3m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [3m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [3m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [3m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [4m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [4m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [4m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [4m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [4m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [4m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [5m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [5m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [5m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [5m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [5m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [5m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [6m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [6m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [6m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [6m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [6m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [6m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [7m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [7m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [7m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [7m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [7m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [7m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [8m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [8m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [8m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [8m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [8m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [8m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [9m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [9m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [9m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [9m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [9m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [9m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10m21s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [10m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still creating... [11m1s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Creation complete after 11m9s [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka][0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_topic.target[0]: Creating...[0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_topic.target[0]: Creation complete after 6s [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka/topics/target-system-target][0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Creation complete after 17m51s [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer][0m
+[0m[1m[32m
+Apply complete! Resources: 5 added, 0 changed, 0 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mbuckets = {
+  "dataflow-temp" = "mig-000001-1-dev-dataflow-temp"
+  "dataflow-templates" = "mig-000001-1-dev-dataflow-templates"
+  "json-out" = "mig-000001-1-dev-json-out"
+  "landing" = "mig-000001-1-dev-landing"
+  "recon" = "mig-000001-1-dev-recon"
+}
+composer_airflow_uri = "https://f1ad92d663a84ed29771b6015d852fd9-dot-europe-west1.composer.googleusercontent.com"
+composer_dag_bucket = "gs://europe-west1-mig-composer-8bef5f9c-bucket/dags"
+dataflow_registry = "europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow"
+dataform_repository = "mig-000001-1"
+datasets = {
+  "bq_extraction" = "bq_extraction"
+  "bq_recon" = "bq_recon"
+  "bq_transformation" = "bq_transformation"
+}
+env_file = <<EOT
+TARGET_PROFILE=real
+GCP_PROJECT=mig-000001-1-dev
+GCS_LANDING_BUCKET=mig-000001-1-dev-landing
+GCS_JSON_BUCKET=mig-000001-1-dev-json-out
+GCS_RECON_BUCKET=mig-000001-1-dev-recon
+BQ_TARGET=real
+KAFKA_SECURITY_PROTOCOL=SASL_SSL
+
+EOT
+kafka_bootstrap = "bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092"
+service_accounts = {
+  "composer-runner" = "composer-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+  "dataflow-worker" = "dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com"
+  "dataform-runner" = "dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+  "loader-app" = "loader-app@mig-000001-1-dev.iam.gserviceaccount.com"
+  "recon-service" = "recon-service@mig-000001-1-dev.iam.gserviceaccount.com"
+}
+terraform exit=0

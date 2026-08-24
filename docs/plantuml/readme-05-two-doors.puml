@@ -1,0 +1,20 @@
+@startuml readme-05-two-doors
+' PlantUML equivalent of README.md "Slide 6 — Two doors + the balancing equation"
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+rectangle "SRC record" as SRC #eef4fa
+rectangle "Router"     as D #ffffff
+rectangle "written"    as W  #dff0d8
+rectangle "rejected\nenumerated reason code" as RJ #f2dede
+usecase  "Door 1 — migrated"     as M  #dff0d8
+usecase  "Door 2 — not migrated" as NM #f2dede
+
+SRC --> D
+D   --> W
+D   --> RJ
+W   --> M
+RJ  --> NM
+@enduml

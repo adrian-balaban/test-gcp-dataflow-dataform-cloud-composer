@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Shared by the extractor, loader and reconciliation apps. JDK-only apart from
+       Jackson (inherited from the parent) and commons-compress for tar, which the
+       JDK does not provide. Maven has no `api` scope: `compile` already leaks the
+       artefact/checksum types through to the consuming apps. -->
+
+  <parent>
+    <groupId>ro.mig</groupId>
+    <artifactId>mig-000001-1</artifactId>
+    <version>0.1.0</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>common</artifactId>
+  <name>common</name>
+
+  <build>
+    <plugins>
+      <!-- Maven treats a missing <resource> directory as "nothing to copy", not as an
+           error, so a build context without contracts/ produces a jar that compiles,
+           packages and then dies on first use with "artefacts.json is not on the
+           classpath". That is exactly what happened in Dockerfile.toolbox. Enforcing the
+           file's existence moves the failure to the build, where it belongs — and it runs
+           in the validate phase, so it still fires under -DskipTests, which is how the
+           images build. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>contract-manifest-must-be-present</id>
+            <phase>validate</phase>
+            <goals><goal>enforce</goal></goals>
+            <configuration>
+              <rules>
+                <requireFilesExist>
+                  <files>
+                    <file>${project.parent.basedir}/contracts/artefacts.json</file>
+                  </files>
+                  <message>
+contracts/artefacts.json is missing from the build context. apps/common embeds it as a
+classpath resource so Java and Python share one artefact-naming contract; without it the
+jar builds and then fails at runtime. If this is a container build, COPY contracts/ into
+the Maven stage.
+                  </message>
+                </requireFilesExist>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <resources>
+      <!-- The cross-language contract travels with the jar. The resource directory is
+           contracts/ itself rather than a copy, so there is exactly one artefacts.json
+           in the repo and `mvn package` cannot embed a stale variant of it. -->
+      <resource>
+        <directory>${project.basedir}/../../contracts</directory>
+        <includes>
+          <include>artefacts.json</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+    </dependency>
+    <!--
+      kafka-clients is only needed at compile time here, for the OAUTHBEARER
+      AuthenticateCallbackHandler the mock and recon share (GcpTokenOauthCallbackHandler).
+      Both consuming apps bundle kafka-clients themselves via their own poms, so this is
+      `provided` — it is on the classpath for javac but never packed into common.jar,
+      avoiding a duplicate at runtime. Version inherited from the parent dependencyManagement
+      (kafka.version=3.7.1).
+    -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>

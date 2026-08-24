@@ -1,0 +1,56 @@
+@startuml readme-02-pipeline-end-to-end
+' PlantUML equivalent of README.md "Slide 2 — The pipeline, end to end"
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam rectangle {
+    FontColor #1b1b1b
+}
+skinparam database {
+    BackgroundColor #fcf8e3
+    BorderColor #8a6d3b
+    FontColor #1b1b1b
+}
+
+rectangle "Extraction (Other Team)" as E #fdf6f6 {
+    rectangle "Mainframe"     as MF  #f2dede
+    rectangle "Extractor App" as XA  #f2dede
+    database  "File Storage"  as FS1
+}
+
+rectangle "Transformation + Reconciliation (Our Team, GCP)" as TR #f5fbf5 {
+    rectangle "Dataflow\nFile Processor"       as FP  #dff0d8
+    database  "BigQuery\nExtraction"           as BQ1
+    rectangle "Dataform\nSQL Transformation"   as DF  #dff0d8
+    database  "BigQuery\nTransformation"       as BQ2
+    rectangle "Dataflow\nData Enrichment"      as EN  #dff0d8
+    rectangle "Dataflow\nJSON Producer"        as JP  #dff0d8
+    database  "File Storage "                  as FS2
+    rectangle "Cloud Composer"                 as CC  #dff0d8
+    rectangle "Reconciliation\nServices"       as RS  #dff0d8
+    rectangle "Migrability /\nReconciliability reports" as RPT #dff0d8
+}
+
+rectangle "Load (Other Team)" as L #fdf6f6 {
+    rectangle "Loader App"    as LA #f2dede
+    rectangle "Target System" as VC #f2dede
+}
+
+MF  --> XA
+XA  --> FS1
+FS1 --> FP
+FP  --> BQ1
+BQ1 --> DF
+DF  --> BQ2
+BQ2 --> EN
+EN  --> JP
+JP  --> FS2
+RS  --> RPT
+FS2 --> LA
+LA  --> VC : Loader APIs
+
+CC ..> FP : orchestrates
+CC ..> DF : orchestrates
+CC ..> EN : orchestrates
+CC ..> JP : orchestrates
+@enduml

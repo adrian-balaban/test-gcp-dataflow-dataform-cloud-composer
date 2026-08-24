@@ -1,0 +1,24 @@
+=== run id: initial-20260804-163113 ===
+
+=== landing bucket (extraction lane) ===
+gs://mig-000001-1-dev-landing/extraction/initial-20260804-163113/ACCOUNT.FLG
+gs://mig-000001-1-dev-landing/extraction/initial-20260804-163113/ACCOUNT.tar.gz.pgp
+
+=== json-out bucket (TARGET JSON batches) ===
+     17485  2026-08-04T16:32:01Z  gs://mig-000001-1-dev-json-out/json/initial-20260804-163113/ACCOUNT.00000.json
+TOTAL: 1 objects, 17485 bytes (17.08kiB)
+
+=== recon bucket — extraction artefacts republished ===
+gs://mig-000001-1-dev-recon/extraction/initial-20260804-163113/ACCOUNT.CHS
+gs://mig-000001-1-dev-recon/extraction/initial-20260804-163113/ACCOUNT.ERR
+gs://mig-000001-1-dev-recon/extraction/initial-20260804-163113/ACCOUNT.RPT
+
+=== recon bucket — load artefacts ===
+gs://mig-000001-1-dev-recon/load/initial-20260804-163113/ACCOUNT.CHS
+gs://mig-000001-1-dev-recon/load/initial-20260804-163113/ACCOUNT.ERR
+gs://mig-000001-1-dev-recon/load/initial-20260804-163113/ACCOUNT.FLG
+gs://mig-000001-1-dev-recon/load/initial-20260804-163113/ACCOUNT.RPT
+
+=== recon bucket — reports ===
+gs://mig-000001-1-dev-recon/reconciliation/initial-20260804-163113/reconciliation-report.html
+gs://mig-000001-1-dev-recon/reconciliation/initial-20260804-163113/reconciliation-report.json
