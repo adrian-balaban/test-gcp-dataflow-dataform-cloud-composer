@@ -1,0 +1,22 @@
+=== run id: initial-20260804-163113 ===
+
+=== row counts per table (this run) ===
+tbl,n
+account_curated,42
+account_enriched,42
+account_src,42
+account_target,40
+reject_log,6
+
+=== run_ledger (balancing equation as recorded by the pipeline) ===
+src_read,target_written,excluded,rejected,duplicates,balanced
+76,42,10,4,20,true
+
+=== reject reason codes (this run) ===
+stage,reason,n
+map,MAP_UNMAPPED_ENUM_VALUE,1
+parse,PARSE_BAD_DATE,1
+parse,PARSE_BAD_NUMERIC,1
+parse,PARSE_INVALID_JSON,1
+parse,PARSE_SHORT_RECORD,1
+schema,SCHEMA_INVALID,1

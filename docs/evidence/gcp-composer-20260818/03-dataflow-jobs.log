@@ -1,0 +1,52 @@
+# Dataflow jobs launched by the DAG's KubernetesPodOperator pods
+#
+# The point of this file: the pipelines ran on the *managed runner*, not in-process.
+# Three jobs per DAG run — file_processor, data_enrichment, json_producer.
+
+NAME: beamapp-root-0818220013-760024-phxic6k3
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818215532-199858-idfqw2e7
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818215005-435993-usqpxj0m
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818213030-957469-hf4p6cnb
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818212559-091426-mt1fgiod
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818212027-196668-ztznmq29
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818201715-102116-mo39t529
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818201248-340609-05elsbrl
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818200730-533908-jtjj44rx
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818194747-137163-u8imd25u
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818194253-575602-tjvlbopj
+STATE: Done
+CREATE_TIME: 
+
+NAME: beamapp-root-0818193743-532119-ody44fyr
+STATE: Done
+CREATE_TIME: 

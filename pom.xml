@@ -1,0 +1,144 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    MIG 000001-1 — Java apps. Maven is the sole Java build.
+
+    Five modules, JDK 25 target via maven.compiler.release below. The runtime images
+    (Dockerfile.javaapp, Dockerfile.toolbox, apps/target-system-mock/Dockerfile) ship a
+    matching JRE 25, so the compiled class-file version and the runtime agree.
+
+      mvn -q package        # all five modules
+      mvn -q -pl apps/recon-service -am package
+
+    The three apps the local run shells out to (extractor, loader, recon) are
+    packaged as self-contained jars at apps/<app>/target/<app>.jar, which is what
+    local/scripts/run_pipeline.py invokes with `java -jar`.
+  -->
+
+  <groupId>ro.mig</groupId>
+  <artifactId>mig-000001-1</artifactId>
+  <version>0.1.0</version>
+  <packaging>pom</packaging>
+  <name>mig-000001-1</name>
+
+  <modules>
+    <module>apps/common</module>
+    <module>apps/extractor-app</module>
+    <module>apps/loader-app</module>
+    <module>apps/recon-service</module>
+    <module>apps/target-system-mock</module>
+  </modules>
+
+  <properties>
+    <maven.compiler.release>25</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jackson.version>2.17.2</jackson.version>
+    <commons-compress.version>1.27.1</commons-compress.version>
+    <!--
+      4.2.1, not 3.7.x: kafka-clients 3.7's OAuthBearerSaslClientCallbackHandler calls
+      Subject.getSubject(AccessControlContext), which JDK 24+ answers with
+      UnsupportedOperationException ("getSubject is not supported") now that the Security
+      Manager is gone. Every SASL_SSL/OAUTHBEARER connection then dies in the handshake and
+      surfaces to the caller only as "Timeout expired while fetching topic metadata"
+      (2026-08-23, recon on the DAG). 4.x uses Subject.current() instead. This project
+      compiles and runs on JDK 25, so the client has to be a JDK-25-clean one.
+    -->
+    <kafka.version>4.2.1</kafka.version>
+    <slf4j.version>1.7.36</slf4j.version>
+    <junit.version>5.10.3</junit.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
+      </dependency>
+      <!--
+        kafka-clients is used by target-system-mock (publishes confirmations on 201) and
+        recon-service (consumes them). Pinned once here so both apps stay on the same
+        client version as the broker they talk to. Pure client, no server — shaded into
+        each app's self-contained jar.
+      -->
+      <dependency>
+        <groupId>org.apache.kafka</groupId>
+        <artifactId>kafka-clients</artifactId>
+        <version>${kafka.version}</version>
+      </dependency>
+      <!--
+        kafka-clients logs through SLF4J, and with no binder on the classpath it prints
+        "Defaulting to no-operation (NOP) logger implementation" and swallows everything
+        else. That is how a SASL handshake failure reaches an operator as nothing but
+        "TimeoutException: Timeout expired while fetching topic metadata" — the symptom,
+        with the cause discarded (2026-08-23, recon on the DAG). slf4j-simple writes the
+        client's own WARN/ERROR lines to stderr, which for a KubernetesPodOperator task is
+        the Airflow log an operator is already reading.
+      -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- Inherited by every module, so Jackson and JUnit 5 are not repeated per pom. -->
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+          <configuration>
+            <compilerArgs>
+              <arg>-Xlint:all</arg>
+              <arg>-Xlint:-serial</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.4.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.5.3</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

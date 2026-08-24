@@ -1,0 +1,3 @@
+▶ Dataform repository: projects/mig-000001-1-dev/locations/europe-west1/repositories/mig-000001-1
+▶ no git remote — validating dataform/ with a local compile
+✓ dataform/ compiles clean. Execution happens via run_dataform.py (BQ_TARGET=real).

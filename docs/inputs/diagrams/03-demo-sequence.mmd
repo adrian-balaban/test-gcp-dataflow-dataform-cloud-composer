@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant Gen as Synthetic Harness
+    participant TDS as TDS (SRC/TARGET)
+    participant Eng as Transformation Engine
+    participant RJ as Reject File
+    participant K as Kafka Stub
+    participant Rec as Reconciliation
+
+    Gen->>TDS: SRC records (.DAT + JSON + malformed + dupes)
+    TDS->>Eng: parsed SRC
+    Eng->>RJ: unparseable / unmappable records + reason codes
+    Eng->>Eng: filter corporate/private-bank
+    Eng->>Eng: map + transform SRC → TARGET
+    Eng->>Eng: checkpoint per batch
+    Eng->>K: emit TARGET in 200-batches
+    Eng->>Rec: SRC counts + keys (in), excluded, rejected
+    K->>Rec: TARGET counts + keys (out)
+    Rec-->>Gen: balancing report — SRC = written + excluded + rejected + dupes

@@ -1,0 +1,103 @@
+# Mapping — project1 (retail account migration)
+#
+# The SRC→TARGET transformation is declarative configuration, not code. Adding a
+# migration project means adding a file like this one plus its TDS definitions — and
+# nothing else. `make verify-project2` enforces that.
+
+project: project1
+
+source_tds: contracts/tds/tds-src-project1.def
+target_tds: contracts/tds/tds-target-project1.def
+target_schema: contracts/schemas/target-account.schema.json
+
+source:
+  record: ACCOUNT
+  # fixed = COBOL copybook fixed-width | csv = delimited. Switchable without code changes.
+  layout: fixed
+
+target:
+  record: TARGET_SYSTEM_ACCOUNT
+
+# The stable deterministic account key — the join key reconciliation counts on.
+# Idempotency is count-then-DELETE per run_id, not this key (D2/D3).
+account_key: [ACCT_ID]
+
+# CORP/PRIV records are no longer filtered by the engine (D1 — two doors only). If a
+# contract genuinely should not migrate a client type, that is a source-feed concern
+# (don't extract it), not an engine stage.
+
+# Where the JSON Data Producer reads from, once Dataform has run the SQL transformation
+# and the enrichment pipeline has joined reference data.
+#
+# `aliases` is the bridge between the two halves of the lane: the mapping rules below
+# address SRC-TDS field names, while the curated table uses SQL-idiomatic column names.
+# Declaring the correspondence here keeps a project's whole contract in one file — the
+# alternative was to re-encode the field mapping a second time in SQL.
+curated:
+  table: account_enriched
+  aliases:
+    ACCT_ID: account_id
+    CUST_ID: customer_id
+    PRODUCT_CODE: product_code
+    CURRENCY: currency
+    OPEN_DATE: opened_on
+    STATUS: status_code
+    BALANCE: balance_amount
+    SEGMENT: segment
+    BRANCH: branch
+    RISK_RATING: risk_rating
+    # Added by the Data Enrichment pipeline, not present in the source record.
+    BRANCH_NAME: branch_name
+
+mappings:
+  - target: accountId
+    from: ACCT_ID
+    transform: trim
+  - target: customerId
+    from: CUST_ID
+    transform: trim
+  - target: productCode
+    from: PRODUCT_CODE
+    transform: trim
+  - target: currency
+    from: CURRENCY
+    transform: upper
+  - target: openedOn
+    from: OPEN_DATE
+    transform: to_iso_date
+  - target: status
+    from: STATUS
+    transform: map_enum
+    values:
+      A: ACTIVE
+      C: CLOSED
+      D: DORMANT
+  - target: balanceAmount
+    from: BALANCE
+    transform: to_decimal
+  - target: balanceCcy
+    from: CURRENCY
+    transform: upper
+  # The TARGET TDS puts these under $.attributes.*, so the nested object is assembled
+  # from the paths rather than passed through as an opaque blob.
+  - target: segment
+    from: SEGMENT
+    transform: passthrough
+  - target: branch
+    from: BRANCH
+    transform: passthrough
+  - target: riskRating
+    from: RISK_RATING
+    transform: passthrough
+  - target: branchName
+    from: BRANCH_NAME
+    transform: passthrough
+
+batch:
+  # Fixed by the Loader contract — batches of 200.
+  size: 200
+
+reject:
+  on_parse_error: reject      # reject | fail_run
+  on_mapping_error: reject
+  on_schema_error: reject

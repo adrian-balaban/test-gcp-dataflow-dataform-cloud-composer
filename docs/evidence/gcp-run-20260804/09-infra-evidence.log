@@ -1,0 +1,30 @@
+=== Composer environment ===
+projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer	RUNNING	composer-2.9.7-airflow-2.9.3	gs://europe-west1-mig-composer-8bef5f9c-bucket/dags
+
+=== DAGs in the Composer DAG bucket ===
+gs://europe-west1-mig-composer-8bef5f9c-bucket/dags/
+
+gs://europe-west1-mig-composer-8bef5f9c-bucket/dags/:
+gs://europe-west1-mig-composer-8bef5f9c-bucket/dags/
+gs://europe-west1-mig-composer-8bef5f9c-bucket/dags/.gitkeep
+gs://europe-west1-mig-composer-8bef5f9c-bucket/dags/airflow_monitoring.py
+gs://europe-west1-mig-composer-8bef5f9c-bucket/dags/mig_000001_1.py
+
+=== Managed Kafka cluster + topic ===
+mig-kafka	ACTIVE
+ERROR: (gcloud.managed-kafka.topics.list) unrecognized arguments: --cluster (did you mean '--filter'?) 
+
+To search the help text of gcloud commands, run:
+  gcloud help -- SEARCH_TERMS
+
+=== Dataflow Flex Template images in Artifact Registry ===
+Listing items under project mig-000001-1-dev, location europe-west1, repository mig-dataflow.
+
+europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment	sha256:ed56c35a04c4a08476906d6077dce4c4cde43f66854a3ade04f461c44f39a763
+europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor	sha256:a8d5a60cf13afd4dc3a185531627ed9d936b5c5e28d2d3f2b2bbd996d948131e
+europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer	sha256:01e9e360770012c07e257722d8997a3584dff0b65b651947837d43639de61ca8
+
+=== Flex Template spec JSONs in GCS ===
+gs://mig-000001-1-dev-dataflow-templates/data-enrichment.json
+gs://mig-000001-1-dev-dataflow-templates/file-processor.json
+gs://mig-000001-1-dev-dataflow-templates/json-producer.json

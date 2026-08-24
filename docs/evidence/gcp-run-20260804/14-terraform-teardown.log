@@ -1,0 +1,145 @@
+[0m[1mmodule.kafka.google_managed_kafka_topic.target[0]: Destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka/topics/target-system-target][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_topic.target[0]: Destruction complete after 0s[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 1m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 1m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 1m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 1m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 1m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 1m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 1m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 1m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 1m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 1m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 1m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 1m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 2m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 2m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 2m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 2m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 2m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 2m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 2m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 2m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 2m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 2m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 2m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 2m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 3m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 3m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 3m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 3m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 3m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 3m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 3m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 3m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 3m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 3m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 3m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 3m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 4m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 4m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 4m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 4m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 4m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 4m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 4m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 4m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 4m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 4m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 4m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 4m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 5m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 5m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 5m10s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 5m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 5m20s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 5m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 5m30s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 5m31s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 5m40s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 5m41s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 5m50s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 5m51s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer, 6m0s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 6m1s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Destruction complete after 6m5s[0m
+[0m[1mmodule.composer.google_project_service.gke[0]: Destroying... [id=mig-000001-1-dev/container.googleapis.com][0m[0m
+[0m[1mmodule.composer.google_project_iam_member.composer_service_agent_ext[0]: Destroying... [id=mig-000001-1-dev/roles/composer.ServiceAgentV2Ext/serviceAccount:service-818861037691@cloudcomposer-accounts.iam.gserviceaccount.com][0m[0m
+[0m[1mmodule.composer.google_project_service.gke[0]: Destruction complete after 0s[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 6m11s elapsed][0m[0m
+[0m[1mmodule.composer.google_project_iam_member.composer_service_agent_ext[0]: Destruction complete after 10s[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 6m21s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 6m31s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 6m41s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 6m51s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 7m1s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 7m11s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 7m21s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 7m31s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 7m41s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 7m51s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 8m1s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 8m11s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 8m21s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 8m31s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 8m41s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 8m51s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 9m1s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 9m11s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 9m21s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 9m31s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 9m41s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Still destroying... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka, 9m51s elapsed][0m[0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Destruction complete after 9m57s[0m
+[0m[1m[32m
+Apply complete! Resources: 0 added, 0 changed, 5 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mbuckets = {
+  "dataflow-temp" = "mig-000001-1-dev-dataflow-temp"
+  "dataflow-templates" = "mig-000001-1-dev-dataflow-templates"
+  "json-out" = "mig-000001-1-dev-json-out"
+  "landing" = "mig-000001-1-dev-landing"
+  "recon" = "mig-000001-1-dev-recon"
+}
+composer_airflow_uri = ""
+composer_dag_bucket = ""
+dataflow_registry = "europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow"
+dataform_repository = "mig-000001-1"
+datasets = {
+  "bq_extraction" = "bq_extraction"
+  "bq_recon" = "bq_recon"
+  "bq_transformation" = "bq_transformation"
+}
+env_file = <<EOT
+TARGET_PROFILE=real
+GCP_PROJECT=mig-000001-1-dev
+GCS_LANDING_BUCKET=mig-000001-1-dev-landing
+GCS_JSON_BUCKET=mig-000001-1-dev-json-out
+GCS_RECON_BUCKET=mig-000001-1-dev-recon
+BQ_TARGET=real
+KAFKA_SECURITY_PROTOCOL=SASL_SSL
+
+EOT
+kafka_bootstrap = ""
+service_accounts = {
+  "composer-runner" = "composer-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+  "dataflow-worker" = "dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com"
+  "dataform-runner" = "dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+  "loader-app" = "loader-app@mig-000001-1-dev.iam.gserviceaccount.com"
+  "recon-service" = "recon-service@mig-000001-1-dev.iam.gserviceaccount.com"
+}
+terraform exit=0

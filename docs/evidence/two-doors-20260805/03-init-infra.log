@@ -1,0 +1,14 @@
+.venv/bin/python local/scripts/init_infra.py
+init-infra — creating buckets, BigQuery datasets/tables, Kafka topic
+GCS (fake-gcs-server):
+  ✓ bucket mig-landing
+  ✓ bucket mig-json-out
+  ✓ bucket mig-recon
+BigQuery (goccy emulator):
+  ✓ dataset bq_extraction
+  ✓ dataset bq_transformation
+  ✓ dataset bq_recon
+  ✓ table bq_recon.run_ledger
+Kafka (redpanda @ localhost:19092):
+  ✓ topic target-system-target (exists)
+init-infra complete.

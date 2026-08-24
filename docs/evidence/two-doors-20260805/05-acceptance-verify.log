@@ -1,0 +1,13 @@
+.venv/bin/python -m tests.acceptance
+verify — run initial-20260805-163903
+
+  ✓ 1. balancing equation closes (whole lane): 526 = 400 migrated + 126 not migrated
+  ✓ 2. excluded count matches the harness exactly: 100 == 100 seeded
+  ✓ 3. seeded malformed records rejected with correct reason codes: 6 reason codes, all matching: MAP_UNMAPPED_ENUM_VALUE, PARSE_BAD_DATE, PARSE_BAD_NUMERIC, PARSE_INVALID_JSON, PARSE_SHORT_RECORD, SCHEMA_INVALID
+  ✓ 4. every TARGET document validates against the JSON Schema: 400/400 documents valid
+  ✓ 5. TARGET emitted in 200-element batches: 2 batches of 200 (2 GCS files, 9280 Kafka messages on the topic)
+  ✓ 6. every key appears exactly once in TARGET: 400 keys, each present exactly once, 0 orphans
+  ✓ 7. all five artefact types present in both lanes: extraction 2 + 3, load 4; .FLG vouches for 5
+  ✓ 8. .CHS checksums verify on both sides: extraction 2 entries parsed, load 2 files re-hashed and matching
+
+VERIFY PASSED — all 8 acceptance criteria hold for run initial-20260805-163903.

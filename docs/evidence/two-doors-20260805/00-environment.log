@@ -1,0 +1,7 @@
+# Environment
+date          : 2026-08-05T19:30:59+03:00
+git HEAD      : 0442fde
+python        : Python 3.11.15
+java          : openjdk version "25.0.4" 2026-07-21
+podman        : podman version 4.9.3
+gcloud project: mig-000001-1-dev

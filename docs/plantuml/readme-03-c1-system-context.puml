@@ -1,0 +1,41 @@
+@startuml readme-03-c1-system-context
+' PlantUML equivalent of README.md "Slide 3 — C1, System Context"
+' Uses the C4-PlantUML stdlib shipped with PlantUML.
+!pragma layout smetana
+!include <C4/C4_Context>
+
+title C1 — System Context: Mainframe -> Target System Migration Platform
+
+Person(MO,  "Migration Operator",      "Triggers and monitors migration runs")
+Person(AUD, "Auditor / Data Owner",    "Needs proof that every source record was accounted for")
+Person(ENG, "Migration Engineer",      "Onboards a new project by editing contracts only")
+Person(SRE, "Platform / SRE Operator", "Provisions, scales and tears down the environment")
+Person(LDT, "Loader Team",             "Owns the Load lane; consumes the TARGET JSON handoff")
+
+System(SYS, "Mainframe -> Target System Migration Platform", "Extracts mainframe TDS files, routes every record through the two-door engine (parse->map->schema), loads survivors into Target System and BigQuery, proves src_read == migrated + not_migrated, and reconciles the load against Target System's confirmation streams [JSON/protobuf, Kafka]")
+
+System_Ext(MF,   "Mainframe / Legacy Core",   "System of record being migrated away from")
+System_Ext(VC,   "Target System",             "Target banking core (mocked locally by target-system-mock). Publishes confirmation/audit streams [JSON or protobuf]")
+System_Ext(DS,   "Downstream Consumers",      "Consume enriched account JSON events")
+System_Ext(PLAT, "Google Cloud Platform",     "GCS, BigQuery, Dataflow, Composer, Dataform, Secret Manager")
+System_Ext(SCM,  "Source Control",            "Holds contracts/, pipelines, Dataform models, Terraform")
+System_Ext(KMS,  "Key & Secret Management",   "PGP keypairs, Target System creds, Git tokens")
+System_Ext(MON,  "Monitoring & Alerting",     "Receives run outcomes and balance-failure alerts")
+
+Rel(MO,  SYS, "triggers a run, reads balance report", "Airflow UI / CLI")
+Rel(ENG, SYS, "adds TDS layouts, mappings, JSON Schemas", "contracts/, Git")
+Rel(AUD, SYS, "reads run_ledger, .RPT and recon report", "BigQuery / GCS")
+Rel(SRE, SYS, "provisions and tears down", "Terraform, CLI")
+Rel(SYS, LDT, "hands off TARGET JSON + .RPT", "GCS")
+
+Rel(MF,  SYS, "TDS fixed-width files + .FLG/.CHS artefacts", "PGP over SFTP/GCS")
+Rel(SYS, VC,  "upserts accounts, idempotent", "HTTPS/JSON, X-Idempotency-Key")
+Rel(VC,  SYS, "confirmation / audit events as streams", "JSON or protobuf, Kafka")
+Rel(SYS, DS,  "publishes enriched account JSON", "Kafka")
+Rel(SYS, PLAT,"runs pipelines, stores state and evidence", "GCP APIs")
+Rel(SCM, SYS, "contracts, pipeline code, IaC", "Git")
+Rel(KMS, SYS, "decryption keys, credentials", "Secret Manager")
+Rel(SYS, MON, "run outcome, balance failures", "logs / metrics")
+
+SHOW_LEGEND()
+@enduml

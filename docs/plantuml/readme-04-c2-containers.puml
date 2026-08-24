@@ -1,0 +1,72 @@
+@startuml readme-04-c2-containers
+' PlantUML equivalent of README.md "Slide 4 — C2, Containers"
+!pragma layout smetana
+!include <C4/C4_Container>
+
+title C2 — Containers: Mainframe -> Target System Migration Platform
+
+Person(MO, "Migration Operator", "")
+System_Ext(MF, "Mainframe / Legacy Core", "")
+System_Ext(VC, "Target System", "")
+System_Ext(DS, "Downstream Consumers", "")
+
+System_Boundary(BOUNDARY, "Mainframe -> Target System Migration Platform") {
+    Container(DAG,       "Migration Orchestrator", "Airflow DAG on Cloud Composer", "composer/dags/mig_000001_1.py — sequences the lanes, runs assert_run_balanced against run_ledger")
+    Container(CONTRACTS, "Contract Store", "YAML / JSON Schema / copybooks in Git", "contracts/ — TDS layouts, field mappings, JSON Schemas, reference data. The only thing edited to onboard a project")
+    Container(EXT,       "Extractor App", "Java, Maven", "apps/extractor-app — pulls TDS + artefacts from the mainframe lane, writes .FLG/.CHS/.ERR/.RPT")
+    Container(FP,        "File Processor Pipeline", "Apache Beam / Python — Direct or Dataflow runner", "pipelines/file_processor — the two-door engine: parse->map->schema; writes run_ledger")
+    Container(EN,        "Data Enrichment Pipeline", "Apache Beam / Python", "pipelines/data_enrichment — joins reference data, derives curated attributes")
+    Container(JP,        "JSON Producer Pipeline", "Apache Beam / Python", "pipelines/json_producer — emits schema-valid account JSON to GCS and Kafka")
+    Container(LOAD,      "Loader App", "Java, Maven", "apps/loader-app — posts survivors to Target System keyed on accountKey, writes .RPT")
+    Container(RECON,     "Recon Service", "Java, Maven", "apps/recon-service — rebuilds the balancing equation, consumes Target System confirmation streams, renders the reconciliation report")
+    Container(DF,        "Curation Transforms", "Dataform SQLX on BigQuery", "dataform/definitions — account_src -> account_curated")
+    Container(MOCK,      "Target System Mock", "Java HTTP service — local only", "apps/target-system-mock — stands in for Target System in the podman-compose stack")
+
+    ContainerDb(LAKE, "Object Store", "GCS — landing, json-out, recon, dataflow-temp, dataflow-templates", "Files and artefacts on both lanes")
+    ContainerDb(BQ,   "Analytics Warehouse", "BigQuery", "account_src, account_curated, run_ledger — the evidence tables")
+    ContainerQueue(BUS, "Event Bus", "Kafka / Redpanda", "Enriched account JSON (out); Target System confirmation streams (in)")
+    ContainerDb(SEC,  "Secret Store", "Secret Manager", "PGP keys, Git tokens, endpoints")
+}
+
+Rel(MO, DAG, "triggers / monitors", "Airflow UI")
+Rel(MF, EXT, "TDS + artefacts", "PGP over SFTP")
+
+Rel(DAG, FP,    "launches", "KubernetesPodOperator")
+Rel(DAG, EN,    "launches")
+Rel(DAG, JP,    "launches")
+Rel(DAG, EXT,   "launches")
+Rel(DAG, LOAD,  "launches")
+Rel(DAG, RECON, "launches")
+Rel(DAG, DF,    "invokes compile+run", "Dataform")
+Rel(DAG, BQ,    "assert_run_balanced", "parameterized SQL")
+
+Rel_D(CONTRACTS, FP,  "layouts, mappings, schemas", "read at startup")
+Rel_D(CONTRACTS, EN,  "reference data")
+Rel_D(CONTRACTS, JP,  "JSON Schemas")
+Rel(CONTRACTS,   EXT, "artefact naming + BQ columns", "artefacts.json, read at startup")
+
+Rel(EXT,  LAKE, "writes TDS + .FLG/.CHS/.ERR/.RPT")
+Rel(LAKE, FP,   "reads decrypted TDS")
+Rel(FP,   BQ,   "writes rows + run_ledger", "load jobs / insertAll")
+Rel(FP,   LAKE, "writes artefacts")
+Rel(BQ,   EN,   "reads account_src")
+Rel(EN,   BQ,   "writes enriched rows")
+Rel(BQ,   JP,   "reads curated")
+Rel(JP,   LAKE, "writes account JSON")
+Rel(JP,   BUS,  "publishes")
+Rel(BUS,  DS,   "consumes")
+Rel(BUS,  RECON,"confirmations", "JSON/protobuf")
+Rel(LAKE, LOAD, "reads account JSON")
+Rel(LOAD, VC,   "upsert account", "HTTPS/JSON")
+Rel(VC,   BUS,  "confirmation / audit events", "JSON or protobuf")
+Rel(LOAD, MOCK, "upsert account", "HTTPS/JSON — local")
+Rel(LOAD, LAKE, "writes .RPT")
+Rel(BQ,   RECON,"run_ledger + record_lineage + key-level joins", "BigQuery REST")
+Rel(RECON,LAKE, "writes reconciliation report")
+Rel(DF,   BQ,   "transforms in place", "SQLX")
+Rel_D(SEC, EXT, "PGP keys, credentials")
+Rel_D(SEC, FP,  "credentials")
+Rel_D(SEC, DF,  "Git token")
+
+SHOW_LEGEND()
+@enduml

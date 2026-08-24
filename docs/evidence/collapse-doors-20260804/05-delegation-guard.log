@@ -1,0 +1,41 @@
+Delegation guard — replacing the hand-run mutation check with a real test.
+
+test_beam_dofn_actually_delegates_to_the_shared_door stubs route_intake to return a
+known-wrong answer and asserts the DoFn's output changes with it. That is only possible
+if the delegation is real, so it catches a duplicate implementation that the
+output-comparison test (test_beam_intake_and_router_agree_on_every_record) cannot.
+
+REGRESSION SIMULATED: ParseAndFilterFn.process inlines its own copy of doors 1-2,
+behaviourally identical to route_intake, with `except Exception: outcome =
+route_intake(...)` as a fallback.
+
+$ .venv/bin/python -m pytest tests/test_engine.py -q
+
+E  AssertionError: ParseAndFilterFn ignored the stubbed route_intake and routed the
+   record itself — it has grown a second implementation of the parse/filter doors,
+   which is the drift this refactor exists to prevent
+E  assert None == 'excluded'
+E   +  where None = getattr(('5551f11728f2bdd063674462659e002a', {'fields': {...}}), 'tag', None)
+
+tests/test_engine.py:349: AssertionError
+FAILED tests/test_engine.py::test_beam_dofn_actually_delegates_to_the_shared_door
+1 failed, 24 passed
+
+Reverted: 25/25 green.
+
+--------------------------------------------------------------------------------
+TRAP HIT WHILE WRITING THIS TEST — worth recording, because the first version was
+WRONG and passed against the regression above.
+
+The first draft fed the DoFn an unparseable junk line. That looked fine (the stub was
+reached on clean code, and the test passed) but was useless: an inlined duplicate throws
+on junk input, hits its `except` fallback, calls route_intake anyway, and the stub's
+sentinel appears regardless. The test asserted a property it could not actually detect.
+
+Fix: drive the DoFn with a VALID, parseable record taken from the seeded harness. An
+inlined duplicate then handles it entirely on its own and never reaches any fallback,
+so the sentinel is absent and the assertion fires.
+
+This is exactly the "passes for the wrong reason" failure mode that made the original
+sabotage-and-revert check worth doing. A test asserting "these two things are wired
+together" must be verified against a realistic break, not just observed to pass.

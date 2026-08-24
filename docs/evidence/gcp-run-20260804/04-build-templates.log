@@ -1,0 +1,472 @@
+▶ building file-processor (module=file_processor) → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:latest
+STEP 1/9: FROM docker.io/apache/beam_python3.11_sdk:2.72.0
+STEP 2/9: ARG MIG_MODULE=file_processor
+--> Using cache cce6e91e5fd2facced76beb1e6778579fce4ee9b199999e43c5e6ed7bbb1da05
+--> cce6e91e5fd2
+STEP 3/9: ENV MIG_MODULE=${MIG_MODULE}
+--> Using cache feb3a2958b0bf6dbdc79744b5d8207120f9038760138a685e546db85746c1336
+--> feb3a2958b0b
+STEP 4/9: WORKDIR /app
+--> Using cache 568b6b1f42adf0ca6e8323aa7252fa687d4a4fcd3fe3284727c0272e27639ffb
+--> 568b6b1f42ad
+STEP 5/9: COPY requirements.txt .
+--> Using cache c93e90c0a4fce021da398392bf850eb089cc6abbf7bed58961c2498fabf51634
+--> c93e90c0a4fc
+STEP 6/9: RUN pip install --no-cache-dir -r requirements.txt
+--> Using cache 73b6e6a824bddd61efafb1ebc353c06aa7dc369ce022c645615d53e7bee55ed2
+--> 73b6e6a824bd
+STEP 7/9: COPY pipelines/ ./pipelines/
+--> Using cache fe02d2fba516e02da59f757f719bb026a98c52438f5e861de4f1eddfffe536a9
+--> fe02d2fba516
+STEP 8/9: COPY contracts/ ./contracts/
+--> Using cache f5e0f4a8adb46543d39fa6da0463e04b078b737c6d3497c8cfb4bdd34af22a12
+--> f5e0f4a8adb4
+STEP 9/9: ENTRYPOINT ["sh", "-c", "python -m pipelines.${MIG_MODULE}.pipeline \"$@\"", "--"]
+--> Using cache b9d59116657a9f4cc07bba0777570965a5e9262f8065465e55ae7738cd7eb1af
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:latest
+--> b9d59116657a
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:latest
+b9d59116657a9f4cc07bba0777570965a5e9262f8065465e55ae7738cd7eb1af
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:latest
+Getting image source signatures
+Copying blob sha256:a98950bc395b99f0461541431b7a12315f986213c93cc0843d41dad71bee80bd
+Copying blob sha256:e5e3193cbe4c328a50b69a0eac366bf2095c39c209806eb3e1aff1d8b8920f59
+Copying blob sha256:6ade88c30b7763a3c0426fd9477f365eb4e0a93b8456d2e9ba83e50205820d8e
+Copying blob sha256:89e65b4493c66279973eb067f2a312f5965eac986552eb725936e48c4d39ae99
+Copying blob sha256:020887d160499960c5fcd27b487551d611d14da5158ab5c512e66e4bfa50d8e3
+Copying blob sha256:37b770cd9ac7cb228a2a2be346d41c359db528c76b673b777072db16b4304a02
+Copying blob sha256:4ec5e33e2b386e28d6b8ba8826ab20ad92789649ecff00ad6abf41209a2c45c3
+Copying blob sha256:ad4d627542b00f02807316a4a58ae2c995cc524a43b3e3df75227617a0d0f6f7
+Copying blob sha256:4331a1fafc2bd0f4a8eb16c7c62e9233359616c8798430d7012efc3ebff6374e
+Copying blob sha256:afae9252c37709b88048a8669936a9c61c1cdb0fd9a6c4a882bf5eca211f9d32
+Copying blob sha256:f820b3da06e51249b47b4a53489530791c88219f4738771c888c1b61406a869e
+Copying blob sha256:04d756c1ff21ccd97e3038075fc98d1793aa961e6760f67f1ba9e988da1919dd
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:2c7d3cc86aaf1101dd50660a84039325e31ab4ab476628749a49ee44f091aa17
+Copying blob sha256:9805a09bb943ea30a0db51ddc721ea5d68e480386743a5010a5e041e1d8c164b
+Copying blob sha256:781836a3d09e8c7741afff6609505290bccebc8b41a449b1a194c9ca9e13e64c
+Copying blob sha256:eb95a7ef40f03bbb9b9f3c8eae4511c2535a6cfba116a8b95175124b335e4dfb
+Copying config sha256:b9d59116657a9f4cc07bba0777570965a5e9262f8065465e55ae7738cd7eb1af
+Writing manifest to image destination
+▶ uploading spec → gs://mig-000001-1-dev-dataflow-templates/file-processor.json
+Copying file:///home/adrianb/.cache/podman-tmp/tmp.F3C5SejnFq/file-processor.json to gs://mig-000001-1-dev-dataflow-templates/file-processor.json
+  
+
+▶ building data-enrichment (module=data_enrichment) → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:latest
+STEP 1/9: FROM docker.io/apache/beam_python3.11_sdk:2.72.0
+STEP 2/9: ARG MIG_MODULE=file_processor
+--> Using cache cce6e91e5fd2facced76beb1e6778579fce4ee9b199999e43c5e6ed7bbb1da05
+--> cce6e91e5fd2
+STEP 3/9: ENV MIG_MODULE=${MIG_MODULE}
+--> Using cache feb3a2958b0bf6dbdc79744b5d8207120f9038760138a685e546db85746c1336
+--> feb3a2958b0b
+STEP 4/9: WORKDIR /app
+--> Using cache 568b6b1f42adf0ca6e8323aa7252fa687d4a4fcd3fe3284727c0272e27639ffb
+--> 568b6b1f42ad
+STEP 5/9: COPY requirements.txt .
+--> Using cache c93e90c0a4fce021da398392bf850eb089cc6abbf7bed58961c2498fabf51634
+--> c93e90c0a4fc
+STEP 6/9: RUN pip install --no-cache-dir -r requirements.txt
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_CHOWN: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_DAC_OVERRIDE: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_FOWNER: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_FSETID: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_KILL: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_NET_BIND_SERVICE: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_SETFCAP: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_SETGID: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_SETPCAP: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_SETUID: operation not permitted"
+time="2026-08-04T19:08:18+03:00" level=warning msg="can't raise ambient capability CAP_SYS_CHROOT: operation not permitted"
+Requirement already satisfied: apache-beam<3.0,>=2.60.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.72.0)
+Requirement already satisfied: google-cloud-storage>=2.18.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 7)) (2.19.0)
+Requirement already satisfied: google-cloud-bigquery>=3.25.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 8)) (3.40.0)
+Collecting confluent-kafka>=2.5.0 (from -r requirements.txt (line 11))
+  Downloading confluent_kafka-2.15.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (33 kB)
+Requirement already satisfied: PyYAML>=6.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 16)) (6.0.3)
+Requirement already satisfied: jsonschema>=4.23.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 17)) (4.26.0)
+Collecting python-gnupg>=0.5.2 (from -r requirements.txt (line 20))
+  Downloading python_gnupg-0.5.6-py2.py3-none-any.whl.metadata (2.1 kB)
+Requirement already satisfied: requests>=2.32.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 22)) (2.32.5)
+Requirement already satisfied: pytest>=8.3.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 25)) (8.4.2)
+Requirement already satisfied: cryptography<48.0.0,>=39.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (46.0.3)
+Requirement already satisfied: envoy-data-plane<0.3.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.2.6)
+Requirement already satisfied: fastavro<2,>=0.23.6 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.12.1)
+Requirement already satisfied: fasteners<1.0,>=0.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.20)
+Requirement already satisfied: grpcio!=1.48.0,!=1.59.*,!=1.60.*,!=1.61.*,!=1.62.0,!=1.62.1,!=1.66.*,!=1.67.*,!=1.68.*,!=1.69.*,!=1.70.*,<2,>=1.33.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.65.5)
+Requirement already satisfied: httplib2<0.32.0,>=0.8 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.31.1)
+Requirement already satisfied: jsonpickle<4.0.0,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.4.2)
+Requirement already satisfied: numpy<2.5.0,>=1.14.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.4.1)
+Requirement already satisfied: objsize<0.8.0,>=0.6.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.7.1)
+Requirement already satisfied: packaging>=22.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (25.0)
+Collecting pillow<13,>=12.1.1 (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4))
+  Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Requirement already satisfied: pymongo<5.0.0,>=3.8.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.16.0)
+Requirement already satisfied: proto-plus<2,>=1.7.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.27.0)
+Requirement already satisfied: protobuf!=4.0.*,!=4.21.*,!=4.22.0,!=4.23.*,!=4.24.*,<7.0.0.dev0,>=3.20.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (5.29.5)
+Requirement already satisfied: python-dateutil<3,>=2.8.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.9.0.post0)
+Requirement already satisfied: pytz>=2018.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2025.2)
+Requirement already satisfied: sortedcontainers>=2.4.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.4.0)
+Requirement already satisfied: typing-extensions>=3.7.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.15.0)
+Requirement already satisfied: zstandard<1,>=0.18.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.25.0)
+Requirement already satisfied: beartype<0.23.0,>=0.21.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.22.9)
+Requirement already satisfied: pyarrow<24.0.0,>=6.0.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (18.1.0)
+Requirement already satisfied: pyarrow-hotfix<1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.7)
+Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (2026.1.4)
+Requirement already satisfied: cachetools<7,>=3.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.2.4)
+Requirement already satisfied: google-api-core<3,>=2.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.29.0)
+Requirement already satisfied: google-apitools<0.5.32,>=0.5.31 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.5.31)
+Requirement already satisfied: google-auth<3,>=1.18.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.47.0)
+Requirement already satisfied: google-auth-httplib2<0.3.0,>=0.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.2.1)
+Requirement already satisfied: google-cloud-datastore<3,>=2.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.23.0)
+Requirement already satisfied: google-cloud-pubsub<3,>=2.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.34.0)
+Requirement already satisfied: google-cloud-bigquery-storage<3,>=2.6.3 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.36.0)
+Requirement already satisfied: google-cloud-core<3,>=2.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.5.0)
+Requirement already satisfied: google-cloud-bigtable<3,>=2.19.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.35.0)
+Requirement already satisfied: google-cloud-build<4,>=3.35.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.35.0)
+Requirement already satisfied: google-cloud-spanner<4,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.62.0)
+Requirement already satisfied: google-cloud-dlp<4,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.34.0)
+Requirement already satisfied: google-cloud-kms<4,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.9.0)
+Requirement already satisfied: google-cloud-language<3,>=2.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.19.0)
+Requirement already satisfied: google-cloud-secret-manager<3,>=2.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.26.0)
+Requirement already satisfied: google-cloud-videointelligence<3,>=2.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.18.0)
+Requirement already satisfied: google-cloud-vision<4,>=2 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.12.0)
+Requirement already satisfied: google-cloud-recommendations-ai<0.11.0,>=0.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.10.18)
+Requirement already satisfied: google-cloud-aiplatform<2.0,>=1.26.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.133.0)
+Requirement already satisfied: cloud-sql-python-connector<2.0.0,>=1.18.2 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.20.0)
+Requirement already satisfied: python-tds>=1.16.1 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.17.1)
+Requirement already satisfied: pg8000>=1.31.5 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.31.5)
+Requirement already satisfied: PyMySQL>=1.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.1.2)
+Requirement already satisfied: keyrings.google-artifactregistry-auth in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.1.2)
+Requirement already satisfied: orjson<4,>=3.9.7 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.11.5)
+Requirement already satisfied: regex>=2020.6.8 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2026.1.15)
+Requirement already satisfied: google-resumable-media>=2.7.2 in /usr/local/lib/python3.11/site-packages (from google-cloud-storage>=2.18.0->-r requirements.txt (line 7)) (2.8.0)
+Requirement already satisfied: google-crc32c<2.0dev,>=1.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-storage>=2.18.0->-r requirements.txt (line 7)) (1.8.0)
+Requirement already satisfied: aiofiles in /usr/local/lib/python3.11/site-packages (from cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (25.1.0)
+Requirement already satisfied: aiohttp in /usr/local/lib/python3.11/site-packages (from cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.13.3)
+Requirement already satisfied: dnspython>=2.0.0 in /usr/local/lib/python3.11/site-packages (from cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.8.0)
+Requirement already satisfied: cffi>=2.0.0 in /usr/local/lib/python3.11/site-packages (from cryptography<48.0.0,>=39.0.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.0.0)
+Requirement already satisfied: betterproto<3.0.0,>=2.0.0b3 in /usr/local/lib/python3.11/site-packages (from envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.0.0b7)
+Requirement already satisfied: grpclib<0.5.0,>=0.4.1 in /usr/local/lib/python3.11/site-packages (from betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.9)
+Requirement already satisfied: googleapis-common-protos<2.0.0,>=1.56.2 in /usr/local/lib/python3.11/site-packages (from google-api-core<3,>=2.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.72.0)
+Requirement already satisfied: grpcio-status<2.0.0,>=1.33.2 in /usr/local/lib/python3.11/site-packages (from google-api-core[grpc]<3.0.0,>=2.11.1->google-cloud-bigquery>=3.25.0->-r requirements.txt (line 8)) (1.65.5)
+Requirement already satisfied: oauth2client>=1.4.12 in /usr/local/lib/python3.11/site-packages (from google-apitools<0.5.32,>=0.5.31->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.1.3)
+Requirement already satisfied: six>=1.12.0 in /usr/local/lib/python3.11/site-packages (from google-apitools<0.5.32,>=0.5.31->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.17.0)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /usr/local/lib/python3.11/site-packages (from google-auth<3,>=1.18.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.2)
+Requirement already satisfied: rsa<5,>=3.1.4 in /usr/local/lib/python3.11/site-packages (from google-auth<3,>=1.18.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.9.1)
+Requirement already satisfied: google-cloud-resource-manager<3.0.0,>=1.3.3 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.16.0)
+Requirement already satisfied: google-genai<2.0.0,>=1.37.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.59.0)
+Requirement already satisfied: pydantic<3 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.12.5)
+Requirement already satisfied: docstring_parser<1 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.17.0)
+Requirement already satisfied: grpc-google-iam-v1<1.0.0,>=0.12.4 in /usr/local/lib/python3.11/site-packages (from google-cloud-bigtable<3,>=2.19.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.14.3)
+Requirement already satisfied: opentelemetry-api>=1.27.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.39.1)
+Requirement already satisfied: opentelemetry-sdk>=1.27.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.39.1)
+Requirement already satisfied: sqlparse>=0.4.4 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.5.5)
+Requirement already satisfied: grpc-interceptor>=0.15.4 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.15.4)
+Requirement already satisfied: opentelemetry-semantic-conventions>=0.43b0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.60b1)
+Requirement already satisfied: opentelemetry-resourcedetector-gcp>=1.8.0a0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.11.0a0)
+Requirement already satisfied: google-cloud-monitoring>=2.16.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.29.0)
+Requirement already satisfied: mmh3>=4.1.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (5.2.0)
+Requirement already satisfied: anyio<5.0.0,>=4.8.0 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.12.1)
+Requirement already satisfied: httpx<1.0.0,>=0.28.1 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.28.1)
+Requirement already satisfied: tenacity<9.2.0,>=8.2.3 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (8.5.0)
+Requirement already satisfied: websockets<15.1.0,>=13.0.0 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (15.0.1)
+Requirement already satisfied: distro<2,>=1.7.0 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.9.0)
+Requirement already satisfied: sniffio in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.3.1)
+Requirement already satisfied: h2<5,>=3.1.0 in /usr/local/lib/python3.11/site-packages (from grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.3.0)
+Requirement already satisfied: multidict in /usr/local/lib/python3.11/site-packages (from grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.7.0)
+Requirement already satisfied: hyperframe<7,>=6.1 in /usr/local/lib/python3.11/site-packages (from h2<5,>=3.1.0->grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.1.0)
+Requirement already satisfied: hpack<5,>=4.1 in /usr/local/lib/python3.11/site-packages (from h2<5,>=3.1.0->grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.1.0)
+Requirement already satisfied: pyparsing<4,>=3.0.4 in /usr/local/lib/python3.11/site-packages (from httplib2<0.32.0,>=0.8->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.3.1)
+Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.11/site-packages (from httpx<1.0.0,>=0.28.1->google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.0.9)
+Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.11/site-packages (from httpcore==1.*->httpx<1.0.0,>=0.28.1->google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.16.0)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.11/site-packages (from pydantic<3->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /usr/local/lib/python3.11/site-packages (from pydantic<3->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.41.5)
+Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.11/site-packages (from pydantic<3->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.2)
+Requirement already satisfied: pyasn1>=0.1.3 in /usr/local/lib/python3.11/site-packages (from rsa<5,>=3.1.4->google-auth<3,>=1.18.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.6.2)
+Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (25.4.0)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (0.37.0)
+Requirement already satisfied: rpds-py>=0.25.0 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (0.30.0)
+Requirement already satisfied: iniconfig>=1 in /usr/local/lib/python3.11/site-packages (from pytest>=8.3.0->-r requirements.txt (line 25)) (2.3.0)
+Requirement already satisfied: pluggy<2,>=1.5 in /usr/local/lib/python3.11/site-packages (from pytest>=8.3.0->-r requirements.txt (line 25)) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in /usr/local/lib/python3.11/site-packages (from pytest>=8.3.0->-r requirements.txt (line 25)) (2.19.2)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.11/site-packages (from cffi>=2.0.0->cryptography<48.0.0,>=39.0.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.23)
+Requirement already satisfied: importlib-metadata<8.8.0,>=6.0 in /usr/local/lib/python3.11/site-packages (from opentelemetry-api>=1.27.0->google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (8.7.1)
+Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.11/site-packages (from importlib-metadata<8.8.0,>=6.0->opentelemetry-api>=1.27.0->google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.23.0)
+Requirement already satisfied: scramp>=1.4.5 in /usr/local/lib/python3.11/site-packages (from pg8000>=1.31.5->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.4.8)
+Requirement already satisfied: asn1crypto>=1.5.1 in /usr/local/lib/python3.11/site-packages (from scramp>=1.4.5->pg8000>=1.31.5->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.5.1)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.8.0)
+Requirement already satisfied: propcache>=0.2.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.22.0)
+Requirement already satisfied: keyring in /usr/local/lib/python3.11/site-packages (from keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (25.7.0)
+Requirement already satisfied: SecretStorage>=3.2 in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.5.0)
+Requirement already satisfied: jeepney>=0.4.2 in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.9.0)
+Requirement already satisfied: jaraco.classes in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.4.0)
+Requirement already satisfied: jaraco.functools in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.4.0)
+Requirement already satisfied: jaraco.context in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.1.0)
+Requirement already satisfied: more-itertools in /usr/local/lib/python3.11/site-packages (from jaraco.classes->keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (10.8.0)
+Requirement already satisfied: backports.tarfile in /usr/local/lib/python3.11/site-packages (from jaraco.context->keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.2.0)
+Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 22.5 MB/s  0:00:00
+Downloading confluent_kafka-2.15.0-cp311-cp311-manylinux_2_28_x86_64.whl (4.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 52.1 MB/s  0:00:00
+Downloading python_gnupg-0.5.6-py2.py3-none-any.whl (22 kB)
+Installing collected packages: python-gnupg, pillow, confluent-kafka
+
+Successfully installed confluent-kafka-2.15.0 pillow-12.3.0 python-gnupg-0.5.6
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.3 -> 26.2
+[notice] To update, run: pip install --upgrade pip
+--> 8da25a2380e1
+STEP 7/9: COPY pipelines/ ./pipelines/
+--> df9979c298b4
+STEP 8/9: COPY contracts/ ./contracts/
+--> bbcdac78f3af
+STEP 9/9: ENTRYPOINT ["sh", "-c", "python -m pipelines.${MIG_MODULE}.pipeline \"$@\"", "--"]
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:latest
+--> 29717a3fac2f
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:latest
+29717a3fac2f70302f438a3e545828b0c7cab8f518c809c83c00139493fcee2c
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:latest
+Getting image source signatures
+Copying blob sha256:37b770cd9ac7cb228a2a2be346d41c359db528c76b673b777072db16b4304a02
+Copying blob sha256:89e65b4493c66279973eb067f2a312f5965eac986552eb725936e48c4d39ae99
+Copying blob sha256:6ade88c30b7763a3c0426fd9477f365eb4e0a93b8456d2e9ba83e50205820d8e
+Copying blob sha256:a98950bc395b99f0461541431b7a12315f986213c93cc0843d41dad71bee80bd
+Copying blob sha256:020887d160499960c5fcd27b487551d611d14da5158ab5c512e66e4bfa50d8e3
+Copying blob sha256:e5e3193cbe4c328a50b69a0eac366bf2095c39c209806eb3e1aff1d8b8920f59
+Copying blob sha256:4ec5e33e2b386e28d6b8ba8826ab20ad92789649ecff00ad6abf41209a2c45c3
+Copying blob sha256:ad4d627542b00f02807316a4a58ae2c995cc524a43b3e3df75227617a0d0f6f7
+Copying blob sha256:4331a1fafc2bd0f4a8eb16c7c62e9233359616c8798430d7012efc3ebff6374e
+Copying blob sha256:afae9252c37709b88048a8669936a9c61c1cdb0fd9a6c4a882bf5eca211f9d32
+Copying blob sha256:f820b3da06e51249b47b4a53489530791c88219f4738771c888c1b61406a869e
+Copying blob sha256:04d756c1ff21ccd97e3038075fc98d1793aa961e6760f67f1ba9e988da1919dd
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:2c7d3cc86aaf1101dd50660a84039325e31ab4ab476628749a49ee44f091aa17
+Copying blob sha256:d1cf61e05c4d632677536904358dd942d376f095281963507ffe9eec6d624d8e
+Copying blob sha256:65b4fe80584f375c356509d3fabceea586b693ced7dd22f501c26bcf8233240a
+Copying blob sha256:46c7242df897b207d334e8c0b182f5f3cd73fa574c1073a2fa80ca9e68f3e117
+Copying config sha256:29717a3fac2f70302f438a3e545828b0c7cab8f518c809c83c00139493fcee2c
+Writing manifest to image destination
+▶ uploading spec → gs://mig-000001-1-dev-dataflow-templates/data-enrichment.json
+Copying file:///home/adrianb/.cache/podman-tmp/tmp.F3C5SejnFq/data-enrichment.json to gs://mig-000001-1-dev-dataflow-templates/data-enrichment.json
+  
+
+▶ building json-producer (module=json_producer) → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:latest
+STEP 1/9: FROM docker.io/apache/beam_python3.11_sdk:2.72.0
+STEP 2/9: ARG MIG_MODULE=file_processor
+--> Using cache cce6e91e5fd2facced76beb1e6778579fce4ee9b199999e43c5e6ed7bbb1da05
+--> cce6e91e5fd2
+STEP 3/9: ENV MIG_MODULE=${MIG_MODULE}
+--> Using cache feb3a2958b0bf6dbdc79744b5d8207120f9038760138a685e546db85746c1336
+--> feb3a2958b0b
+STEP 4/9: WORKDIR /app
+--> Using cache 568b6b1f42adf0ca6e8323aa7252fa687d4a4fcd3fe3284727c0272e27639ffb
+--> 568b6b1f42ad
+STEP 5/9: COPY requirements.txt .
+--> Using cache c93e90c0a4fce021da398392bf850eb089cc6abbf7bed58961c2498fabf51634
+--> c93e90c0a4fc
+STEP 6/9: RUN pip install --no-cache-dir -r requirements.txt
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_CHOWN: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_DAC_OVERRIDE: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_FOWNER: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_FSETID: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_KILL: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_NET_BIND_SERVICE: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_SETFCAP: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_SETGID: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_SETPCAP: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_SETUID: operation not permitted"
+time="2026-08-04T19:08:35+03:00" level=warning msg="can't raise ambient capability CAP_SYS_CHROOT: operation not permitted"
+Requirement already satisfied: apache-beam<3.0,>=2.60.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.72.0)
+Requirement already satisfied: google-cloud-storage>=2.18.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 7)) (2.19.0)
+Requirement already satisfied: google-cloud-bigquery>=3.25.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 8)) (3.40.0)
+Collecting confluent-kafka>=2.5.0 (from -r requirements.txt (line 11))
+  Downloading confluent_kafka-2.15.0-cp311-cp311-manylinux_2_28_x86_64.whl.metadata (33 kB)
+Requirement already satisfied: PyYAML>=6.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 16)) (6.0.3)
+Requirement already satisfied: jsonschema>=4.23.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 17)) (4.26.0)
+Collecting python-gnupg>=0.5.2 (from -r requirements.txt (line 20))
+  Downloading python_gnupg-0.5.6-py2.py3-none-any.whl.metadata (2.1 kB)
+Requirement already satisfied: requests>=2.32.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 22)) (2.32.5)
+Requirement already satisfied: pytest>=8.3.0 in /usr/local/lib/python3.11/site-packages (from -r requirements.txt (line 25)) (8.4.2)
+Requirement already satisfied: cryptography<48.0.0,>=39.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (46.0.3)
+Requirement already satisfied: envoy-data-plane<0.3.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.2.6)
+Requirement already satisfied: fastavro<2,>=0.23.6 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.12.1)
+Requirement already satisfied: fasteners<1.0,>=0.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.20)
+Requirement already satisfied: grpcio!=1.48.0,!=1.59.*,!=1.60.*,!=1.61.*,!=1.62.0,!=1.62.1,!=1.66.*,!=1.67.*,!=1.68.*,!=1.69.*,!=1.70.*,<2,>=1.33.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.65.5)
+Requirement already satisfied: httplib2<0.32.0,>=0.8 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.31.1)
+Requirement already satisfied: jsonpickle<4.0.0,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.4.2)
+Requirement already satisfied: numpy<2.5.0,>=1.14.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.4.1)
+Requirement already satisfied: objsize<0.8.0,>=0.6.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.7.1)
+Requirement already satisfied: packaging>=22.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (25.0)
+Collecting pillow<13,>=12.1.1 (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4))
+  Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Requirement already satisfied: pymongo<5.0.0,>=3.8.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.16.0)
+Requirement already satisfied: proto-plus<2,>=1.7.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.27.0)
+Requirement already satisfied: protobuf!=4.0.*,!=4.21.*,!=4.22.0,!=4.23.*,!=4.24.*,<7.0.0.dev0,>=3.20.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (5.29.5)
+Requirement already satisfied: python-dateutil<3,>=2.8.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.9.0.post0)
+Requirement already satisfied: pytz>=2018.3 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2025.2)
+Requirement already satisfied: sortedcontainers>=2.4.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.4.0)
+Requirement already satisfied: typing-extensions>=3.7.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.15.0)
+Requirement already satisfied: zstandard<1,>=0.18.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.25.0)
+Requirement already satisfied: beartype<0.23.0,>=0.21.0 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.22.9)
+Requirement already satisfied: pyarrow<24.0.0,>=6.0.1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (18.1.0)
+Requirement already satisfied: pyarrow-hotfix<1 in /usr/local/lib/python3.11/site-packages (from apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.7)
+Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/site-packages (from requests>=2.32.0->-r requirements.txt (line 22)) (2026.1.4)
+Requirement already satisfied: cachetools<7,>=3.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.2.4)
+Requirement already satisfied: google-api-core<3,>=2.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.29.0)
+Requirement already satisfied: google-apitools<0.5.32,>=0.5.31 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.5.31)
+Requirement already satisfied: google-auth<3,>=1.18.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.47.0)
+Requirement already satisfied: google-auth-httplib2<0.3.0,>=0.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.2.1)
+Requirement already satisfied: google-cloud-datastore<3,>=2.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.23.0)
+Requirement already satisfied: google-cloud-pubsub<3,>=2.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.34.0)
+Requirement already satisfied: google-cloud-bigquery-storage<3,>=2.6.3 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.36.0)
+Requirement already satisfied: google-cloud-core<3,>=2.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.5.0)
+Requirement already satisfied: google-cloud-bigtable<3,>=2.19.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.35.0)
+Requirement already satisfied: google-cloud-build<4,>=3.35.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.35.0)
+Requirement already satisfied: google-cloud-spanner<4,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.62.0)
+Requirement already satisfied: google-cloud-dlp<4,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.34.0)
+Requirement already satisfied: google-cloud-kms<4,>=3.0.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.9.0)
+Requirement already satisfied: google-cloud-language<3,>=2.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.19.0)
+Requirement already satisfied: google-cloud-secret-manager<3,>=2.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.26.0)
+Requirement already satisfied: google-cloud-videointelligence<3,>=2.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.18.0)
+Requirement already satisfied: google-cloud-vision<4,>=2 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.12.0)
+Requirement already satisfied: google-cloud-recommendations-ai<0.11.0,>=0.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.10.18)
+Requirement already satisfied: google-cloud-aiplatform<2.0,>=1.26.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.133.0)
+Requirement already satisfied: cloud-sql-python-connector<2.0.0,>=1.18.2 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.20.0)
+Requirement already satisfied: python-tds>=1.16.1 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.17.1)
+Requirement already satisfied: pg8000>=1.31.5 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.31.5)
+Requirement already satisfied: PyMySQL>=1.1.0 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.1.2)
+Requirement already satisfied: keyrings.google-artifactregistry-auth in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.1.2)
+Requirement already satisfied: orjson<4,>=3.9.7 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.11.5)
+Requirement already satisfied: regex>=2020.6.8 in /usr/local/lib/python3.11/site-packages (from apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2026.1.15)
+Requirement already satisfied: google-resumable-media>=2.7.2 in /usr/local/lib/python3.11/site-packages (from google-cloud-storage>=2.18.0->-r requirements.txt (line 7)) (2.8.0)
+Requirement already satisfied: google-crc32c<2.0dev,>=1.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-storage>=2.18.0->-r requirements.txt (line 7)) (1.8.0)
+Requirement already satisfied: aiofiles in /usr/local/lib/python3.11/site-packages (from cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (25.1.0)
+Requirement already satisfied: aiohttp in /usr/local/lib/python3.11/site-packages (from cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.13.3)
+Requirement already satisfied: dnspython>=2.0.0 in /usr/local/lib/python3.11/site-packages (from cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.8.0)
+Requirement already satisfied: cffi>=2.0.0 in /usr/local/lib/python3.11/site-packages (from cryptography<48.0.0,>=39.0.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.0.0)
+Requirement already satisfied: betterproto<3.0.0,>=2.0.0b3 in /usr/local/lib/python3.11/site-packages (from envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.0.0b7)
+Requirement already satisfied: grpclib<0.5.0,>=0.4.1 in /usr/local/lib/python3.11/site-packages (from betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.9)
+Requirement already satisfied: googleapis-common-protos<2.0.0,>=1.56.2 in /usr/local/lib/python3.11/site-packages (from google-api-core<3,>=2.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.72.0)
+Requirement already satisfied: grpcio-status<2.0.0,>=1.33.2 in /usr/local/lib/python3.11/site-packages (from google-api-core[grpc]<3.0.0,>=2.11.1->google-cloud-bigquery>=3.25.0->-r requirements.txt (line 8)) (1.65.5)
+Requirement already satisfied: oauth2client>=1.4.12 in /usr/local/lib/python3.11/site-packages (from google-apitools<0.5.32,>=0.5.31->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.1.3)
+Requirement already satisfied: six>=1.12.0 in /usr/local/lib/python3.11/site-packages (from google-apitools<0.5.32,>=0.5.31->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.17.0)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /usr/local/lib/python3.11/site-packages (from google-auth<3,>=1.18.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.2)
+Requirement already satisfied: rsa<5,>=3.1.4 in /usr/local/lib/python3.11/site-packages (from google-auth<3,>=1.18.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.9.1)
+Requirement already satisfied: google-cloud-resource-manager<3.0.0,>=1.3.3 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.16.0)
+Requirement already satisfied: google-genai<2.0.0,>=1.37.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.59.0)
+Requirement already satisfied: pydantic<3 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.12.5)
+Requirement already satisfied: docstring_parser<1 in /usr/local/lib/python3.11/site-packages (from google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.17.0)
+Requirement already satisfied: grpc-google-iam-v1<1.0.0,>=0.12.4 in /usr/local/lib/python3.11/site-packages (from google-cloud-bigtable<3,>=2.19.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.14.3)
+Requirement already satisfied: opentelemetry-api>=1.27.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.39.1)
+Requirement already satisfied: opentelemetry-sdk>=1.27.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.39.1)
+Requirement already satisfied: sqlparse>=0.4.4 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.5.5)
+Requirement already satisfied: grpc-interceptor>=0.15.4 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.15.4)
+Requirement already satisfied: opentelemetry-semantic-conventions>=0.43b0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.60b1)
+Requirement already satisfied: opentelemetry-resourcedetector-gcp>=1.8.0a0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.11.0a0)
+Requirement already satisfied: google-cloud-monitoring>=2.16.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.29.0)
+Requirement already satisfied: mmh3>=4.1.0 in /usr/local/lib/python3.11/site-packages (from google-cloud-spanner<4,>=3.0.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (5.2.0)
+Requirement already satisfied: anyio<5.0.0,>=4.8.0 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.12.1)
+Requirement already satisfied: httpx<1.0.0,>=0.28.1 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.28.1)
+Requirement already satisfied: tenacity<9.2.0,>=8.2.3 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (8.5.0)
+Requirement already satisfied: websockets<15.1.0,>=13.0.0 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (15.0.1)
+Requirement already satisfied: distro<2,>=1.7.0 in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.9.0)
+Requirement already satisfied: sniffio in /usr/local/lib/python3.11/site-packages (from google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.3.1)
+Requirement already satisfied: h2<5,>=3.1.0 in /usr/local/lib/python3.11/site-packages (from grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.3.0)
+Requirement already satisfied: multidict in /usr/local/lib/python3.11/site-packages (from grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.7.0)
+Requirement already satisfied: hyperframe<7,>=6.1 in /usr/local/lib/python3.11/site-packages (from h2<5,>=3.1.0->grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.1.0)
+Requirement already satisfied: hpack<5,>=4.1 in /usr/local/lib/python3.11/site-packages (from h2<5,>=3.1.0->grpclib<0.5.0,>=0.4.1->betterproto<3.0.0,>=2.0.0b3->envoy-data-plane<0.3.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.1.0)
+Requirement already satisfied: pyparsing<4,>=3.0.4 in /usr/local/lib/python3.11/site-packages (from httplib2<0.32.0,>=0.8->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.3.1)
+Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.11/site-packages (from httpx<1.0.0,>=0.28.1->google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.0.9)
+Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.11/site-packages (from httpcore==1.*->httpx<1.0.0,>=0.28.1->google-genai<2.0.0,>=1.37.0->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.16.0)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.11/site-packages (from pydantic<3->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /usr/local/lib/python3.11/site-packages (from pydantic<3->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.41.5)
+Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.11/site-packages (from pydantic<3->google-cloud-aiplatform<2.0,>=1.26.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.2)
+Requirement already satisfied: pyasn1>=0.1.3 in /usr/local/lib/python3.11/site-packages (from rsa<5,>=3.1.4->google-auth<3,>=1.18.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.6.2)
+Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (25.4.0)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (0.37.0)
+Requirement already satisfied: rpds-py>=0.25.0 in /usr/local/lib/python3.11/site-packages (from jsonschema>=4.23.0->-r requirements.txt (line 17)) (0.30.0)
+Requirement already satisfied: iniconfig>=1 in /usr/local/lib/python3.11/site-packages (from pytest>=8.3.0->-r requirements.txt (line 25)) (2.3.0)
+Requirement already satisfied: pluggy<2,>=1.5 in /usr/local/lib/python3.11/site-packages (from pytest>=8.3.0->-r requirements.txt (line 25)) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in /usr/local/lib/python3.11/site-packages (from pytest>=8.3.0->-r requirements.txt (line 25)) (2.19.2)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.11/site-packages (from cffi>=2.0.0->cryptography<48.0.0,>=39.0.0->apache-beam<3.0,>=2.60.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.23)
+Requirement already satisfied: importlib-metadata<8.8.0,>=6.0 in /usr/local/lib/python3.11/site-packages (from opentelemetry-api>=1.27.0->google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (8.7.1)
+Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.11/site-packages (from importlib-metadata<8.8.0,>=6.0->opentelemetry-api>=1.27.0->google-cloud-pubsub<3,>=2.1.0->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.23.0)
+Requirement already satisfied: scramp>=1.4.5 in /usr/local/lib/python3.11/site-packages (from pg8000>=1.31.5->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.4.8)
+Requirement already satisfied: asn1crypto>=1.5.1 in /usr/local/lib/python3.11/site-packages (from scramp>=1.4.5->pg8000>=1.31.5->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.5.1)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.8.0)
+Requirement already satisfied: propcache>=0.2.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /usr/local/lib/python3.11/site-packages (from aiohttp->cloud-sql-python-connector<2.0.0,>=1.18.2->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.22.0)
+Requirement already satisfied: keyring in /usr/local/lib/python3.11/site-packages (from keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (25.7.0)
+Requirement already satisfied: SecretStorage>=3.2 in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.5.0)
+Requirement already satisfied: jeepney>=0.4.2 in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (0.9.0)
+Requirement already satisfied: jaraco.classes in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (3.4.0)
+Requirement already satisfied: jaraco.functools in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (4.4.0)
+Requirement already satisfied: jaraco.context in /usr/local/lib/python3.11/site-packages (from keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (6.1.0)
+Requirement already satisfied: more-itertools in /usr/local/lib/python3.11/site-packages (from jaraco.classes->keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (10.8.0)
+Requirement already satisfied: backports.tarfile in /usr/local/lib/python3.11/site-packages (from jaraco.context->keyring->keyrings.google-artifactregistry-auth->apache-beam[gcp]<3.0,>=2.60.0->-r requirements.txt (line 4)) (1.2.0)
+Downloading pillow-12.3.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 18.2 MB/s  0:00:00
+Downloading confluent_kafka-2.15.0-cp311-cp311-manylinux_2_28_x86_64.whl (4.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 87.2 MB/s  0:00:00
+Downloading python_gnupg-0.5.6-py2.py3-none-any.whl (22 kB)
+Installing collected packages: python-gnupg, pillow, confluent-kafka
+
+Successfully installed confluent-kafka-2.15.0 pillow-12.3.0 python-gnupg-0.5.6
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.3 -> 26.2
+[notice] To update, run: pip install --upgrade pip
+--> d0296fa308b0
+STEP 7/9: COPY pipelines/ ./pipelines/
+--> 4b8a5ffafee8
+STEP 8/9: COPY contracts/ ./contracts/
+--> 0efb5ac0720c
+STEP 9/9: ENTRYPOINT ["sh", "-c", "python -m pipelines.${MIG_MODULE}.pipeline \"$@\"", "--"]
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:latest
+--> 57f6979cb1c3
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:latest
+57f6979cb1c356955c7ce968ac6c2e211a6257cf11ebb4d4b98b091e50bbc0b7
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:latest
+Getting image source signatures
+Copying blob sha256:37b770cd9ac7cb228a2a2be346d41c359db528c76b673b777072db16b4304a02
+Copying blob sha256:020887d160499960c5fcd27b487551d611d14da5158ab5c512e66e4bfa50d8e3
+Copying blob sha256:89e65b4493c66279973eb067f2a312f5965eac986552eb725936e48c4d39ae99
+Copying blob sha256:e5e3193cbe4c328a50b69a0eac366bf2095c39c209806eb3e1aff1d8b8920f59
+Copying blob sha256:6ade88c30b7763a3c0426fd9477f365eb4e0a93b8456d2e9ba83e50205820d8e
+Copying blob sha256:a98950bc395b99f0461541431b7a12315f986213c93cc0843d41dad71bee80bd
+Copying blob sha256:4ec5e33e2b386e28d6b8ba8826ab20ad92789649ecff00ad6abf41209a2c45c3
+Copying blob sha256:ad4d627542b00f02807316a4a58ae2c995cc524a43b3e3df75227617a0d0f6f7
+Copying blob sha256:4331a1fafc2bd0f4a8eb16c7c62e9233359616c8798430d7012efc3ebff6374e
+Copying blob sha256:afae9252c37709b88048a8669936a9c61c1cdb0fd9a6c4a882bf5eca211f9d32
+Copying blob sha256:f820b3da06e51249b47b4a53489530791c88219f4738771c888c1b61406a869e
+Copying blob sha256:04d756c1ff21ccd97e3038075fc98d1793aa961e6760f67f1ba9e988da1919dd
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:2c7d3cc86aaf1101dd50660a84039325e31ab4ab476628749a49ee44f091aa17
+Copying blob sha256:93e301a846c5620cf9614639e8c0e1990e90ec79b6f7838d219d01e41ab7933c
+Copying blob sha256:6e5eb9c14a536443306099ced07a9d54659c0ab35d7324ca79c2f60995de65f3
+Copying blob sha256:71fb59d693811a63687640ab058a6cd6703cb3600693e98115f107343d8d5ea4
+Copying config sha256:57f6979cb1c356955c7ce968ac6c2e211a6257cf11ebb4d4b98b091e50bbc0b7
+Writing manifest to image destination
+▶ uploading spec → gs://mig-000001-1-dev-dataflow-templates/json-producer.json
+Copying file:///home/adrianb/.cache/podman-tmp/tmp.F3C5SejnFq/json-producer.json to gs://mig-000001-1-dev-dataflow-templates/json-producer.json
+  
+
+
+✓ 3 Flex Templates published.
+  registry: europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow
+  specs:    gs://mig-000001-1-dev-dataflow-templates/{file-processor,data-enrichment,json-producer}.json

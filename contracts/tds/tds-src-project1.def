@@ -1,0 +1,29 @@
+# SRC-TDS — project1 (retail accounts out of Db2 via the Extractor)
+#
+# Homogeneous definition (docs/PLAN-CHANGES-21082026.md D6): every field here is `.DAT`,
+# addressed by offset (fixed-width copybook) or column (pipe-delimited). No field is
+# JSON — a record definition is one format, never both. Enrichment fields (segment,
+# branch, riskRating, branchName) are no longer carried on the source record; they are
+# joined in by Dataform/the enrichment pipeline downstream (see `curated.aliases` in
+# mapping-project1.yaml) and are absent (null) on any path that reads SRC directly.
+#
+# Each field declares BOTH coordinate systems — `offset`/`len` for fixed-width copybook
+# layout and `col` for delimited — so switching a project between the two extract shapes
+# is a mapping change (`source.layout`), never a code change.
+#
+# The pipe-delimited layout carries a header row (contracts/README.md "Source `.DAT`
+# physical format (target)"): the first line names the columns and is skipped by
+# `RecordParser.is_header`, not parsed as a record.
+
+record ACCOUNT
+  layout fixed  width=59
+  layout csv    delimiter=|  header=true
+
+  field ACCT_ID       offset=0   len=12  col=0  type=string   required=true
+  field CUST_ID       offset=12  len=10  col=1  type=string   required=true
+  field CLIENT_TYPE   offset=22  len=4   col=2  type=string   required=true
+  field PRODUCT_CODE  offset=26  len=6   col=3  type=string   required=true
+  field CURRENCY      offset=32  len=3   col=4  type=string   required=true
+  field OPEN_DATE     offset=35  len=8   col=5  type=date     required=true
+  field STATUS        offset=43  len=1   col=6  type=string   required=true
+  field BALANCE       offset=44  len=15  col=7  type=decimal  scale=2  required=true

@@ -1,0 +1,17 @@
+@startuml readme-08-one-snapshot-per-run
+' PlantUML equivalent of README.md "Slide 10 — One full snapshot per run"
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+rectangle "Source snapshot\nall accounts, once" as S  #eef4fa
+rectangle "Run\nrun_id=R1"                      as R  #dff0d8
+rectangle "Report R1"                           as RR #fcf8e3
+rectangle "Replay\nsame run_id=R1"              as RP #eef4fa
+rectangle "Replaces R1's rows,\nleaves every other run untouched" as RT #dff0d8
+
+S  --> R
+R  ..> RR : scoped recon
+RP --> RT
+@enduml

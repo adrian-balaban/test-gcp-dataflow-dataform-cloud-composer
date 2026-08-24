@@ -1,0 +1,6 @@
+Executing the command: [ airflow dags list-runs -d mig_000001_1_migration ]...
+Command has been started. execution_id=fd1804ec-0dff-4237-b95b-fd63b541896e
+Use ctrl-c to interrupt the command
+dag_id                 | run_id                            | state   | execution_date            | start_date                       | end_date
+=======================+===================================+=========+===========================+==================================+=================================
+mig_000001_1_migration | manual__2026-08-21T19:36:24+00:00 | success | 2026-08-21T19:36:24+00:00 | 2026-08-21T19:36:24.963224+00:00 | 2026-08-21T20:18:54.373815+00:00

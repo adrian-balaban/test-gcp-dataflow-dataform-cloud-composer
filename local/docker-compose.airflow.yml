@@ -1,0 +1,38 @@
+# Cloud Composer stand-in — opt-in, via `make up-airflow`.
+#
+# Kept in a separate file rather than behind `profiles:` because podman-compose 1.0.6
+# ignores profiles entirely and would start this unconditionally. It is the heaviest
+# service in the stack (~1 GB image), and local/scripts/run_pipeline.py already mirrors
+# the same task graph, so the default stack does without it.
+#
+# The DAG in composer/dags/ is the real, Composer-ready article either way — this just
+# gives it somewhere to run locally.
+#
+# Assumes the default stack is already up: it joins that project's network.
+
+name: mig-000001-1
+
+services:
+
+  airflow:
+    image: docker.io/apache/airflow:2.10.5-python3.11
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      # `airflow standalone` on sqlite requires SequentialExecutor — LocalExecutor
+      # rejects sqlite. Real Composer 2 uses CeleryExecutor; Sequential is the honest
+      # single-node local stand-in. See docs/runbook-gcp.md.
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow.db
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      _AIRFLOW_WWW_USER_USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin
+      # Service names resolve on the shared compose network.
+      STORAGE_EMULATOR_HOST: http://fake-gcs:4443
+      BIGQUERY_EMULATOR_HOST: http://bigquery:9050
+      KAFKA_BOOTSTRAP: redpanda:9092
+      TARGET_SYSTEM_URL: http://target-system-mock:8080
+    ports:
+      - "8081:8080"
+    volumes:
+      - ../composer/dags:/opt/airflow/dags:z

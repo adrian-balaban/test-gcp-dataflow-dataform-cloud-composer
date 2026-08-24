@@ -1,0 +1,42 @@
+flowchart LR
+    Db[("Mainframe<br/>Db")]
+
+    subgraph OT1["Other Team"]
+        EX["Extractor<br/>table2table<br/>GCP or on-prem?"]
+    end
+
+    subgraph OUR1["Our Team"]
+        TR["Transformation<br/>config-driven"]
+    end
+
+    subgraph OT2["Other Team"]
+        LD["Loader<br/>Kafka batches of 200<br/>GCP"]
+    end
+
+    TargetSystem[("TargetSystemDB")]
+
+    Db2 --> EX --> TR --> LD --> TargetSystem
+
+    subgraph OUR2["Our Team — verification, off the data path"]
+        RC["Reconciliation<br/>post-load"]
+    end
+
+    TW["ThoughtWorks<br/>import results<br/>(contract undefined)"]
+
+    TargetSystem -. "TARGET file<br/>today's only recon input" .-> RC
+    TR -. "SRC-side counts / keys<br/>(to clarify)" .-> RC
+    TW -. "(to clarify)" .-> RC
+
+    classDef ours fill:#dff0d8,stroke:#3c763d,color:#1b1b1b;
+    classDef other fill:#f2dede,stroke:#a94442,color:#1b1b1b;
+    classDef store fill:#fcf8e3,stroke:#8a6d3b,color:#1b1b1b;
+    classDef unclear fill:#ececec,stroke:#888,stroke-dasharray:4 3,color:#1b1b1b;
+    class TR,RC ours;
+    class EX,LD other;
+    class Db2,TargetSystem store;
+    class TW unclear;
+
+    style OT1 fill:#fdf6f6,stroke:#d8b6b6,color:#1b1b1b;
+    style OT2 fill:#fdf6f6,stroke:#d8b6b6,color:#1b1b1b;
+    style OUR1 fill:#f5fbf5,stroke:#b6d8b6,color:#1b1b1b;
+    style OUR2 fill:#f5fbf5,stroke:#b6d8b6,color:#1b1b1b;

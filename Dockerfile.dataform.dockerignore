@@ -1,0 +1,32 @@
+# Ignore rules for the dataform-runner image ONLY (Dockerfile.dataform).
+# The root .dockerignore serves the Java app builds and excludes dataform/ and
+# pipelines/ — the two directories this image is entirely made of, so building
+# against it failed with `no items matching glob "dataform"`. Both podman/buildah
+# and Docker BuildKit prefer <Dockerfile>.dockerignore over the root file.
+
+.git
+.venv
+.uv
+.pytest_cache
+apps
+node_modules
+.terraform
+*.tfstate*
+
+# local/ is NOT excluded wholesale: local/scripts/run_dataform.py is the entry point.
+# Only the runtime state and secrets under it are.
+local/keys
+local/state
+local/data
+out
+.env
+.env.example
+
+docs
+harness
+tests
+composer
+terraform
+.remember
+.claude
+

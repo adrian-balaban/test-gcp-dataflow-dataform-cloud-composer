@@ -1,0 +1,131 @@
+@startuml architecture-03-c4-code-two-door-engine
+' PlantUML equivalent of ARCHITECTURE.md "C4 — Code (the two-door engine core)"
+!pragma layout smetana
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty members
+
+enum Exit {
+    MIGRATED
+    NOT_MIGRATED
+}
+
+enum Door {
+    WRITTEN
+    EXCLUDED
+    REJECTED
+    DEDUPLICATED
+    --
+    +exit() : Exit
+}
+
+enum Stage {
+    PARSE
+    FILTER
+    MAP
+    SCHEMA
+}
+
+enum Reason {
+    PARSE_SHORT_RECORD
+    MAP_MISSING_REQUIRED
+    SCHEMA_INVALID
+    ..12 closed members..
+}
+
+class RecordError <<exception>> {
+    +Stage stage
+    +Reason reason
+    +str detail
+}
+
+class Reject <<frozen dataclass>> {
+    +str run_id
+    +int batch_id
+    +str source_key
+    +str stage
+    +str reason
+    +str detail
+    +str raw_record
+    --
+    +to_dict() : dict
+}
+
+class Outcome <<dataclass>> {
+    +Door door
+    +str raw
+    +str dedup_key
+    +str source_key
+    +dict doc
+    +Reject reject
+}
+
+class Counters <<dataclass>> {
+    +int src_read
+    +int written
+    +int excluded
+    +int rejected
+    +int deduplicated
+    +dict by_reason
+    --
+    +migrated() : int
+    +not_migrated() : int
+    +balances() : bool
+    +to_dict() : dict
+    ..count, accounted, imbalance, merge..
+}
+
+class BalanceError <<exception>> {
+    +str scope
+    +Counters counters
+}
+
+class RecordRouter {
+    +TransformEngine engine
+    +str run_id
+    --
+    +route(raw, batch_id, seen) : Outcome
+    -_reject(raw, batch_id, source_key, exc) : Outcome
+}
+
+interface TransformEngine {
+    +parse(raw) : dict
+    +source_key(fields) : str
+    +dedup_key(fields) : str
+    +is_excluded(fields) : bool
+    +map_record(fields) : dict
+    +validate(doc) : None
+}
+
+class route_intake <<function>> {
+    +route_intake(engine, raw) : Outcome
+}
+
+class survivor_rank <<function>> {
+    +survivor_rank(fields) : str
+}
+
+class require_balance <<function>> {
+    +require_balance(scope, counters) : None
+}
+
+Door        --> Exit          : maps 4 dispositions onto 2 doors
+RecordError --> Stage         : carries
+RecordError --> Reason        : carries
+Reject      --> Stage         : records (as str)
+Reject      --> Reason        : records (as str)
+Outcome     --> Door          : tagged with
+Outcome     --> Reject        : optionally carries
+Counters    --> Door          : count(door, reason)
+Counters    --> Reason        : by_reason tally
+BalanceError --> Counters     : reports
+require_balance --> Counters  : reads balances()
+require_balance ..> BalanceError : raises
+route_intake --> TransformEngine : parse/is_excluded/keys
+route_intake --> Outcome      : returns
+route_intake ..> RecordError  : catches
+RecordRouter --> TransformEngine : owns
+RecordRouter ..> route_intake : shares intake half
+RecordRouter --> Outcome      : returns
+RecordRouter ..> survivor_rank : dedup tie-break
+@enduml

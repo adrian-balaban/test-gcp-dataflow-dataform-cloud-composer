@@ -1,0 +1,57 @@
+@startuml 01-pipeline-overview
+' PlantUML equivalent of docs/inputs/diagrams/01-pipeline-overview.mmd
+' Smetana keeps this renderable without a Graphviz "dot" binary.
+!pragma layout smetana
+left to right direction
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam ArrowColor #555555
+skinparam rectangle {
+    FontColor #1b1b1b
+}
+skinparam database {
+    BackgroundColor #fcf8e3
+    BorderColor #8a6d3b
+    FontColor #1b1b1b
+}
+
+database "Mainframe\nDb" as Db
+
+rectangle "Other Team" as OT1 #fdf6f6 {
+    rectangle "Extractor\ntable2table\nGCP or on-prem?" as EX #f2dede
+}
+
+rectangle "Our Team" as OUR1 #f5fbf5 {
+    rectangle "Transformation\nconfig-driven" as TR #dff0d8
+}
+
+rectangle "Other Team " as OT2 #fdf6f6 {
+    rectangle "Loader\nKafka batches of 200\nGCP" as LD #f2dede
+}
+
+database "TargetSystemDB" as TargetSystem
+
+rectangle "Our Team — verification, off the data path" as OUR2 #f5fbf5 {
+    rectangle "Reconciliation\npost-load" as RC #dff0d8
+}
+
+rectangle "ThoughtWorks\nimport results\n(contract undefined)" as TW #ececec
+
+Db  --> EX
+EX  --> TR
+TR  --> LD
+LD  --> TargetSystem
+
+TargetSystem ..> RC : TARGET file\ntoday's only recon input
+TR           ..> RC : SRC-side counts / keys\n(to clarify)
+TW           ..> RC : (to clarify)
+
+legend right
+  |= |= meaning |
+  |<#dff0d8>   | Our Team |
+  |<#f2dede>   | Other Team |
+  |<#fcf8e3>   | data store |
+  |<#ececec>   | undefined / to clarify |
+endlegend
+@enduml

@@ -1,0 +1,21 @@
+# Failure 3 — loader_app: URI with undefined scheme (DAG run 21:19)
+
+MIG_TARGET_SYSTEM_URL had been set with 'gcloud composer environments update'. Terraform owns
+config.softwareConfig.envVariables, so a later apply reverted it and the loader was
+handed an empty target URL. The failure surfaced three DAG runs after the change that
+caused it — which is the argument for the config living in IaC rather than in a
+convenience command.
+
+## Captured from Cloud Logging
+```
+[base] Exception in thread "main" java.lang.IllegalArgumentException: URI with undefined scheme
+[base] 	at ro.mig.loader.LoaderApp.main(LoaderApp.java:100)
+[base] 	at ro.mig.loader.LoaderApp$Loader.push(LoaderApp.java:196)
+[base] 	at ro.mig.loader.LoaderApp$Loader.send(LoaderApp.java:223)
+[base] 	at java.net.http/java.net.http.HttpRequest.newBuilder(Unknown Source)
+```
+
+## Fix
+terraform/modules/composer declares MIG_TARGET_SYSTEM_URL, MIG_JAVA_IMAGE_TAG, KAFKA_BOOTSTRAP,
+DATAFLOW_SUBNETWORK and DATAFLOW_SERVICE_ACCOUNT; envs/dev passes the real values.
+A new java_image_tag variable carries the tag build_java_images.sh printed.

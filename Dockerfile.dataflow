@@ -1,0 +1,85 @@
+# Dataflow Flex Template image for the MIG 000001-1 Beam pipelines.
+#
+# One image serves all three pipelines (file-processor, data-enrichment,
+# json-producer): the module to run is selected at build time via MIG_MODULE and
+# baked into the ENTRYPOINT, so each template gets its own tagged image
+# (…/mig-dataflow/file-processor:tag, …/data-enrichment:tag, …/json-producer:tag).
+#
+# The base is Google's **Flex Template launcher** image, not the Beam SDK image.
+# This distinction is load-bearing and cost a failed Dataflow job to learn:
+#
+#   apache/beam_python3.11_sdk         has the worker harness, NOT the launcher
+#   dataflow-templates-base/python311  has /opt/google/dataflow/python_template_launcher
+#
+# A Flex Template launch runs that launcher binary in a sandbox VM to *construct*
+# the pipeline before any worker starts. With the SDK image the launch fails with
+#   exec: "/opt/google/dataflow/python_template_launcher": no such file or directory
+# and the job dies as JOB_STATE_FAILED before executing a single step.
+#
+# The Beam SDK itself still arrives — via requirements.txt — and Dataflow supplies
+# the matching worker harness at runtime from FLEX_TEMPLATE_PYTHON_PY_FILE's SDK.
+#
+# Build (from the repo root, so the COPY paths resolve):
+#   podman build -f Dockerfile.dataflow \
+#     --build-arg MIG_MODULE=file_processor \
+#     -t europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:latest .
+# See local/scripts/gcp/build_templates.sh for the full build+push+spec flow.
+
+FROM gcr.io/dataflow-templates-base/python311-template-launcher-base:latest
+
+ARG MIG_MODULE=file_processor
+ENV MIG_MODULE=${MIG_MODULE}
+
+WORKDIR /app
+
+# Install Python deps first so the layer is cached across code changes.
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# The pipeline code, the contracts (TDS + mapping + reference data) and the
+# common library. local/keys is intentionally NOT copied: on Dataflow the PGP
+# private key is pulled from Secret Manager at runtime (pipelines/common/pgp.py).
+COPY pipelines/ ./pipelines/
+COPY contracts/ ./contracts/
+
+# A Flex Template is configured by environment variables, not ENTRYPOINT: the
+# launcher reads these to find the pipeline and its dependencies. An ENTRYPOINT is
+# ignored here, which is why the previous one silently did nothing.
+#
+# FLEX_TEMPLATE_PYTHON_PY_FILE points at a thin shim rather than the module itself,
+# because the launcher runs a *file*, while the pipelines are package modules that
+# must keep their relative imports.
+# Deliberately NOT setting FLEX_TEMPLATE_PYTHON_REQUIREMENTS_FILE: it makes the
+# launcher pip-install apache-beam[gcp] and the Google clients again on every launch,
+# inside a sandbox VM with a polling deadline. The dependencies are already installed
+# in the layer above, so that reinstall buys nothing and cost a job that sat QUEUED for
+# 13 minutes and then died with "Timeout in polling result file".
+# This image only ever runs on real GCP, so it must not inherit the emulator
+# defaults. Config.from_env() defaults TARGET_PROFILE to "local" (correct for a
+# developer laptop, where .env supplies the rest), and with no .env in the image the
+# pipeline dialled localhost:9050 and project mig-local from inside a Dataflow VM —
+# failing after a 600s retry storm with "Connection refused".
+#
+# GCP_PROJECT and GCP_REGION are supplied by the launch environment; the profile is
+# the one thing that has to be baked in, because there is no other signal.
+ENV TARGET_PROFILE=real \
+    BQ_TARGET=real \
+    MIG_RUNNER=dataflow
+
+ENV FLEX_TEMPLATE_PYTHON_PY_FILE=/app/dataflow_entrypoint.py
+
+COPY dataflow_entrypoint.py ./dataflow_entrypoint.py
+
+# The same image serves two launch styles, and must work under both:
+#
+#   1. **KubernetesPodOperator** (what the DAG uses today) — the pod runs
+#      `python -m pipelines.<module>.pipeline`, owns the Dataflow job lifecycle, and so
+#      `wait_until_finish()` plus the metrics read behave exactly as the code expects.
+#   2. **Flex Template** (built and published, not currently wired) — the launcher reads
+#      FLEX_TEMPLATE_PYTHON_PY_FILE above.
+#
+# PYTHONPATH makes `python -m pipelines...` resolve for (1); the ENV block for (2) is
+# inert when the pod supplies its own command.
+ENV PYTHONPATH=/app
+
+CMD ["python", "-m", "pipelines.file_processor.pipeline", "--help"]

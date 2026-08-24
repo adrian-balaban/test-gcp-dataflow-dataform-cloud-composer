@@ -1,0 +1,95 @@
+# Mapping — project2, the extensibility proof.
+#
+# Everything about this project differs from project1: source field names, the record
+# subset, the exclusion predicate, the target document shape, the transforms used, and the
+# physical layout (delimited rather than fixed-width). None of that required a line of
+# engine code — which is the claim being tested. `make verify-project2` asserts it
+# mechanically with `git diff --exit-code` over pipelines/ and apps/.
+
+project: project2
+
+source_tds: contracts/tds/tds-src-project2.def
+target_tds: contracts/tds/tds-target-project2.def
+target_schema: contracts/schemas/target-deposit.schema.json
+
+source:
+  record: DEPOSIT
+  # project1 reads the copybook layout; this one reads the delimited layout of the same
+  # extract. Both coordinate systems are declared in the TDS, so this is a one-word switch.
+  layout: csv
+
+target:
+  record: TARGET_SYSTEM_DEPOSIT
+
+account_key: [DEP_REF]
+
+# project2 previously excluded non-retail SEG_CODE via a filter stage; the engine no
+# longer has one (D1). All parsed records now flow through map/schema.
+
+curated:
+  table: deposit_enriched
+  aliases:
+    DEP_REF: deposit_id
+    OWNER_NO: owner_no
+    SEG_CODE: seg_code
+    CCY: ccy
+    START_DT: started_on
+    ST: state_code
+    AMT: principal_amount
+    TIER: tier
+    OUTLET: outlet
+    RISK_BAND: risk_band
+
+mappings:
+  - target: depositId
+    from: DEP_REF
+    transform: trim
+  - target: holderId
+    from: OWNER_NO
+    transform: trim
+  - target: holderTier
+    from: TIER
+    transform: passthrough
+  - target: currency
+    from: CCY
+    transform: upper
+  - target: principalCcy
+    from: CCY
+    transform: upper
+  - target: startedOn
+    from: START_DT
+    transform: to_iso_date
+  - target: principal
+    from: AMT
+    transform: to_decimal
+  - target: state
+    from: ST
+    transform: map_enum
+    values:
+      A: OPEN
+      C: MATURED
+      D: FROZEN
+
+  # ── transforms project1 never uses ──
+  - target: channel
+    transform: const
+    value: MIGRATION
+  - target: reference
+    transform: concat
+    from_fields: [DEP_REF, CCY]
+    sep: "-"
+
+  - target: outlet
+    from: OUTLET
+    transform: passthrough
+  - target: riskBand
+    from: RISK_BAND
+    transform: passthrough
+
+batch:
+  size: 200
+
+reject:
+  on_parse_error: reject
+  on_mapping_error: reject
+  on_schema_error: reject

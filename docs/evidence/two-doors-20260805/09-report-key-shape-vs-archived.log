@@ -1,0 +1,12 @@
+Comparing the published reconciliation-report.json key shape:
+  NEW  (this run, local emulator, two-door code)
+  OLD  (docs/evidence/gcp-run-20260804/12-reconciliation-report.json, real GCP, 2026-08-04)
+
+keys only in NEW report: none
+keys only in ARCHIVED  : none
+
+balancingEquation keys: ['accounted', 'balances', 'duplicates', 'excluded', 'imbalance', 'rejected', 'srcRead', 'written']
+migrability keys      : ['balanceBands', 'blockedByDataQuality', 'candidates', 'excludedByPolicy', 'migrabilityRate', 'migrated']
+
+RESULT: IDENTICAL KEY SHAPE. The published JSON contract is unchanged by the
+two-door reframing -- archived evidence and new reports stay comparable.

@@ -1,0 +1,16 @@
+# Failure 2 — assert_run_balanced: cannot query run_ledger (DAG run 20:07)
+
+The correctness gate is a PythonOperator running inside the Airflow worker, not a pod,
+so it authenticates as composer-runner rather than dataflow-worker. That account had
+bigquery.jobUser — permission to *start* a job — but no read access to the data.
+
+## Captured from Cloud Logging
+```
+Failed to execute job 47 for task assert_run_balanced (403 Access Denied: Table mig-000001-1-dev:bq_recon.run_ledger: User does not have permission to query table mig-000001-1-dev:bq_recon.run_ledger, or perhaps it does not exist.; reason: accessDenied, message: Access Denied: Table mig-000001-1-dev:bq_recon.run_ledger: User does not have permission to query table mig-000001-1-dev:bq_recon.run_ledger, or perhaps it does not exist.
+Marking task as FAILED. dag_id=mig_000001_1_migration, task_id=assert_run_balanced, run_id=manual__2026-08-18T20:07:03+00:00, execution_date=20260818T200703, start_date=20260818T202632, end_date=20260818T202635
+google.api_core.exceptions.Forbidden: 403 Access Denied: Table mig-000001-1-dev:bq_recon.run_ledger: User does not have permission to query table mig-000001-1-dev:bq_recon.run_ledger, or perhaps it does not exist.; reason: accessDenied, message: Access Denied: Table mig-000001-1-dev:bq_recon.run_ledger: User does not have permission to query table mig-000001-1-dev:bq_recon.run_ledger, or perhaps it does not exist.
+```
+
+## Fix
+terraform/modules/iam/main.tf — roles/bigquery.dataViewer now includes composer-runner.
+The gate is the one task that must not fail for an infrastructure reason.

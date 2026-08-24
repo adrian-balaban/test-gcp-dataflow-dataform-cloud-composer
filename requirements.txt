@@ -1,0 +1,25 @@
+# Pinned to Python 3.11 (see Makefile) — Beam and Airflow do not support the host's 3.14.
+
+# Beam pipelines. [gcp] pulls the native BigQuery/GCS IO used by the `real` profile.
+apache-beam[gcp]>=2.60.0,<3.0
+
+# GCP clients — also used against the local emulators via endpoint overrides.
+google-cloud-storage>=2.18.0
+google-cloud-bigquery>=3.25.0
+
+# Kafka sink. confluent-kafka ships manylinux wheels, so no librdkafka build step.
+confluent-kafka>=2.5.0
+
+# Contract layer: TDS parsing, YAML mappings, TARGET JSON Schema validation.
+# TDS paths are resolved by a small dotted-path resolver in pipelines/common/tds.py
+# rather than a general JSONPath engine — it runs per field per record on the hot path.
+PyYAML>=6.0
+jsonschema>=4.23.0
+
+# Extraction lane
+python-gnupg>=0.5.2
+
+requests>=2.32.0
+
+# Tests
+pytest>=8.3.0

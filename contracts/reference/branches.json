@@ -1,0 +1,9 @@
+{
+  "_comment": "Reference data joined by the Dataflow Data Enrichment stage. In production this is a maintained reference table in BigQuery; keeping it in contracts/ makes the prototype's enrichment reproducible and diffable.",
+  "branches": {
+    "BUC001": { "name": "Bucuresti Centru", "city": "Bucuresti", "region": "SUD" },
+    "CLJ002": { "name": "Cluj-Napoca Nord", "city": "Cluj-Napoca", "region": "NORD-VEST" },
+    "TIM003": { "name": "Timisoara Vest", "city": "Timisoara", "region": "VEST" },
+    "IAS004": { "name": "Iasi Est", "city": "Iasi", "region": "NORD-EST" }
+  }
+}

@@ -1,0 +1,16 @@
+# Teardown — the two resources that bill while idle
+
+```
+Destroy complete! Resources: 5 destroyed.
+```
+
+## Verified empty afterwards
+```
+composer environments: Listed 0 items.
+kafka clusters:        Listed 0 items.
+gke clusters:          0 found
+active dataflow jobs:  0 found
+```
+
+Left standing deliberately: buckets, BigQuery datasets, Artifact Registry, VPC,
+service accounts, and the scale-to-zero Cloud Run mock — none bill meaningfully idle.

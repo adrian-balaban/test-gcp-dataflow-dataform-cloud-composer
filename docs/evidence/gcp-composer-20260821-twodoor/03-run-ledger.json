@@ -1,0 +1,10 @@
+[
+  {
+    "balanced": "true", 
+    "created_at": "2026-08-21 19:42:12", 
+    "extraction_written": "78", 
+    "rejected": "3", 
+    "run_id": "mig-composer-run-20260821-203610", 
+    "src_read": "81"
+  }
+]

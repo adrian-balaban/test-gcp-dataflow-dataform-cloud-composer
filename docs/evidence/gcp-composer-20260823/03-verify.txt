@@ -1,0 +1,13 @@
+verify — run run-dag-20260823-0230
+
+  ✓ 1. balancing equation closes (whole lane): 55 = 50 migrated + 5 not migrated
+  ✓ 2. seeded malformed records rejected with correct reason codes: 5 reason codes, all matching: MAP_UNMAPPED_ENUM_VALUE, PARSE_BAD_DATE, PARSE_BAD_NUMERIC, PARSE_SHORT_RECORD, SCHEMA_INVALID
+  ✓ 3. every TARGET document validates against the JSON Schema: 50/50 documents valid
+  ✗ 4. TARGET emitted in 200-element batches (Kafka too, when that sink ran): KafkaException: KafkaError{code=_ALL_BROKERS_DOWN,val=-187,str="Failed to get watermark offsets: Local: All broker connections are down"}
+  ✓ 5. every key appears exactly once in TARGET: 50 keys, each present exactly once, 0 orphans
+  ✓ 6. every not-migrated record is named in record_lineage: 5 not-migrated records named (rejected=5)
+  ✓ 7. all five artefact types present in both lanes: extraction 2 + 3, load 4; .FLG vouches for 4
+  ✓ 8. .CHS checksums verify on both sides: extraction 1 entries parsed, load 1 files re-hashed and matching
+  ✓ 9. every TARGET row confirmed by Target System: 50/50 TARGET rows confirmed (50 confirmation events)
+
+VERIFY FAILED — 1/9: 4. TARGET emitted in 200-element batches (Kafka too, when that sink ran)

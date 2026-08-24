@@ -1,0 +1,94 @@
+# Local stand-ins for the GCP services in architecture diagram.
+#
+# Driven by **podman-compose**, not docker-compose — see local/scripts/check_container_runtime.sh.
+#
+# Airflow is behind a profile because it is by far the heaviest service and the plain
+# Python orchestrator in local/scripts/run_pipeline.py mirrors the same DAG:
+#     podman-compose -f local/docker-compose.yml --profile airflow up -d
+# The DAG in composer/dags/ is the real, Composer-ready article either way.
+
+name: mig-000001-1
+
+services:
+
+  # File Storage — the landing and json-out buckets.
+  fake-gcs:
+    image: docker.io/fsouza/fake-gcs-server:latest
+    command: >
+      -scheme http
+      -host 0.0.0.0
+      -port 4443
+      -public-host localhost:4443
+      -backend memory
+    ports:
+      - "4443:4443"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:4443/storage/v1/b?project=mig-local"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # BigQuery Extraction + Transformation datasets.
+  bigquery:
+    image: ghcr.io/goccy/bigquery-emulator:latest
+    command: >
+      --project=mig-local
+      --host=0.0.0.0
+      --port=9050
+    ports:
+      - "9050:9050"
+    # No in-container healthcheck: the goccy image is a distroless-ish Go binary
+    # with no shell tooling. Readiness is gated from the host by wait_for_stack.sh
+    # and verify_stack.py, which run a real `SELECT 1` through the BigQuery client.
+
+  # Stands in for the Loader team's Kafka (batches of 200).
+  redpanda:
+    image: docker.io/redpandadata/redpanda:latest
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=512M
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda:9092,external://localhost:19092
+    ports:
+      - "19092:19092"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # NOTE: the Cloud Composer stand-in lives in docker-compose.airflow.yml, not here.
+  # podman-compose 1.0.6 ignores `profiles:` and would start it unconditionally, so a
+  # separate file is the only way to keep it genuinely opt-in. Bring it up with
+  # `make up-airflow`.
+
+  # Target System stand-in. Built from apps/target-system-mock/Dockerfile
+  # (multi-stage Maven build → JRE runtime). Deliberately injects 429/503 so the
+  # Loader App's retry and idempotency paths are exercised, not just written.
+  target-system-mock:
+    build:
+      context: ..
+      dockerfile: apps/target-system-mock/Dockerfile
+    image: mig-000001-1/target-system-mock:local
+    environment:
+      TARGET_SYSTEM_PORT: "8080"
+      TARGET_SYSTEM_FAILURE_RATE: "0.15"
+      TARGET_SYSTEM_SEED: "20260803"
+      # Confirmation stream (docs/PLAN-CHANGES-22082026.md): the mock publishes one event
+      # per accepted write to this topic. redpanda:9092 is the in-network address (not
+      # the host-mapped 19092), since the mock is itself a container on this network.
+      TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP: "redpanda:9092"
+      TARGET_SYSTEM_CONFIRMATION_TOPIC: "target-system-confirmations"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/__admin/health >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20

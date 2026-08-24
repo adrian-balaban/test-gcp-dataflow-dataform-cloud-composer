@@ -1,0 +1,99 @@
+# Toolbox image — runs the local orchestrator (`make smoke-gcp`) against real GCP.
+#
+# **Why this exists.** Everything else on the GCP path is bash + gcloud + terraform + a
+# container build, so a laptop targeting GCP needs no Python at all. `make smoke-gcp` was
+# the one exception: it runs `local/scripts/run_pipeline.py`, which drives the harness and
+# the three Beam pipelines in-process (DirectRunner) against real GCS/BigQuery, and so
+# needed a 3.11 venv with Beam installed on the host. Putting that interpreter in an image
+# removes the last host-Python requirement — the container runtime is already mandatory
+# here, because the Flex Templates and the DAG's pod images are built locally and pushed.
+#
+# This is *not* the image the DAG runs. The DAG uses Dockerfile.dataflow (Beam pipelines)
+# and Dockerfile.javaapp (Loader, recon). This one is a developer convenience that bundles
+# both worlds — Python and the five Java jars — because run_pipeline.py shells out to both
+# lanes in sequence.
+#
+# ── build ─────────────────────────────────────────────────────────────────────
+#   podman build -f Dockerfile.toolbox -t mig-toolbox:local .
+# ── run ───────────────────────────────────────────────────────────────────────
+#   see the `smoke-gcp` target in the Makefile; it mounts ADC and local/keys.
+
+FROM docker.io/maven:3.9-eclipse-temurin-25 AS jars
+
+WORKDIR /build
+
+# POMs first so the dependency layer caches across source changes. The root pom lists
+# every module and Maven refuses to read the reactor if any declared module is missing,
+# so all five are copied even though the smoke run uses three.
+COPY pom.xml ./
+COPY apps/common/pom.xml ./apps/common/pom.xml
+COPY apps/extractor-app/pom.xml ./apps/extractor-app/pom.xml
+COPY apps/loader-app/pom.xml ./apps/loader-app/pom.xml
+COPY apps/recon-service/pom.xml ./apps/recon-service/pom.xml
+COPY apps/target-system-mock/pom.xml ./apps/target-system-mock/pom.xml
+RUN mvn -B -q dependency:go-offline -DskipTests
+
+# contracts/ before the build: apps/common declares contracts/ as a Maven <resource>
+# directory so artefacts.json travels inside the jar. Maven skips a missing resource
+# directory *silently*, so without this the jars build fine and then fail at first use
+# with "artefacts.json is not on the classpath" — which is exactly how this was found.
+COPY contracts/ ./contracts/
+COPY apps/ ./apps/
+RUN mvn -B -q package -DskipTests
+
+# ── runtime ───────────────────────────────────────────────────────────────────
+# Python is the base because Beam pins the interpreter version (3.11 — the same reason
+# the host venv had to); the JRE is added on top for the extractor, loader and recon apps.
+FROM docker.io/python:3.11-slim-bookworm
+
+# gnupg: the extractor PGP-encrypts the bundle before it lands in GCS.
+RUN apt-get update \
+ && apt-get install --no-install-recommends -y gnupg \
+ && rm -rf /var/lib/apt/lists/*
+
+# JRE 25 lifted from the Temurin image rather than installed from Debian, whose default
+# JRE is older than the class-file version maven.compiler.release now emits.
+COPY --from=docker.io/eclipse-temurin:25-jre /opt/java/openjdk /opt/java/openjdk
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# Node, lifted the same way, for the Dataform CLI — run_dataform.py shells out to `npx`.
+# Without it the orchestrator ran three lanes against real GCP and then died at the
+# Dataform stage with FileNotFoundError: 'npx', which is a late and confusing way to
+# learn the image is missing a runtime. Debian's nodejs is too old for the CLI.
+COPY --from=docker.io/node:20-bookworm-slim /usr/local/bin/node /usr/local/bin/node
+COPY --from=docker.io/node:20-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+ && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+ && node --version && npx --version
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# run_pipeline.py resolves the jars at apps/<app>/target/<app>.jar and skips its Maven
+# build when they are already present, so copying them here means no Maven at runtime.
+# Only the three the orchestrator launches (JAVA_APPS in run_pipeline.py). `common` is not
+# a separate artefact at runtime — the shade plugin folds it into each app jar.
+COPY --from=jars /build/apps/extractor-app/target/extractor-app.jar apps/extractor-app/target/extractor-app.jar
+COPY --from=jars /build/apps/loader-app/target/loader-app.jar       apps/loader-app/target/loader-app.jar
+COPY --from=jars /build/apps/recon-service/target/recon-service.jar apps/recon-service/target/recon-service.jar
+
+COPY pipelines/ ./pipelines/
+COPY contracts/ ./contracts/
+COPY harness/ ./harness/
+COPY dataform/ ./dataform/
+COPY local/scripts/ ./local/scripts/
+
+# `real` profile, DirectRunner in-process — the same shape `make smoke-gcp` had on the
+# host. local/keys is mounted at run time, not copied: the PGP keypair is a throwaway
+# generated per machine and has no business in an image layer.
+ENV TARGET_PROFILE=real \
+    BQ_TARGET=real \
+    MIG_RUNNER=direct \
+    PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1
+
+ENTRYPOINT ["python", "local/scripts/run_pipeline.py"]
+CMD ["--profile", "real", "--accounts", "50"]

@@ -1,0 +1,49 @@
+# Java app image — one Dockerfile, one app per build, chosen by MIG_APP.
+#
+# This is what makes the L and R lanes runnable on Cloud Composer. Before it, the DAG's
+# `dataflow` mode shelled out to `apps/*/build/install/...` paths that exist only on a
+# developer laptop, so the Loader and Reconciliation tasks could never have run on a
+# Composer worker (review finding H5). Built and pushed by
+# local/scripts/gcp/build_java_images.sh, launched by KubernetesPodOperator.
+#
+# Mirrors apps/target-system-mock/Dockerfile deliberately — same multi-stage shape, same
+# reasons — but parameterised so the loader and recon service do not need a file each.
+#
+# ── build ─────────────────────────────────────────────────────────────────────
+FROM docker.io/maven:3.9-eclipse-temurin-25 AS build
+
+ARG MIG_APP
+WORKDIR /build
+
+# POMs first so the dependency layer caches across source changes. All five module poms
+# are needed even though only one app is built: the root pom lists every module, and
+# Maven refuses to read the reactor if any declared module is missing.
+COPY pom.xml ./
+COPY apps/common/pom.xml ./apps/common/pom.xml
+COPY apps/extractor-app/pom.xml ./apps/extractor-app/pom.xml
+COPY apps/loader-app/pom.xml ./apps/loader-app/pom.xml
+COPY apps/recon-service/pom.xml ./apps/recon-service/pom.xml
+COPY apps/target-system-mock/pom.xml ./apps/target-system-mock/pom.xml
+RUN mvn -B -q -pl "apps/${MIG_APP}" -am dependency:go-offline -DskipTests
+
+# The cross-language manifest apps/common embeds as a Maven <resource>. A missing
+# resource directory is not an error to Maven, so leaving this out produces a jar that
+# builds cleanly and dies on first call to Artefacts.
+COPY contracts/artefacts.json ./contracts/artefacts.json
+
+# Source last — it changes most often.
+COPY apps/common/src ./apps/common/src
+COPY apps/${MIG_APP}/src ./apps/${MIG_APP}/src
+
+# The shade plugin writes one self-contained jar with every dependency inside.
+RUN mvn -B -q -pl "apps/${MIG_APP}" -am package -DskipTests \
+ && cp "apps/${MIG_APP}/target/${MIG_APP}.jar" /build/app.jar
+
+# ── runtime ───────────────────────────────────────────────────────────────────
+FROM docker.io/eclipse-temurin:25-jre
+
+COPY --from=build /build/app.jar /opt/app.jar
+
+# No CMD: the DAG passes the app's own arguments (--run-id, --window-from, …) so one
+# image serves every invocation and the argument contract stays in the DAG, visible.
+ENTRYPOINT ["java", "-jar", "/opt/app.jar"]

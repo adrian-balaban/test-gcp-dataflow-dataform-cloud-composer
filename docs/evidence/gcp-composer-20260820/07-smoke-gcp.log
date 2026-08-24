@@ -1,0 +1,124 @@
+# make smoke-gcp — full pass against real GCP, 2026-08-20
+
+```
+[1m▶ harness[0m generating 50 accounts (copybook) for initial
+76 records -> local/data/mainframe/initial/ACCOUNT.src  (migrated=40 not_migrated=36: excluded=10 rejected=6 dup=20)
+  (0.1s)
+
+[1m▶ E — Extractor App[0m 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=initial-20260820-203903 kind=initial records=76 dat_files=1 extraction_errors=0 -> gs://mig-000001-1-dev-landing/extraction/initial-20260820-203903/
+  (2.1s)
+
+[1m▶ T — Dataflow File Processor[0m decrypt, verify .CHS, TDS parse, filter + dedup → BigQuery
+WARNING:apache_beam.utils.subprocess_server:Really starting service at localhost:45959 with cmd: ('/root/.apache_beam/cache/prism/bin/apache_beam-v2.75.0-prism-linux-amd64', '--job_port', '45959', '--log_level', 'info', '--log_kind', 'json', '--serve_http=false')
+INFO:PrismRunner:Serving JobManagement (endpoint='localhost:45959')
+INFO:PrismRunner:pipeline done! (job='job-001[job]')
+file_processor: {"accounted": 76, "balances": true, "by_reason": {}, "deduplicated": 20, "excluded": 10, "imbalance": 0, "migrated": 42, "not_migrated": 34, "rejected": 4, "src_read": 76, "written": 42}
+WARNING:apache_beam.utils.subprocess_server:Really destroying service at localhost:45959 with cmd: ('/root/.apache_beam/cache/prism/bin/apache_beam-v2.75.0-prism-linux-amd64', '--job_port', '45959', '--log_level', 'info', '--log_kind', 'json', '--serve_http=false')
+  (23.3s)
+
+[1m▶ T — Dataform[0m SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=initial-20260820-203903)
+  1 declaration(s), 1 action(s)
+  → mig-000001-1-dev.bq_transformation.account_curated
+  ✓ mig-000001-1-dev.bq_transformation.account_curated: 42 rows
+dataform complete.
+  (17.6s)
+
+[1m▶ T — Dataflow Data Enrichment[0m reference-data join
+WARNING:apache_beam.utils.subprocess_server:Really starting service at localhost:58447 with cmd: ('/root/.apache_beam/cache/prism/bin/apache_beam-v2.75.0-prism-linux-amd64', '--job_port', '58447', '--log_level', 'info', '--log_kind', 'json', '--serve_http=false')
+INFO:PrismRunner:Serving JobManagement (endpoint='localhost:58447')
+INFO:PrismRunner:pipeline done! (job='job-001[job]')
+data_enrichment: {"enriched": 42, "read": 42, "reference_unmatched": 0}
+WARNING:apache_beam.utils.subprocess_server:Really destroying service at localhost:58447 with cmd: ('/root/.apache_beam/cache/prism/bin/apache_beam-v2.75.0-prism-linux-amd64', '--job_port', '58447', '--log_level', 'info', '--log_kind', 'json', '--serve_http=false')
+  (8.6s)
+
+[1m▶ T — Dataflow JSON Data Producer[0m map + schema, emit to both, batches of 200
+WARNING:apache_beam.utils.subprocess_server:Really starting service at localhost:49773 with cmd: ('/root/.apache_beam/cache/prism/bin/apache_beam-v2.75.0-prism-linux-amd64', '--job_port', '49773', '--log_level', 'info', '--log_kind', 'json', '--serve_http=false')
+INFO:PrismRunner:Serving JobManagement (endpoint='localhost:49773')
+INFO:PrismRunner:pipeline done! (job='job-001[job]')
+json_producer: {"batch_size": 200, "batches": 1, "rejected": 2, "sinks": {"batches": 1, "bucket": "mig-000001-1-dev-json-out", "documents": 40, "files": ["json/initial-20260820-203903/ACCOUNT.00000.json"], "prefix": "json/initial-20260820-203903/", "sink": "gcs-json"}, "written": 40}
+WARNING:apache_beam.utils.subprocess_server:Really destroying service at localhost:49773 with cmd: ('/root/.apache_beam/cache/prism/bin/apache_beam-v2.75.0-prism-linux-amd64', '--job_port', '49773', '--log_level', 'info', '--log_kind', 'json', '--serve_http=false')
+  (15.5s)
+
+[1m▶ L — Loader App[0m download JSON → Target System APIs with retries → load artefacts
+loader: run=initial-20260820-203903 files=1 documents=40 accepted=40 duplicates=0 errors=0 retries=3 -> gs://mig-000001-1-dev-recon/load/initial-20260820-203903/
+  (10.4s)
+
+[1m▶ R — Reconciliation Services[0m source + transformation/load recon, migrability reports
+{
+  "runId" : "initial-20260820-203903",
+  "runKind" : "initial",
+  "windowFrom" : "1970-01-01T00:00:00Z",
+  "windowTo" : "2026-08-01T00:00:00Z",
+  "generatedAt" : "2026-08-20T20:40:29.389239843Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 76,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 42,
+    "distinctDedupKeys" : 42,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 42,
+    "enrichedRows" : 42,
+    "targetDocuments" : 40,
+    "targetDistinctKeys" : 40,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 40,
+    "loaderErrors" : 0
+  },
+  "balancingEquation" : {
+    "srcRead" : 76,
+    "written" : 40,
+    "excluded" : 10,
+    "rejected" : 6,
+    "duplicates" : 20,
+    "accounted" : 76,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "ledgerAgreement" : {
+    "ledgerExcluded" : 10,
+    "lineageExcluded" : 10,
+    "ledgerDuplicates" : 20,
+    "lineageDuplicates" : 20,
+    "rejectLogRejected" : 6,
+    "lineageRejected" : 6,
+    "agrees" : true
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_INVALID_JSON",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_SHORT_RECORD",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 76,
+    "migrated" : 40,
+    "excludedByPolicy" : 10,
+    "blockedByDataQuality" : 6,
+    "migrabilityRate" : 60.61,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 33
+```

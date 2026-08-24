@@ -1,0 +1,23 @@
+@startuml readme-07-extend-not-rewrite
+' PlantUML equivalent of README.md "Slide 9 — Extend, not rewrite"
+!pragma layout smetana
+left to right direction
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+rectangle "contracts/ — the only thing a project edits" as contracts #eef4fa {
+    rectangle "mapping-project1.yaml" as Y1
+    rectangle "mapping-project2.yaml" as Y2
+    rectangle "TDS defs"              as T1
+    rectangle "JSON Schemas"          as S1
+}
+
+rectangle "Engine — zero code diff" as engine #f5fbf5 {
+    rectangle "Beam pipelines · Dataform · recon" as PIPE #dff0d8
+}
+
+Y1 --> PIPE
+Y2 --> PIPE
+T1 --> PIPE
+S1 --> PIPE
+@enduml

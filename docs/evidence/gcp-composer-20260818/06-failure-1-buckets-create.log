@@ -1,0 +1,26 @@
+# Failure 1 — loader_app: storage.buckets.create denied (DAG run 19:36, task failed)
+
+Only the DAG path could surface this. Under Composer the pods authenticate as the
+least-privilege dataflow-worker service account via Workload Identity; every other
+path (local stack, make smoke-gcp) authenticates as the human operator, whose rights
+are far broader, so the call quietly succeeded there.
+
+## Captured from Cloud Logging
+```
+[base] 	at ro.mig.loader.LoaderApp.main(LoaderApp.java:71)
+[base] 	at ro.mig.common.HttpObjectStore.createBucket(HttpObjectStore.java:95)
+[base] }
+[base]   }
+[base]     ]
+[base]       }
+[base]         "reason": "forbidden"
+[base]         "domain": "global",
+[base]         "message": "dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com does not have storage.buckets.create access to the Google Cloud project. Permission 'storage.buckets.create' denied on resource '//storage.googleapis.com/projects/_/buckets/mig-000001-1-dev-recon' (or it may not exist).",
+[base]       {
+```
+
+## Fix
+apps/common/.../HttpObjectStore.java — createBucket returns immediately against real
+GCS; bucket provisioning belongs to Terraform there. Auto-creation exists for
+fake-gcs-server, which starts empty, so it is now scoped to the emulator.
+Regression test: apps/common/src/test/java/ro/mig/common/HttpObjectStoreTest.java

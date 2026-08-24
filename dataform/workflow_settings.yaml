@@ -1,0 +1,21 @@
+# Dataform project settings — architecture diagram's "Transformation Engine / SQL Transformation" box.
+#
+# These are real Dataform artefacts, not a local approximation. `dataform compile` is a
+# purely local operation, so the same .sqlx files compile here and execute unchanged in a
+# Dataform repository on GCP (see docs/runbook-gcp.md). Only the *executor* differs:
+# locally local/scripts/run_dataform.py runs the compiled SQL against the emulator; on GCP
+# the Dataform service runs it, invoked by Composer.
+
+dataformCoreVersion: 3.0.0
+
+defaultProject: mig-local
+defaultDataset: bq_transformation
+defaultLocation: EU
+defaultAssertionDataset: bq_recon
+
+vars:
+  extractionDataset: bq_extraction
+  transformationDataset: bq_transformation
+  # Overridden per run: `dataform compile --vars=runId=...`. Reconciliation always
+  # scopes to one run id.
+  runId: ""
