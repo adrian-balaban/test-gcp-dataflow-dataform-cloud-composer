@@ -1,8 +1,12 @@
 # Alternative runtime implementations that satisfy the same C1
 
-> **Status:** design proposal, not an implementation. Untracked — not part of the
-> build or the acceptance suite. Sits alongside `ARCHITECTURE.md` as a
-> "what else could live inside the C1 boundary" companion.
+> **Status:** design proposal, not an implementation. Tracked in git and rendered
+> to `docs/plantuml/alternative-implementations.pdf`, but **not part of the build
+> or the acceptance suite** — nothing here is wired into `make verify`, and no
+> proposal below has been approved. Sits alongside
+> [`ARCHITECTURE.md`](../ARCHITECTURE.md) as a "what else could live inside the C1
+> boundary" companion: `ARCHITECTURE.md` describes the system as built, this
+> document describes runtimes it could be rebuilt on.
 >
 > **Date:** 2026-08-19. Grounded in the working tree at that point.
 >
@@ -21,8 +25,9 @@
 
 ## What this document is
 
-`README.md` and `ARCHITECTURE.md` state the load-bearing rule for this
-project (README.md:107-110, ARCHITECTURE.md:379-381):
+`README.md` states the load-bearing rule for this project (README.md:107-110);
+[`ARCHITECTURE.md`](../ARCHITECTURE.md)'s "C1 — System Context, and C2 —
+Containers" section is where that boundary is analysed:
 
 > **C1 is the specification, not a picture of this repo. The platform is GCP and
 > stays GCP; what varies is the runtime inside the boundary.**
@@ -346,6 +351,76 @@ harness needs a streaming counterpart.
 **Biggest risk:** the mainframe may not expose Db2 CDC — and if it cannot, this
 proposal is not available at all. Feasibility is gated on an external party.
 
+### E-bis — Apache Flink instead of Beam Streaming
+
+> **Added 2026-08-27.** A sub-variant of E, not a fifth proposal: same C1 edge
+> modification, same acceptance damage, same external gating. Only the streaming
+> engine differs.
+
+The shape proposed is: (1) Flink CDC from the mainframe, (2) Flink SQL or
+DataStream for the two-door engine, (3) Flink sinks to Target System + BigQuery.
+Each step evaluated:
+
+**(1) "Flink CDC from mainframe" does not exist as stated.** The Flink CDC
+connector family (`flink-cdc-connectors`) has a Db2 connector, but it wraps
+Debezium's Db2 connector, which supports **Db2 LUW only — not Db2 for z/OS**.
+Mainframe change capture goes through IBM IIDR (InfoSphere Data Replication for
+z/OS), Precisely Connect, or Qlik Replicate, all of which land in Kafka. So step
+1 is really **IIDR → Kafka → Flink**. Two consequences: it inherits E's gating
+risk verbatim *plus* a commercial replication licence; and once the feed is a
+Kafka topic, the CDC engine is interchangeable — Beam-on-Dataflow could consume
+the same topic, so the Flink choice stops being about CDC at all.
+
+**(2) DataStream, not Flink SQL.** Fixed-width TDS parsing needs a UDF either
+way, and **Flink SQL has no side-output equivalent**: emitting two dispositions
+would need a STATEMENT SET with mirrored `WHERE` filters, duplicating the routing
+predicate and breaking the single-routing-decision property the balancing
+equation rests on. `ProcessFunction` + two `OutputTag`s is the honest
+translation; the shared `route_intake` / `survivor_rank` port unchanged, as in E.
+Table API is only worth reaching for on downstream aggregation, where Dataform
+already sits.
+
+**(3) The sinks are where GCP charges for this.**
+
+- **There is no managed Flink on GCP.** Dataflow *is* the managed streaming
+  runtime here. Flink means the `flink-kubernetes-operator` on GKE — owning
+  JobManager HA, GCS checkpoint storage, savepoint-based upgrades, backpressure
+  tuning — or Confluent Cloud for Apache Flink. This is the largest delta: it
+  raises E's already-highest ops weight.
+- **The BigQuery sink is second-class.** Google's `flink-bigquery-connector` is
+  much younger than Dataflow's native BigQuery I/O, and exactly-once via the
+  Storage Write API is recent. Under at-least-once,
+  `src_read == migrated + not_migrated` holds only with idempotent keyed writes.
+- The Target System sink is a good fit — `AsyncWaitOperator` with retry, arguably
+  better than Beam's.
+
+**Where Flink genuinely beats Beam Streaming:** keyed state with TTL, and
+watermark/late-event handling — precisely the "streaming dedup / state is the
+hardest ops problem in the set" objection in E. But per the 2026-08-21 header,
+the simplification **removes `dedup`**, so this advantage is moot against the
+target baseline. It would matter only if a future requirement reintroduces
+keyed-state dedup.
+
+**The one argument that survives:** existing team fluency with Flink (the
+CDC-outbox POCs in the neighbouring repos). That is a real cost input the
+comparison matrix does not score.
+
+| vs. E (Beam Streaming on Dataflow) | E-bis (Flink) |
+|---|---|
+| **C1** | modified, same single input edge |
+| **Acceptance** | identical damage — criteria 5 and 8 break |
+| **CDC source** | worse: no z/OS connector, needs IIDR/Precisely/Qlik + licence |
+| **Engine expressiveness** | better (keyed state + TTL) — but moot post-simplification |
+| **Managed runtime** | worse: self-run on GKE vs. serverless Dataflow |
+| **BigQuery sink maturity** | worse |
+| **Target System sink** | slightly better (`AsyncWaitOperator`) |
+| **Ops weight** | **highest in the document** |
+| **Effort** | L, above E |
+
+**Verdict:** not recommended over E on GCP. Choose it only if the organisation is
+already operating Flink and the ops weight is therefore pre-paid, or if a
+keyed-state requirement returns.
+
 ---
 
 ## Comparison matrix
@@ -378,7 +453,10 @@ proposal is not available at all. Feasibility is gated on an external party.
   already proves the shape locally via `run_pipeline.py`; the scale ceiling is
   the catch.
 - **Real-time + CDC available → E (Streaming / CDC).** But it modifies C1 and is
-  the highest-effort, highest-risk option.
+  the highest-effort, highest-risk option. If the streaming engine is up for
+  debate, see **E-bis** for why Apache Flink is not an improvement on Beam
+  Streaming *on GCP* — no managed runtime, no Db2 z/OS CDC connector, and its one
+  real edge (keyed state + TTL) is moot after the 2026-08-21 simplification.
 
 A pragmatic sequence: **D as the MVP → B or C as the production batch runtime →
 E only if CDC is available.** All of B-D satisfy

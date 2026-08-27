@@ -392,6 +392,16 @@ reconciliation edge beyond the prototype's internal balancing equation — not a
 is not ranked above, but it is the edge that closes the loop the Auditor ultimately needs, and
 it is now implemented ([`docs/PLAN-CHANGES-22082026.md`](docs/PLAN-CHANGES-22082026.md)).
 
+**C1 constrains the boundary, not the runtime inside it.** Per README.md:107-110, *"C1 is the
+specification, not a picture of this repo — the platform is GCP and stays GCP; what varies is
+the runtime inside the boundary."* Everything analysed above describes the runtime this repo
+actually ships (Beam Python on Dataflow, Composer, Dataform). For the worked-out alternatives
+that satisfy the same C1 — Spark/Dataproc, dbt+BigQuery, Cloud Run+Workflows, and a
+streaming/CDC variant that modifies one input edge — see
+[`docs/alternative-implementations.md`](docs/alternative-implementations.md). Those are
+unapproved proposals, not descriptions of this system; nothing there is in the build or the
+acceptance suite.
+
 ## C3 — Components (File Processor Pipeline)
 
 Zooming into the **File Processor Pipeline** container — `pipelines/file_processor` plus the
