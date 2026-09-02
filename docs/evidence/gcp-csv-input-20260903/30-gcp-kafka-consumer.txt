@@ -1,0 +1,31 @@
+# GCP — the mock's Kafka consumer re-attached after the recycle (2026-09-03)
+#
+# Context: the first run's mock instance lost its OAUTHBEARER login after ~27 h of uptime
+# (see 22-gcp-first-attempt-failure.txt). Recycling the service with the same image
+# (gcloud run services update target-system-mock --image=<same>) created revision
+# target-system-mock-00004-ggx: fresh instance, fresh login. The consumer group
+# (target-system-mock) resumed from its committed offsets and drained the 200 stale
+# messages left by the failed run (50 json_producer + 150 loader, 3 attempts x 50)
+# as duplicates — the duplicate-tolerant settle path, not a re-processing bug.
+# Log lines are UTC, from Cloud Logging resource.type="cloud_run_revision".
+
+2026-09-02T23:19:48.404539Z	target-system-mock listening on :8080 (injected failure rate 15%, confirmations → target-system-confirmations, consuming target-system-target)
+2026-09-02T23:19:48.713882Z	[mock] consuming target-system-target → confirmations=target-system-confirmations rejections=target-system-rejections
+2026-09-02T23:19:50.397771Z	[target-topic-consumer] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-target-system-mock-1, groupId=target-system-mock] Cluster ID: 90eZMDCSR-ShIdig8Mev3g
+2026-09-02T23:19:50.495215Z	[kafka-producer-network-thread | producer-1] INFO org.apache.kafka.clients.Metadata - [Producer clientId=producer-1] Cluster ID: 90eZMDCSR-ShIdig8Mev3g
+2026-09-02T23:19:53.628986Z	[target-topic-consumer] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=consumer-target-system-mock-1, groupId=target-system-mock] Successfully synced group in generation Generation{generationId=5, memberId='consumer-target-system-mock-1-5af8d9b6-9afd-408c-88a1-3bb926a11666', protocol='range'}
+2026-09-02T23:19:53.631121Z	[target-topic-consumer] INFO org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-target-system-mock-1, groupId=target-system-mock] Adding newly assigned partitions: [target-system-target-0, target-system-target-1, target-system-target-2, target-system-target-3, target-system-target-4, target-system-target-5, target-system-target-6, target-system-target-7, target-system-target-8, target-system-target-9, target-system-target-10, target-system-target-11]
+
+# /__admin/stats a few seconds after the attach — the stale backlog already drained
+# (50 accepted = the json_producer messages seen first; 150 duplicates = the loader's
+# three publish rounds of the same 50 keys; one confirmation per document):
+{
+  "received" : 200,
+  "accepted" : 50,
+  "duplicatesIgnored" : 150,
+  "injectedFailures" : 0,
+  "confirmationsPublished" : 200,
+  "rejectionsPublished" : 0,
+  "consumedFromTopic" : 200,
+  "distinctAccounts" : 50
+}

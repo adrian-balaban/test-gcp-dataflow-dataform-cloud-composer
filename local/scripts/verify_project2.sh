@@ -37,12 +37,12 @@ echo "  $BEFORE"
 echo
 echo "${BOLD}running project1${OFF} (contracts/mappings/mapping-project1.yaml)"
 MAPPING=contracts/mappings/mapping-project1.yaml \
-  .venv/bin/python -m tests.project_smoke --mapping contracts/mappings/mapping-project1.yaml --layout fixed
+  .venv/bin/python -m tests.project_smoke --mapping contracts/mappings/mapping-project1.yaml
 
 echo
 echo "${BOLD}running project2${OFF} (contracts/mappings/mapping-project2.yaml)"
 MAPPING=contracts/mappings/mapping-project2.yaml \
-  .venv/bin/python -m tests.project_smoke --mapping contracts/mappings/mapping-project2.yaml --layout csv
+  .venv/bin/python -m tests.project_smoke --mapping contracts/mappings/mapping-project2.yaml
 
 echo
 echo "${BOLD}engine fingerprint after project2${OFF}"

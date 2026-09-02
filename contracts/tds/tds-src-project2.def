@@ -10,23 +10,20 @@
 #     engine no longer has a filter stage (D1), the predicate difference is preserved
 #     only as a comment for context
 #   * transforms project1 never uses (`const`, `concat`)
-#   * the delimited layout rather than the copybook one
 #
-# It reads the same physical extract, which is the point: the layout coordinates and the
-# field naming are both data, so a new project reinterprets the same bytes without a line
-# of engine code changing.
+# It reads the same physical extract, which is the point: the field naming is data, so a
+# new project reinterprets the same bytes without a line of engine code changing.
 #
 # Homogeneous definition (D6): every field is `.DAT`. As with project1, enrichment
 # fields (tier, outlet, riskBand) are joined downstream, not carried here.
 
 record DEPOSIT
-  layout fixed  width=59
   layout csv    delimiter=|  header=true
 
-  field DEP_REF     offset=0   len=12  col=0  type=string   required=true
-  field OWNER_NO    offset=12  len=10  col=1  type=string   required=true
-  field SEG_CODE    offset=22  len=4   col=2  type=string   required=true
-  field CCY         offset=32  len=3   col=4  type=string   required=true
-  field START_DT    offset=35  len=8   col=5  type=date     required=true
-  field ST          offset=43  len=1   col=6  type=string   required=true
-  field AMT         offset=44  len=15  col=7  type=decimal  scale=2  required=true
+  field DEP_REF     col=0  type=string   required=true
+  field OWNER_NO    col=1  type=string   required=true
+  field SEG_CODE    col=2  type=string   required=true
+  field CCY         col=4  type=string   required=true
+  field START_DT    col=5  type=date     required=true
+  field ST          col=6  type=string   required=true
+  field AMT         col=7  type=decimal  scale=2  required=true

@@ -1,10 +1,10 @@
 # Mapping — project2, the extensibility proof.
 #
 # Everything about this project differs from project1: source field names, the record
-# subset, the exclusion predicate, the target document shape, the transforms used, and the
-# physical layout (delimited rather than fixed-width). None of that required a line of
-# engine code — which is the claim being tested. `make verify-project2` asserts it
-# mechanically with `git diff --exit-code` over pipelines/ and apps/.
+# subset, the exclusion predicate, the target document shape, and the transforms used.
+# None of that required a line of engine code — which is the claim being tested.
+# `make verify-project2` asserts it mechanically with `git diff --exit-code` over
+# pipelines/ and apps/.
 
 project: project2
 
@@ -14,8 +14,6 @@ target_schema: contracts/schemas/target-deposit.schema.json
 
 source:
   record: DEPOSIT
-  # project1 reads the copybook layout; this one reads the delimited layout of the same
-  # extract. Both coordinate systems are declared in the TDS, so this is a one-word switch.
   layout: csv
 
 target:

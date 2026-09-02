@@ -173,11 +173,12 @@ class Mapping:
         return self.target_tds.record(self.target_record)
 
     def with_layout(self, layout: str) -> "Mapping":
-        """Switch between the copybook (`fixed`) and delimited (`csv`) source layouts.
+        """Switch the source layout the mapping reads with.
 
-        Both coordinate systems are already declared in the TDS, so this changes which
-        one is read — never how records are mapped. Used by `HARNESS_FORMAT` so the
-        prototype can demo either extract shape without a code change.
+        Every contract in this repo declares only `csv` now — the fixed-width copybook
+        alternative was removed. Kept as a general operation on `Mapping` rather than
+        deleted, since the parser (`tds.py`) still understands other layout kinds and
+        nothing about this method is copybook-specific.
         """
         if layout not in self.src_record.layouts:
             raise KeyError(
@@ -230,7 +231,7 @@ def load_mapping(path: str | Path, root: str | Path | None = None) -> Mapping:
         target_tds=target_tds,
         target_schema_path=(base / cfg["target_schema"]) if cfg.get("target_schema") else None,
         source_record=cfg["source"]["record"],
-        source_layout=cfg["source"].get("layout", "fixed"),
+        source_layout=cfg["source"].get("layout", "csv"),
         target_record=target_record_name,
         account_key=tuple(cfg.get("account_key", []) or []),
         rules=tuple(rules),

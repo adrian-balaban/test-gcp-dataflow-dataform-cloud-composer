@@ -12,7 +12,7 @@ System_Ext(DS, "Downstream Consumers", "")
 
 System_Boundary(BOUNDARY, "Mainframe -> Target System Migration Platform") {
     Container(DAG,       "Migration Orchestrator", "Airflow DAG on Cloud Composer", "composer/dags/mig_000001_1.py — sequences the lanes, runs assert_run_balanced against run_ledger")
-    Container(CONTRACTS, "Contract Store", "YAML / JSON Schema / copybooks in Git", "contracts/ — TDS layouts, field mappings, JSON Schemas, reference data. The only thing edited to onboard a project")
+    Container(CONTRACTS, "Contract Store", "YAML / JSON Schema in Git", "contracts/ — TDS layouts (pipe-delimited CSV), field mappings, JSON Schemas, reference data. The only thing edited to onboard a project")
     Container(EXT,       "Extractor App", "Java, Maven", "apps/extractor-app — pulls TDS + artefacts from the mainframe lane, writes .FLG/.CHS/.ERR/.RPT")
     Container(FP,        "File Processor Pipeline", "Apache Beam / Python — Direct or Dataflow runner", "pipelines/file_processor — the two-door engine: parse->map->schema; writes run_ledger")
     Container(EN,        "Data Enrichment Pipeline", "Apache Beam / Python", "pipelines/data_enrichment — joins reference data, derives curated attributes")

@@ -77,7 +77,7 @@ Target is **~1.7M accounts / ~20B transactions**. The prototype runs 405–505 r
 
 | # | Item | Why | Effort |
 |---|---|---|---|
-| 3.1 | **Copybook → TDS generation** | `contracts/copybooks` exists; the real layouts will arrive as COBOL copybooks and hand-transcription at scale is an error source. Generate the TDS defs, and diff-test the generator against the hand-written ones already in the repo. | M |
+| ~~3.1~~ ✅ | ~~**Copybook → TDS generation**~~ — **superseded 2026-09-02**: the fixed-width COBOL copybook source layout was removed entirely (`docs/PLAN-CHANGES-02092026-kafka-loader.md` follow-up). Input is pipe-delimited CSV only now, so the hand-transcription risk this item names no longer exists. | — | — |
 | 3.2 | **Contract versioning** | A mapping change mid-migration must be attributable: version each contract, record the version in `run_ledger`, and refuse a re-run whose contract version differs from the version its first run recorded, unless explicitly forced. | S |
 | 3.3 | **Schema evolution rules** | What happens when the source adds a field mid-migration? Today: `MAP_UNKNOWN_TRANSFORM` or silent pass-through. Decide, encode as a reason code, test it. | S |
 | 3.4 | **Reference-data ownership and freshness** | `contracts/reference` is static in the prototype. In production it has an owner, a refresh cadence, and an effective-date — enrichment joined against stale reference data is a silent correctness bug that balances perfectly. | M |

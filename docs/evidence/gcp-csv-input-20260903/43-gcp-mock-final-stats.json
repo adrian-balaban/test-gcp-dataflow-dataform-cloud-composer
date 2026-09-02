@@ -1,0 +1,10 @@
+{
+  "received" : 300,
+  "accepted" : 50,
+  "duplicatesIgnored" : 250,
+  "injectedFailures" : 0,
+  "confirmationsPublished" : 300,
+  "rejectionsPublished" : 0,
+  "consumedFromTopic" : 300,
+  "distinctAccounts" : 50
+}

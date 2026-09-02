@@ -5,7 +5,7 @@ what makes it usable as the extensibility proof — the same command runs projec
 project2, and if it needed a branch for either, the "extend, not rewrite" claim would
 already be false.
 
-    python -m tests.project_smoke --mapping contracts/mappings/mapping-project2.yaml --layout csv
+    python -m tests.project_smoke --mapping contracts/mappings/mapping-project2.yaml
 """
 
 from __future__ import annotations
@@ -26,7 +26,6 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> int:
     ap = argparse.ArgumentParser(description="Smoke-test one project's contract")
     ap.add_argument("--mapping", required=True)
-    ap.add_argument("--layout", choices=("fixed", "csv"), default="fixed")
     ap.add_argument("--accounts", type=int, default=400)
     ap.add_argument("--seed", type=int, default=4242)
     args = ap.parse_args()
@@ -37,11 +36,11 @@ def main() -> int:
     # as a header by a DEPOSIT-keyed parser and would be miscounted as a data row. The
     # header spec (contracts/README.md) is specifically project1's; skip it here.
     lines, manifest = generate(
-        accounts=args.accounts, layout=args.layout, seed=args.seed,
+        accounts=args.accounts, seed=args.seed,
         header=(args.mapping.endswith("mapping-project1.yaml")),
     )
 
-    mapping = load_mapping(ROOT / args.mapping, root=ROOT).with_layout(args.layout)
+    mapping = load_mapping(ROOT / args.mapping, root=ROOT)
     engine = TransformEngine(mapping)
     router = RecordRouter(engine, run_id=f"smoke-{mapping.project}")
 

@@ -25,7 +25,7 @@ the data itself — it reads an already-existing dump (`readSource(a.input)`, ta
 and just packages it into the `.DAT`/`.CHS`/`.ERR`/`.RPT`/`.FLG` artefacts per the contract.
 
 `harness/generate.py` — this is the actual generator. It produces a synthetic Db2 account
-extract (`python -m harness.generate --accounts 2000 --format copybook`), plus a `Manifest`
+extract (`python -m harness.generate --accounts 2000`), plus a `Manifest`
 JSON with the exact expected counts (how many valid records, how many rejected, and for which
 reason). It deliberately seeds 5 kinds of malformed records (`short_record`, `bad_numeric`,
 `bad_date`, `unmapped_status`, `schema_violation`) so it can later verify the pipeline

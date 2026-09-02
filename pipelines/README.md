@@ -19,7 +19,7 @@ pipelines/
 ├── common/              the engine — no Beam, no cloud, pure logic
 │   ├── doors.py         the two doors + the balancing equation
 │   ├── engine.py        routing a record through those doors
-│   ├── tds.py           the record-layout parser (fixed-width or JSON)
+│   ├── tds.py           the record-layout parser (pipe-delimited CSV or JSON)
 │   ├── mapping.py       YAML-driven SRC → TARGET transformation
 │   ├── schema.py        JSON Schema validation + BigQuery schema derivation
 │   ├── config.py        one Backend + Runner, validated; and require_identifier

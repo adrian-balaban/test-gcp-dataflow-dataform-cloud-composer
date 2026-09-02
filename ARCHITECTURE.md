@@ -8,9 +8,9 @@ with concrete improvement proposals. This is analysis only — no code was chang
 A mainframe→Target-System migration prototype organized around one claim — **extend, never
 rewrite** — backed by a contract layer and a correctness engine:
 
-- **`contracts/`** is the only thing you touch to add a migration project: TDS layouts, YAML
-  mappings, JSON Schemas, copybooks, reference data. `make verify-project2` proves a
-  *different* project runs end-to-end with zero changes to `pipelines/` or `apps/`.
+- **`contracts/`** is the only thing you touch to add a migration project: TDS layouts
+  (pipe-delimited CSV), YAML mappings, JSON Schemas, reference data. `make verify-project2`
+  proves a *different* project runs end-to-end with zero changes to `pipelines/` or `apps/`.
 - **The two-door engine** (`pipelines/common/engine.py`, `doors.py`):
   `parse → filter → dedup → map → schema`, with the balancing equation
   `src_read == migrated + not_migrated`, always recorded with the disposition breakdown

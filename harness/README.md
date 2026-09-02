@@ -7,6 +7,10 @@ pipeline happened to produce.
 > **Update 2026-08-21.** [`docs/PLAN-CHANGES-21082026.md`](../docs/PLAN-CHANGES-21082026.md)
 > has landed: the harness seeds only written and rejected records — no excluded (CORP/PRIV)
 > block, no duplicates — and the manifest feeds 8 acceptance criteria, not 10.
+>
+> **Update 2026-09-02.** `--format` is gone. The harness emits pipe-delimited CSV only —
+> the fixed-width COBOL copybook layout was removed, following up on
+> [`docs/PLAN-CHANGES-02092026-kafka-loader.md`](../docs/PLAN-CHANGES-02092026-kafka-loader.md).
 
 ```
 harness/
@@ -76,28 +80,12 @@ genuinely exercised rather than just totalled. `PARSE_INVALID_JSON` is gone — 
 A pipeline that rejected all five for the *wrong* reasons would still balance — and would
 still fail the reason-code check, which examines the codes individually.
 
-## Both layouts, same records
-
-```mermaid
-flowchart LR
-    R["Row objects<br/><i>the same 405 records</i>"] --> F["fixed-width<br/>COBOL copybook"]
-    R --> C["CSV<br/>pipe-delimited"]
-    F --> E{"parsed fields<br/>identical?"}
-    C --> E
-    E -->|"must be yes"| G["layout is config,<br/>not code"]
-    style G fill:#2d7a3e,color:#fff
-```
-
-`HARNESS_FORMAT=csv` switches the emitted layout. The unit tests parse both and assert the
-resulting field dictionaries are equal — which is what makes "the layout is a
-configuration choice" a checked claim rather than a hope.
-
 ## Deterministic
 
 Everything is driven by a seed:
 
 ```bash
-python -m harness.generate --accounts 400 --seed 99 --format copybook
+python -m harness.generate --accounts 400 --seed 99
 ```
 
 Same seed, same 405 records, same manifest, byte for byte. A failing run can be reproduced

@@ -76,6 +76,18 @@ export PLANTUML_JAR=/path/to/plantuml.jar
 ./render.sh
 ```
 
+**Which version.** The committed `.svg` files were rendered with **PlantUML
+1.2024.7** (GPL distribution). Versions are not byte-compatible: 1.2023.x adds
+an XML prolog, 1.2026.x rewrites the SVG structure (`data-diagram-type`,
+processing instructions, attribute order), so re-rendering with a different jar
+rewrites the whole single-line SVG instead of just the changed geometry. Use
+exactly 1.2024.7 to keep diffs minimal:
+
+```bash
+export PLANTUML_JAR=~/bin/plantuml-1.2024.7.jar
+./render.sh
+```
+
 PDFs are produced from the SVGs with `cairosvg`, because PlantUML's own `-tpdf`
 needs Batik/FOP jars that are not part of the standard distribution. If
 `cairosvg` is not on `PATH`, `render.sh` renders PNG + SVG and skips the PDFs.

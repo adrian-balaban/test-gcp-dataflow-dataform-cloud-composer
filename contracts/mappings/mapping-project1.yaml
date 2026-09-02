@@ -12,8 +12,8 @@ target_schema: contracts/schemas/target-account.schema.json
 
 source:
   record: ACCOUNT
-  # fixed = COBOL copybook fixed-width | csv = delimited. Switchable without code changes.
-  layout: fixed
+  # Pipe-delimited CSV only — the fixed-width copybook layout was removed.
+  layout: csv
 
 target:
   record: TARGET_SYSTEM_ACCOUNT

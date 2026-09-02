@@ -146,6 +146,10 @@ class ReadBundleFn(beam.DoFn):
         # Locally the keyring on disk; on Dataflow the key is materialised from Secret
         # Manager — see pipelines/common/pgp.py. One call site, two worlds.
         self.gpg = resolve_gpg(self.cfg)
+        # Needed only to recognise the CSV header line (contracts/README.md) before it
+        # reaches `src_read` — ParseFn already skips it via the same check, but by then
+        # the header has already been counted here, one line too early.
+        self.engine = TransformEngine(load_mapping(self.cfg.mapping_path))
 
     def process(self, _element: Any) -> Iterable[tuple[str, str]]:
         names = artefact_names(self.record_name)
@@ -205,7 +209,7 @@ class ReadBundleFn(beam.DoFn):
         for file_name in sorted(f for f in files if f.endswith(".DAT")):
             lines = files[file_name].decode("utf-8").splitlines()
             for line in lines:
-                if line.strip():
+                if line.strip() and not self.engine.is_header(line):
                     self.records_read.inc()
                     yield file_name, line
 

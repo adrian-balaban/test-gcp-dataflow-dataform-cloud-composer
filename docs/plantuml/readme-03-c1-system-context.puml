@@ -28,7 +28,7 @@ Rel(AUD, SYS, "reads run_ledger, .RPT and recon report", "BigQuery / GCS")
 Rel(SRE, SYS, "provisions and tears down", "Terraform, CLI")
 Rel(SYS, LDT, "hands off TARGET JSON + .RPT", "GCS")
 
-Rel(MF,  SYS, "TDS fixed-width files + .FLG/.CHS artefacts", "PGP over SFTP/GCS")
+Rel(MF,  SYS, "TDS pipe-delimited CSV files + .FLG/.CHS artefacts", "PGP over SFTP/GCS")
 Rel(SYS, VC,  "publishes accounts, idempotent", "Kafka, key = dedupKey")
 Rel(VC,  SYS, "confirmation and rejection events as streams", "JSON or protobuf, Kafka")
 Rel(SYS, DS,  "publishes enriched account JSON", "Kafka")

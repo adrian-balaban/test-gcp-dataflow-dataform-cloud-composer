@@ -28,7 +28,7 @@ datele — citește un dump deja existent (`readSource(a.input)`, stil table2tab
 împachetează în artefactele `.DAT`/`.CHS`/`.ERR`/`.RPT`/`.FLG` conform contractului.
 
 `harness/generate.py` — acesta e generatorul propriu-zis. Produce un extract sintetic de
-conturi Db2 (`python -m harness.generate --accounts 2000 --format copybook`), plus un
+conturi Db2 (`python -m harness.generate --accounts 2000`), plus un
 `Manifest` JSON cu numărătorile exacte așteptate (câte înregistrări valide, câte respinse, și
 pe ce motiv). Seedează deliberat 5 tipuri de înregistrări malformate (`short_record`,
 `bad_numeric`, `bad_date`, `unmapped_status`, `schema_violation`) ca să poată verifica ulterior

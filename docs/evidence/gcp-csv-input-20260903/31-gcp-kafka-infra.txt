@@ -1,0 +1,15 @@
+# GCP — Terraform-managed Kafka cluster, topics and IAM (2026-09-03, run run-dag-20260903-0125)
+
+## Managed Kafka cluster
+projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka	ACTIVE
+
+## Topics — unchanged from the Kafka-loader change
+target-system-confirmations      partitions=1 replicationFactor=3
+target-system-rejections         partitions=1 replicationFactor=3
+target-system-target             partitions=12 replicationFactor=3
+
+## roles/managedkafka.client — project-level grants (every client that opens a socket to the broker)
+serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com
+serviceAccount:loader-app@mig-000001-1-dev.iam.gserviceaccount.com
+serviceAccount:recon-service@mig-000001-1-dev.iam.gserviceaccount.com
+serviceAccount:target-system-mock@mig-000001-1-dev.iam.gserviceaccount.com

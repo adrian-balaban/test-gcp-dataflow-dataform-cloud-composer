@@ -570,6 +570,17 @@ authenticates as the human operator, whose rights are far broader.
   rebuild from that tree — while Kubernetes defaults to `IfNotPresent` for any tag other
   than `:latest`. A node that already pulled the tag keeps serving the old layer, so a fix
   appears not to work. The DAG now sets `image_pull_policy="Always"` on all pod tasks.
+- **A `terraform apply` that changes nothing deploys nothing — recycle Cloud Run explicitly.**
+  For Cloud Run services the same-tag problem has a second face: `terraform apply` reuses the
+  existing revision when the image digest is unchanged, so the *old instance* keeps serving —
+  including its old runtime state. This bit the `target-system-mock` on 2026-09-03: the instance
+  from the previous day (~27 h uptime) had a wedged OAUTHBEARER re-login ("logout() still needs
+  to be called on a previous login"), so its Kafka consumer looped on "terminated during
+  authentication" once a second and consumed nothing — the loader correctly reported every
+  document as `unsettled` and the DAG run failed. A restart must be asked for by name:
+  `gcloud run services update <service> --image=$(gcloud run services describe <service>
+  --format='value(spec.template.spec.containers[0].image)')` creates a new revision of the same
+  image — fresh instance, fresh login — and stateful consumers resume from committed offsets.
 
 ### Triggering the DAG — the run id is a `--conf` argument, not the Airflow run id
 
@@ -597,7 +608,7 @@ Always trigger with an explicit safe-identifier `--conf`, and pre-stage the extr
 RUN_ID=run-dag-20260822-1411
 # 1. pre-stage the extract on the host (harness + extractor-app → real landing bucket)
 . .venv/bin/activate
-python -m harness.generate --accounts 50 --format copybook
+python -m harness.generate --accounts 50
 java -jar apps/extractor-app/target/extractor-app.jar \
   --input local/data/mainframe/ACCOUNT.src \
   --bucket "$(grep GCS_LANDING_BUCKET .env | cut -d= -f2)" \

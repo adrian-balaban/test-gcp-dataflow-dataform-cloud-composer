@@ -1,0 +1,525 @@
+# Local end-to-end on the CSV-only input — 2026-09-03
+# .venv/bin/python local/scripts/run_pipeline.py --profile local  (default 500 accounts, redpanda Kafka loader)
+e2e start: 01:37:43
+
+[1m▶ harness[0m generating 500 accounts (csv)
+505 records -> local/data/mainframe/ACCOUNT.src  (written=500 rejected=5)
+  (0.1s)
+
+[1m▶ E — Extractor App[0m 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=run-20260902-223743 records=505 dat_files=2 extraction_errors=0 -> gs://mig-000001-1-dev-landing/extraction/run-20260902-223743/
+  (1.4s)
+
+[1m▶ T — Dataflow File Processor[0m decrypt, verify .CHS, TDS parse → BigQuery
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+file_processor: {"accounted": 505, "balances": true, "by_reason": {}, "imbalance": 0, "migrated": 502, "not_migrated": 3, "rejected": 3, "src_read": 505, "written": 502}
+  (9.1s)
+
+[1m▶ T — Dataform[0m SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=run-20260902-223743)
+  1 declaration(s), 1 action(s)
+  → mig-local.bq_transformation.account_curated
+  ✓ mig-local.bq_transformation.account_curated: 502 rows
+dataform complete.
+  (6.6s)
+
+[1m▶ T — Dataflow Data Enrichment[0m reference-data join
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+data_enrichment: {"enriched": 502, "read": 502, "reference_unmatched": 502}
+  (6.8s)
+
+[1m▶ T — Dataflow JSON Data Producer[0m map + schema, emit to both, batches of 200
+WARNING:root:crcmod package not found. This package is required if python-snappy or google-crc32c are not installed. To ensure crcmod is installed, install the tfrecord extra: pip install apache-beam[tfrecord]
+json_producer: {"batch_size": 200, "batches": 3, "rejected": 2, "sinks": {"sinks": [{"batches": 3, "messages": 500, "sink": "kafka", "topic": "target-system-target"}, {"batches": 3, "bucket": "mig-000001-1-dev-json-out", "documents": 500, "files": ["json/run-20260902-223743/ACCOUNT.00000.json", "json/run-20260902-223743/ACCOUNT.00001.json", "json/run-20260902-223743/ACCOUNT.00002.json"], "prefix": "json/run-20260902-223743/", "sink": "gcs-json"}]}, "written": 500}
+  (8.9s)
+
+[1m▶ L — Loader App[0m download JSON → Target System APIs with retries → load artefacts
+[main] INFO org.apache.kafka.common.config.AbstractConfig - ProducerConfig values: 
+	acks = -1
+	batch.size = 16384
+	bootstrap.servers = [localhost:19092]
+	buffer.memory = 33554432
+	client.dns.lookup = use_all_dns_ips
+	client.id = producer-1
+	compression.gzip.level = -1
+	compression.lz4.level = 9
+	compression.type = none
+	compression.zstd.level = 3
+	config.providers = []
+	connections.max.idle.ms = 540000
+	delivery.timeout.ms = 120000
+	enable.idempotence = true
+	enable.metrics.push = true
+	interceptor.classes = []
+	key.serializer = class org.apache.kafka.common.serialization.StringSerializer
+	linger.ms = 20
+	max.block.ms = 60000
+	max.in.flight.requests.per.connection = 5
+	max.request.size = 1048576
+	metadata.max.age.ms = 300000
+	metadata.max.idle.ms = 300000
+	metadata.recovery.rebootstrap.trigger.ms = 300000
+	metadata.recovery.strategy = rebootstrap
+	metric.reporters = [org.apache.kafka.common.metrics.JmxReporter]
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partitioner.adaptive.partitioning.enable = true
+	partitioner.availability.timeout.ms = 0
+	partitioner.class = null
+	partitioner.ignore.keys = false
+	receive.buffer.bytes = 32768
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retries = 5
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.assertion.algorithm = RS256
+	sasl.oauthbearer.assertion.claim.aud = null
+	sasl.oauthbearer.assertion.claim.exp.seconds = 300
+	sasl.oauthbearer.assertion.claim.iss = null
+	sasl.oauthbearer.assertion.claim.jti.include = false
+	sasl.oauthbearer.assertion.claim.nbf.seconds = 60
+	sasl.oauthbearer.assertion.claim.sub = null
+	sasl.oauthbearer.assertion.file = null
+	sasl.oauthbearer.assertion.private.key.file = null
+	sasl.oauthbearer.assertion.private.key.passphrase = null
+	sasl.oauthbearer.assertion.template.file = null
+	sasl.oauthbearer.client.credentials.client.id = null
+	sasl.oauthbearer.client.credentials.client.secret = null
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = []
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.jwt.retriever.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever
+	sasl.oauthbearer.jwt.validator.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator
+	sasl.oauthbearer.scope = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = []
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	transaction.timeout.ms = 60000
+	transaction.two.phase.commit.enable = false
+	transactional.id = null
+	value.serializer = class org.apache.kafka.common.serialization.StringSerializer
+
+[main] INFO org.apache.kafka.common.telemetry.internals.KafkaMetricsCollector - initializing Kafka metrics collector
+[main] INFO org.apache.kafka.clients.producer.KafkaProducer - [Producer clientId=producer-1] Instantiated an idempotent producer.
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka version: 4.2.1
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka commitId: 92f61c44867f39dc
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1788388697525
+[kafka-producer-network-thread | producer-1] INFO org.apache.kafka.clients.Metadata - [Producer clientId=producer-1] Cluster ID: redpanda.14db7b25-855f-4dc1-9509-023af4066ef1
+[kafka-producer-network-thread | producer-1] INFO org.apache.kafka.clients.producer.internals.TransactionManager - [Producer clientId=producer-1] ProducerId set to 7 with epoch 0
+[main] INFO org.apache.kafka.common.config.AbstractConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:19092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-loader-run-20260902-223743-1
+	client.rack = 
+	config.providers = []
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = loader-run-20260902-223743
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metadata.recovery.rebootstrap.trigger.ms = 300000
+	metadata.recovery.strategy = rebootstrap
+	metric.reporters = [org.apache.kafka.common.metrics.JmxReporter]
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.assertion.algorithm = RS256
+	sasl.oauthbearer.assertion.claim.aud = null
+	sasl.oauthbearer.assertion.claim.exp.seconds = 300
+	sasl.oauthbearer.assertion.claim.iss = null
+	sasl.oauthbearer.assertion.claim.jti.include = false
+	sasl.oauthbearer.assertion.claim.nbf.seconds = 60
+	sasl.oauthbearer.assertion.claim.sub = null
+	sasl.oauthbearer.assertion.file = null
+	sasl.oauthbearer.assertion.private.key.file = null
+	sasl.oauthbearer.assertion.private.key.passphrase = null
+	sasl.oauthbearer.assertion.template.file = null
+	sasl.oauthbearer.client.credentials.client.id = null
+	sasl.oauthbearer.client.credentials.client.secret = null
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = []
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.jwt.retriever.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever
+	sasl.oauthbearer.jwt.validator.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator
+	sasl.oauthbearer.scope = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	share.acknowledgement.mode = implicit
+	share.acquire.mode = BATCH_OPTIMIZED
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = []
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+[main] INFO org.apache.kafka.common.telemetry.internals.KafkaMetricsCollector - initializing Kafka metrics collector
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka version: 4.2.1
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka commitId: 92f61c44867f39dc
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1788388698269
+[main] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Cluster ID: redpanda.14db7b25-855f-4dc1-9509-023af4066ef1
+[main] INFO org.apache.kafka.clients.consumer.internals.ClassicKafkaConsumer - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Assigned to partition(s): target-system-confirmations-0, target-system-rejections-0
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Seeking to AutoOffsetResetStrategy{type=earliest} offset of partition target-system-confirmations-0
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Seeking to AutoOffsetResetStrategy{type=earliest} offset of partition target-system-rejections-0
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Resetting offset for partition target-system-rejections-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[localhost:19092 (id: 0 rack: null isFenced: false)], epoch=1}}.
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Resetting offset for partition target-system-confirmations-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[localhost:19092 (id: 0 rack: null isFenced: false)], epoch=1}}.
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Resetting generation and member id due to: consumer pro-actively leaving the group
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Request joining group due to: consumer pro-actively leaving the group
+[main] INFO org.apache.kafka.clients.FetchSessionHandler - [Consumer clientId=consumer-loader-run-20260902-223743-1, groupId=loader-run-20260902-223743] Node 0 sent an invalid full fetch response with extraIds=(RfLtUjEGRCiGynz0BsUlVQ), response=()
+[main] INFO org.apache.kafka.common.metrics.Metrics - Metrics scheduler closed
+[main] INFO org.apache.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+[main] INFO org.apache.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+[main] INFO org.apache.kafka.common.metrics.Metrics - Metrics reporters closed
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-loader-run-20260902-223743-1 unregistered
+loader: run=run-20260902-223743 sink=kafka files=3 documents=500 published=500 accepted=0 duplicates=500 errors=0 unsettled=0 retries=0 -> gs://mig-000001-1-dev-recon/load/run-20260902-223743/
+[main] INFO org.apache.kafka.clients.producer.KafkaProducer - [Producer clientId=producer-1] Closing the Kafka producer with timeoutMillis = 30000 ms.
+[main] INFO org.apache.kafka.common.metrics.Metrics - Metrics scheduler closed
+[main] INFO org.apache.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+[main] INFO org.apache.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+[main] INFO org.apache.kafka.common.metrics.Metrics - Metrics reporters closed
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - App info kafka.producer for producer-1 unregistered
+  (10.1s)
+
+[1m▶ R — Reconciliation Services[0m source + transformation/load recon, migrability reports
+[main] INFO org.apache.kafka.common.config.AbstractConfig - ConsumerConfig values: 
+	allow.auto.create.topics = true
+	auto.commit.interval.ms = 5000
+	auto.offset.reset = earliest
+	bootstrap.servers = [localhost:19092]
+	check.crcs = true
+	client.dns.lookup = use_all_dns_ips
+	client.id = consumer-recon-run-20260902-223743-1
+	client.rack = 
+	config.providers = []
+	connections.max.idle.ms = 540000
+	default.api.timeout.ms = 60000
+	enable.auto.commit = false
+	enable.metrics.push = true
+	exclude.internal.topics = true
+	fetch.max.bytes = 52428800
+	fetch.max.wait.ms = 500
+	fetch.min.bytes = 1
+	group.id = recon-run-20260902-223743
+	group.instance.id = null
+	group.protocol = classic
+	group.remote.assignor = null
+	heartbeat.interval.ms = 3000
+	interceptor.classes = []
+	internal.throw.on.fetch.stable.offset.unsupported = false
+	isolation.level = read_uncommitted
+	key.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+	max.partition.fetch.bytes = 1048576
+	max.poll.interval.ms = 300000
+	max.poll.records = 500
+	metadata.max.age.ms = 300000
+	metadata.recovery.rebootstrap.trigger.ms = 300000
+	metadata.recovery.strategy = rebootstrap
+	metric.reporters = [org.apache.kafka.common.metrics.JmxReporter]
+	metrics.num.samples = 2
+	metrics.recording.level = INFO
+	metrics.sample.window.ms = 30000
+	partition.assignment.strategy = [class org.apache.kafka.clients.consumer.RangeAssignor, class org.apache.kafka.clients.consumer.CooperativeStickyAssignor]
+	receive.buffer.bytes = 65536
+	reconnect.backoff.max.ms = 1000
+	reconnect.backoff.ms = 50
+	request.timeout.ms = 30000
+	retry.backoff.max.ms = 1000
+	retry.backoff.ms = 100
+	sasl.client.callback.handler.class = null
+	sasl.jaas.config = null
+	sasl.kerberos.kinit.cmd = /usr/bin/kinit
+	sasl.kerberos.min.time.before.relogin = 60000
+	sasl.kerberos.service.name = null
+	sasl.kerberos.ticket.renew.jitter = 0.05
+	sasl.kerberos.ticket.renew.window.factor = 0.8
+	sasl.login.callback.handler.class = null
+	sasl.login.class = null
+	sasl.login.connect.timeout.ms = null
+	sasl.login.read.timeout.ms = null
+	sasl.login.refresh.buffer.seconds = 300
+	sasl.login.refresh.min.period.seconds = 60
+	sasl.login.refresh.window.factor = 0.8
+	sasl.login.refresh.window.jitter = 0.05
+	sasl.login.retry.backoff.max.ms = 10000
+	sasl.login.retry.backoff.ms = 100
+	sasl.mechanism = GSSAPI
+	sasl.oauthbearer.assertion.algorithm = RS256
+	sasl.oauthbearer.assertion.claim.aud = null
+	sasl.oauthbearer.assertion.claim.exp.seconds = 300
+	sasl.oauthbearer.assertion.claim.iss = null
+	sasl.oauthbearer.assertion.claim.jti.include = false
+	sasl.oauthbearer.assertion.claim.nbf.seconds = 60
+	sasl.oauthbearer.assertion.claim.sub = null
+	sasl.oauthbearer.assertion.file = null
+	sasl.oauthbearer.assertion.private.key.file = null
+	sasl.oauthbearer.assertion.private.key.passphrase = null
+	sasl.oauthbearer.assertion.template.file = null
+	sasl.oauthbearer.client.credentials.client.id = null
+	sasl.oauthbearer.client.credentials.client.secret = null
+	sasl.oauthbearer.clock.skew.seconds = 30
+	sasl.oauthbearer.expected.audience = []
+	sasl.oauthbearer.expected.issuer = null
+	sasl.oauthbearer.header.urlencode = false
+	sasl.oauthbearer.jwks.endpoint.refresh.ms = 3600000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.max.ms = 10000
+	sasl.oauthbearer.jwks.endpoint.retry.backoff.ms = 100
+	sasl.oauthbearer.jwks.endpoint.url = null
+	sasl.oauthbearer.jwt.retriever.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtRetriever
+	sasl.oauthbearer.jwt.validator.class = class org.apache.kafka.common.security.oauthbearer.DefaultJwtValidator
+	sasl.oauthbearer.scope = null
+	sasl.oauthbearer.scope.claim.name = scope
+	sasl.oauthbearer.sub.claim.name = sub
+	sasl.oauthbearer.token.endpoint.url = null
+	security.protocol = PLAINTEXT
+	security.providers = null
+	send.buffer.bytes = 131072
+	session.timeout.ms = 45000
+	share.acknowledgement.mode = implicit
+	share.acquire.mode = BATCH_OPTIMIZED
+	socket.connection.setup.timeout.max.ms = 30000
+	socket.connection.setup.timeout.ms = 10000
+	ssl.cipher.suites = []
+	ssl.enabled.protocols = [TLSv1.2, TLSv1.3]
+	ssl.endpoint.identification.algorithm = https
+	ssl.engine.factory.class = null
+	ssl.key.password = null
+	ssl.keymanager.algorithm = SunX509
+	ssl.keystore.certificate.chain = null
+	ssl.keystore.key = null
+	ssl.keystore.location = null
+	ssl.keystore.password = null
+	ssl.keystore.type = JKS
+	ssl.protocol = TLSv1.3
+	ssl.provider = null
+	ssl.secure.random.implementation = null
+	ssl.trustmanager.algorithm = PKIX
+	ssl.truststore.certificates = null
+	ssl.truststore.location = null
+	ssl.truststore.password = null
+	ssl.truststore.type = JKS
+	value.deserializer = class org.apache.kafka.common.serialization.StringDeserializer
+
+[main] INFO org.apache.kafka.common.telemetry.internals.KafkaMetricsCollector - initializing Kafka metrics collector
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka version: 4.2.1
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka commitId: 92f61c44867f39dc
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1788388730882
+[main] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Cluster ID: redpanda.14db7b25-855f-4dc1-9509-023af4066ef1
+[main] INFO org.apache.kafka.clients.consumer.internals.ClassicKafkaConsumer - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Assigned to partition(s): target-system-confirmations-0
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Seeking to AutoOffsetResetStrategy{type=earliest} offset of partition target-system-confirmations-0
+[main] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Resetting the last seen epoch of partition target-system-confirmations-0 to 1 since the associated topicId changed from null to RfLtUjEGRCiGynz0BsUlVQ
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Resetting offset for partition target-system-confirmations-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[localhost:19092 (id: 0 rack: null isFenced: false)], epoch=1}}.
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Resetting generation and member id due to: consumer pro-actively leaving the group
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=consumer-recon-run-20260902-223743-1, groupId=recon-run-20260902-223743] Request joining group due to: consumer pro-actively leaving the group
+[main] INFO org.apache.kafka.common.metrics.Metrics - Metrics scheduler closed
+[main] INFO org.apache.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.metrics.JmxReporter
+[main] INFO org.apache.kafka.common.metrics.Metrics - Closing reporter org.apache.kafka.common.telemetry.internals.ClientTelemetryReporter
+[main] INFO org.apache.kafka.common.metrics.Metrics - Metrics reporters closed
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - App info kafka.consumer for consumer-recon-run-20260902-223743-1 unregistered
+{
+  "runId" : "run-20260902-223743",
+  "generatedAt" : "2026-09-02T22:38:52.044464746Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 505,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 502,
+    "distinctAccountKeys" : 502,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 502,
+    "enrichedRows" : 502,
+    "targetDocuments" : 500,
+    "targetDistinctKeys" : 500,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 500,
+    "loaderErrors" : 0
+  },
+  "targetSystemReconciliation" : {
+    "enabled" : true,
+    "targetRows" : 500,
+    "confirmations" : 500,
+    "confirmedTargetRows" : 500,
+    "unconfirmedTargetRows" : 0,
+    "allTargetRowsConfirmed" : true,
+    "unconfirmedAccountKeys" : [ ]
+  },
+  "balancingEquation" : {
+    "srcRead" : 505,
+    "written" : 500,
+    "rejected" : 5,
+    "accounted" : 505,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "ledgerAgreement" : {
+    "rejectLogRejected" : 5,
+    "lineageRejected" : 5,
+    "agrees" : true
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_COLUMN_COUNT",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 505,
+    "migrated" : 500,
+    "blockedByDataQuality" : 5,
+    "migrabilityRate" : 99.01,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 399
+    }, {
+      "band" : "LOW",
+      "count" : 1
+    }, {
+      "band" : "MEDIUM",
+      "count" : 102
+    } ]
+  }
+}
+recon: reports at gs://mig-000001-1-dev-recon/reconciliation/run-20260902-223743/
+recon: balancing equation closes; key-level reconciliation clean.
+recon: target system confirmed all 500 TARGET rows.
+  (26.1s)
+
+[1mrun:[0m run-20260902-223743
+EXIT=0
+e2e done: 01:38:52

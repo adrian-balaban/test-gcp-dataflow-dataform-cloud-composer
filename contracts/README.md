@@ -11,15 +11,21 @@ deliberately different project end to end, then fails if a single line of
 > D1/D2/D6 has landed: the mapping no longer carries a `filters.exclude` block (removed)
 > and the key is the **account key** (was the dedup key, with no survivor-rank tie-break); TDS
 > definitions are homogeneous — one format per definition, `.DAT` or JSON, never mixed.
+>
+> **Update 2026-09-02.** The fixed-width COBOL copybook source layout is gone. Every `.def`
+> now declares a single `layout csv delimiter=|` — `contracts/copybooks/` is deleted, and
+> `mapping-*.yaml`'s `source.layout` key is `csv` for both projects. The parser in
+> `pipelines/common/tds.py` still understands `offset`/`len` addressing for a `fixed`
+> layout, since nothing in this repo forces that generality out; no contract declares one.
 
 ## What's inside
 
 ```
 contracts/
 ├── tds/          record layouts — what a source/target record looks like
-│   ├── tds-src-project1.def       ACCOUNT (fixed-width COBOL)
+│   ├── tds-src-project1.def       ACCOUNT (pipe-delimited CSV)
 │   ├── tds-target-project1.def    TARGET_SYSTEM_ACCOUNT
-│   ├── tds-src-project2.def       DEPOSIT (CSV — a different layout entirely)
+│   ├── tds-src-project2.def       DEPOSIT (pipe-delimited CSV — a different record shape)
 │   └── tds-target-project2.def    TARGET_SYSTEM_DEPOSIT
 ├── mappings/     how a source record becomes a target document
 │   ├── mapping-project1.yaml
@@ -27,7 +33,6 @@ contracts/
 ├── schemas/      the JSON Schema every output document must satisfy
 │   ├── target-account.schema.json
 │   └── target-deposit.schema.json
-├── copybooks/    the original COBOL copybook (reference)
 ├── reference/    lookup data joined during enrichment (branches)
 └── artefacts.json  the cross-language surface — artefact naming + shared BQ columns
 ```
@@ -59,7 +64,7 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A["source:<br/>layout fixed|csv"] --> E[TransformEngine]
+    A["source:<br/>layout csv"] --> E[TransformEngine]
     B["key:<br/>which fields form the<br/>account key"] --> E
     D["mappings:<br/>field → field + transform"] --> E
     F["batch:<br/>size 200"] --> E
@@ -84,34 +89,35 @@ A record with `STATUS=A` gets `"status": "ACTIVE"`. A record with `STATUS=X` is
 **REJECTED** with reason `MAP_UNMAPPED_ENUM_VALUE` — never silently dropped, never
 guessed.
 
-## Source `.DAT` physical format (target)
+## Source `.DAT` physical format
 
-The current `tds-src-project1.def` declares a `fixed`-width COBOL layout and the mapping
-picks `source.layout: fixed`. The **target** source feed is pipe-delimited with a header
-row; this is where that spec lives. It lands with the plan's step 5
-([homogeneous TDS](../docs/PLAN-CHANGES-21082026.md)).
+Every source `.DAT` is **pipe-delimited CSV with a header row** — the fixed-width COBOL
+layout it used to carry is gone (see the update note above). Each `.DAT` begins with one
+header line of column names; every later line is one record, fields separated by `|`. The
+`.def` declares it (`layout csv delimiter=| header=true`) and the header is *skipped, not
+parsed*, in the three places that could otherwise mis-count it: `RecordParser.is_header`
+in `pipelines/common/tds.py`, `ExtractorApp.java` before `.RPT documentsRead` is written,
+and `ReadBundleFn` before a line reaches `src_read`.
 
-**Pipe-delimited, with a header row.** Each `.DAT` begins with one header line of column
-names; every later line is one record, fields separated by `|`. The `.def` already declares
-a `csv` layout (`layout csv delimiter=|`) and the mapping can already select it
-(`source.layout: csv`) — that part is a config change, not a code change. The new piece is
-the **header row**: `pipelines/common/tds.py` must read or skip the first line rather than
-parse it as a record, declared in the `.def` (e.g. `layout csv delimiter=| header=true`).
+The parser still understands `offset`/`len` addressing for a `fixed` layout — nothing in
+this repo forces that generality out — but no contract declares one; `col` is what every
+`.DAT` field actually uses.
 
 **Load raw, normalize in the transform.** Parse keeps values exactly as they arrive —
 trailing spaces and leading zeros are *not* stripped at parse. All normalization is
 explicit, in the mapping's `transform:` slot, so what changed about a value is always on the
-record. Two new transforms cover the stated rules and are added to the `TRANSFORMS` registry
-in `pipelines/common/mapping.py`, alongside `trim`, `upper`, `to_decimal`, `map_enum`:
+record. Two transforms in the `TRANSFORMS` registry in `pipelines/common/mapping.py`
+cover the stated rules, alongside `trim`, `upper`, `to_decimal`, `map_enum`:
 
 | transform | rule |
 |---|---|
 | `strip_trailing_spaces` | trailing spaces are stripped in the transform phase |
 | `strip_leading_zeros` | leading zeros on numeric fields are stripped in the transform phase |
 
-A field declares the strip it needs, e.g. `BALANCE` carries `transform: strip_leading_zeros`
-before its numeric coercion. These are target additions, under the Update 2026-08-21
-disclaimer above.
+No current contract needs them — `to_decimal` parses `+00000001234.56` as-is — but a feed
+that ships trailing spaces or zero-padding declares the strip in its mapping instead of
+getting it silently at parse. These are additions under the Update 2026-08-21 disclaimer
+above.
 
 ## Why project2 exists
 
@@ -120,8 +126,8 @@ in every dimension that could hide a hardcoded assumption:
 
 | | project1 | project2 |
 |---|---|---|
-| Layout | fixed-width | CSV |
 | Record | ACCOUNT | DEPOSIT |
+| Fields carried | PRODUCT_CODE among others | PRODUCT_CODE dropped entirely |
 | Target | TARGET_SYSTEM_ACCOUNT | TARGET_SYSTEM_DEPOSIT |
 | Transform | — | uses one project1 never does |
 

@@ -45,7 +45,7 @@ def test_tds_records_are_homogeneous_dat_or_json(mapping):
     """One definition is one format (D6) — SRC is all `.DAT`, TARGET is all JSON."""
     src = mapping.src_record
     assert all(f.path is None for f in src.fields)
-    assert all(f.offset is not None or f.col is not None for f in src.fields)
+    assert all(f.col is not None for f in src.fields)
 
     target = mapping.tgt_record
     assert all(f.path is not None for f in target.fields)
@@ -90,38 +90,20 @@ def test_resolve_path_returns_sentinel_for_missing():
     assert resolve_path({"a": {}}, "$.a.b") is MISSING
 
 
-# ─────────────────────────────────────────────────────── fixed-width vs CSV parity
+# ──────────────────────────────────────────────────────────────────── CSV parsing
 
-
-FIXED_LINE = (
-    "ACC000000001"      # ACCT_ID   12
-    "CUS0000001"        # CUST_ID   10
-    "RETL"              # CLIENT_TYPE 4
-    "SAV001"            # PRODUCT    6
-    "eur"               # CURRENCY   3
-    "20190314"          # OPEN_DATE  8
-    "A"                 # STATUS     1
-    "+00000001234.56"   # BALANCE   15
-)
 
 CSV_LINE = "ACC000000001|CUS0000001|RETL|SAV001|eur|20190314|A|+00000001234.56"
 
 
-def test_fixed_width_parse(mapping):
-    fields = RecordParser(mapping.src_record, "fixed").parse(FIXED_LINE)
+def test_csv_parse(mapping):
+    fields = RecordParser(mapping.src_record, "csv").parse(CSV_LINE)
     assert fields["ACCT_ID"] == "ACC000000001"
     assert fields["BALANCE"] == Decimal("1234.56")
 
 
-def test_csv_layout_yields_identical_fields(mapping):
-    """The layout switch is config; the parsed record must be identical either way."""
-    fixed = RecordParser(mapping.src_record, "fixed").parse(FIXED_LINE)
-    csv = RecordParser(mapping.src_record, "csv").parse(CSV_LINE)
-    assert fixed == csv
-
-
 def test_open_date_parsed_from_yyyymmdd(mapping):
-    fields = RecordParser(mapping.src_record, "fixed").parse(FIXED_LINE)
+    fields = RecordParser(mapping.src_record, "csv").parse(CSV_LINE)
     assert fields["OPEN_DATE"].isoformat() == "2019-03-14"
 
 
@@ -129,7 +111,7 @@ def test_open_date_parsed_from_yyyymmdd(mapping):
 
 
 def test_map_produces_schema_valid_target_document(engine):
-    fields = engine.parse(FIXED_LINE)
+    fields = engine.parse(CSV_LINE)
     doc = engine.map_record(fields, run_id="run-test")
     engine.validate(doc)
 
@@ -147,14 +129,14 @@ def test_map_produces_schema_valid_target_document(engine):
 
 def test_transform_is_deterministic(engine):
     """Replaying a record yields byte-identical output."""
-    fields = engine.parse(FIXED_LINE)
+    fields = engine.parse(CSV_LINE)
     a = json.dumps(engine.map_record(fields, "run-1"), sort_keys=True)
     b = json.dumps(engine.map_record(fields, "run-1"), sort_keys=True)
     assert a == b
 
 
 def test_account_key_is_stable_and_deterministic(engine):
-    fields = engine.parse(FIXED_LINE)
+    fields = engine.parse(CSV_LINE)
     assert engine.account_key(fields) == engine.account_key(fields)
     assert len(engine.account_key(fields)) == 32
 
@@ -169,22 +151,21 @@ def test_each_malformed_kind_produces_its_enumerated_reason(engine, kind):
     import random
 
     donor = _row(random.Random(1), 1, "RETL")
-    broken = _break(donor, kind, "fixed")
+    broken = _break(donor, kind)
 
     router = RecordRouter(engine, run_id="run-test")
     outcome = router.route(broken, batch_id=0)
 
     assert outcome.door is Door.REJECTED, f"{kind} should be rejected"
     assert outcome.reject is not None
-    assert outcome.reject.reason == EXPECTED_REASON["fixed"][kind]
+    assert outcome.reject.reason == EXPECTED_REASON[kind]
     assert outcome.reject.raw_record == broken, "raw record is preserved for triage"
 
 
 def test_reject_reasons_are_enumerated_not_free_text():
     """Reason codes must be countable and trendable."""
     valid = {r.value for r in Reason}
-    for layout_reasons in EXPECTED_REASON.values():
-        assert set(layout_reasons.values()) <= valid
+    assert set(EXPECTED_REASON.values()) <= valid
 
 
 # ────────────────────────────────────────────────── the balancing equation itself
@@ -223,14 +204,11 @@ def test_two_doors_partition_every_disposition():
     assert not broken.balances
 
 
-@pytest.mark.parametrize("layout", ["fixed", "csv"])
-def test_end_to_end_counts_match_the_seeded_manifest(engine, layout, tmp_path):
-    """Counts against the harness oracle, for both layouts."""
-    lines, manifest = generate(accounts=500, layout=layout, seed=99)
+def test_end_to_end_counts_match_the_seeded_manifest(engine, tmp_path):
+    """Counts against the harness oracle."""
+    lines, manifest = generate(accounts=500, seed=99)
 
-    mapping = load_mapping(MAPPING_P1, root=ROOT).with_layout(layout)
-    eng = TransformEngine(mapping)
-    router = RecordRouter(eng, run_id="run-oracle")
+    router = RecordRouter(engine, run_id="run-oracle")
 
     total = Counters()
     for batch in run_batches(router, lines, batch_size=200):
@@ -246,7 +224,7 @@ def test_end_to_end_counts_match_the_seeded_manifest(engine, layout, tmp_path):
 
 def test_batches_are_200_written_documents(engine):
     """Batch count = ceil(written / 200)."""
-    lines, manifest = generate(accounts=1000, layout="fixed", seed=7)
+    lines, manifest = generate(accounts=1000, seed=7)
     router = RecordRouter(engine, run_id="run-batch")
     batches = list(run_batches(router, lines, batch_size=200))
 
@@ -266,7 +244,7 @@ def test_beam_intake_and_router_agree_on_every_record(engine):
     classify every record identically. Before the doors were collapsed, a change to one
     implementation could silently disagree with the other.
     """
-    lines, _ = generate(accounts=500, layout="fixed", seed=99)
+    lines, _ = generate(accounts=500, seed=99)
 
     router = RecordRouter(engine, run_id="run-drift")
     compared = 0
@@ -323,7 +301,7 @@ def test_beam_dofn_actually_delegates_to_the_shared_door(engine, monkeypatch):
     # inlined re-implementation too, and an exception fallback to `route_intake` would
     # then mask the very drift this test exists to detect — a real trap, hit while
     # writing this test.
-    lines, _ = generate(accounts=5, layout="fixed", seed=11)
+    lines, _ = generate(accounts=5, seed=11)
     raw = next(
         l.rstrip("\n") for l in lines
         if l.strip() and route_intake(engine, l.rstrip("\n")).door is D.WRITTEN
@@ -364,7 +342,7 @@ def test_route_intake_does_not_run_the_map_door(engine):
     that makes the file processor correct, and would fail if someone "simplified"
     `ParseFn` into calling the full two-door `route()`.
     """
-    lines, _ = generate(accounts=20, layout="fixed", seed=3)
+    lines, _ = generate(accounts=20, seed=3)
     survivors = [
         o for o in (route_intake(engine, l.rstrip("\n")) for l in lines if l.strip())
         if o.door is Door.WRITTEN

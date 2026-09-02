@@ -6,11 +6,13 @@
     kinds of field in one record is rejected at load (`parse_tds`);
   * SRC and TARGET are separate definitions, referenced together only by the mapping.
 
-Every `.DAT` field carries both coordinate systems — `offset`/`len` for fixed-width and
-`col` for delimited — so switching a project between COBOL copybook and pipe-delimited
-extracts is a mapping change, never a code change. A `csv` layout may declare
-`header=true`, in which case the extract's first line names the columns and is skipped
-rather than parsed as a record (`RecordParser.is_header`).
+Every contract in this repo now declares a `csv` layout — pipe-delimited only, the
+fixed-width copybook alternative was removed
+(docs/PLAN-CHANGES-02092026-kafka-loader.md follow-up). The parser still understands
+`offset`/`len` addressing for a `fixed` layout, since no contract declares one that path
+is unreachable rather than deleted; `col` is what every `.DAT` field in this repo actually
+uses. A `csv` layout may declare `header=true`, in which case the extract's first line
+names the columns and is skipped rather than parsed as a record (`RecordParser.is_header`).
 
 Parsing is pure and deterministic: replaying a record yields identical output, which
 is what makes at-least-once delivery safe.

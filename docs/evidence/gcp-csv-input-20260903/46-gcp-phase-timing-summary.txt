@@ -1,0 +1,35 @@
+# GCP Composer DAG run — per-phase record counts and timing
+# Run: run-dag-20260903-0223, Airflow run manual__2026-09-02T23:29:16+00:00
+# All 8 tasks green. Wall clock: 23:29:21 -> 23:46:12 = 16 minutes 51 seconds.
+# (Yesterday's run-dag-20260902-1852 with 505 records took 17.5 minutes.)
+
+task                    duration   records
+wait_for_extract_flg        1.2s   (sensor — .FLG present immediately, pre-staged)
+file_processor             342.5s   55 read (CSV header skipped) -> 52 migrated, 3 not_migrated, 0 imbalance
+dataform_run                34.4s   52 rows -> account_curated
+data_enrichment            274.4s   52 read -> 52 enriched
+json_producer              263.2s   50 written, 1 batch of <=200
+                                     -> GCS: 1 file, 50 documents
+                                     -> Kafka: target-system-target, 1 batch, 50 messages
+loader_app                  25.8s   50 documentsRead -> 50 published -> 50 settled (0 accepted + 50
+                                     duplicatesIgnored), 0 errors, 0 unsettled
+reconciliation              20.0s   50/50 TARGET rows confirmed by Target System
+assert_run_balanced          7.9s   balancing equation closes: 55 = 50 migrated + 5 not migrated
+
+Notably: loader_app — the Kafka load edge that failed three times in
+run-dag-20260903-0125 while the mock's OAUTHBEARER login was wedged — settled all
+50 documents in 25.8 s once the Cloud Run service had been recycled
+(see 22-gcp-first-attempt-failure.txt and 30-gcp-kafka-consumer.txt). The
+accept/duplicate split of this run is a replay artefact, not a defect: the recycled
+mock drained the failed run's ~200 stale messages first, so its in-memory account
+set already held all 50 keys when this run's messages arrived — every document was
+a duplicate from the mock's point of view, and the loader's fresh consumer group
+(loader-run-dag-20260903-0223) settled on the confirmation events already on the
+topic. The settle equation still closes: 50 published = 0 accepted + 50 duplicates
++ 0 errors + 0 unsettled. A fresh-cluster run with a pristine seed shows the clean
+split (docs/evidence/gcp-kafka-loader-20260902/README.md).
+
+The CSV-only source ran end to end on real Dataflow: the header row was skipped
+(src_read=55 from a 56-line source file), and the reject set includes the new
+PARSE_BAD_COLUMN_COUNT reason code alongside the four pre-existing ones
+(41-gcp-reconciliation-report.json, rejectsByReason).

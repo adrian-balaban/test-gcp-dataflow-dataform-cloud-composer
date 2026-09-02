@@ -16,6 +16,14 @@
 >   2026-08-18 and is no longer: the classes are `InsertAllBigQueryWriter` and
 >   `FileLoadsBigQueryWriter`, the latter staging NDJSON in GCS and issuing a load job,
 >   and both pipelines resolve their writer through `sinks.bigquery_writer(cfg)`.
+> - **Fixed-width COBOL copybook source layout ("Source data" row below).** Removed
+>   2026-09-02, following `docs/PLAN-CHANGES-02092026-kafka-loader.md`'s follow-up work.
+>   Input is pipe-delimited CSV only now: `contracts/tds/*.def` declares a single `layout
+>   csv` per record, `contracts/copybooks/` is gone, and `harness/generate.py` no longer
+>   takes a `--format` flag. The dual-coordinate parser in `pipelines/common/tds.py`
+>   still understands `offset`/`len` addressing for a `fixed` layout — nothing forces its
+>   removal — but no contract declares one, so that path is unreachable rather than
+>   deleted.
 >
 > For current state see [`../README.md`](../README.md) and
 > [`runbook-gcp.md`](runbook-gcp.md).

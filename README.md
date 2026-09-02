@@ -81,7 +81,7 @@ graph TB
     SRE -->|"provisions and tears down<br/>[Terraform, CLI]"| SYS
     SYS -->|"hands off TARGET JSON<br/>+ .RPT [GCS]"| LDT
 
-    MF -->|"TDS fixed-width files +<br/>.FLG/.CHS artefacts [PGP over SFTP/GCS]"| SYS
+    MF -->|"TDS pipe-delimited CSV files +<br/>.FLG/.CHS artefacts [PGP over SFTP/GCS]"| SYS
     SYS -->|"publishes accounts, idempotent<br/>[Kafka, key = dedupKey]"| VC
     VC -->|"confirmation and rejection events<br/>as streams [JSON or protobuf, Kafka]"| SYS
     SYS -->|"publishes enriched<br/>account JSON [Kafka]"| DS
@@ -131,7 +131,7 @@ graph TB
 
         DAG["<b>Migration Orchestrator</b><br/><i>[Container: Airflow DAG on Cloud Composer]</i><br/>composer/dags/mig_000001_1.py — sequences the lanes,<br/>runs assert_run_balanced against run_ledger"]
 
-        CONTRACTS["<b>Contract Store</b><br/><i>[Container: YAML / JSON Schema / copybooks in Git]</i><br/>contracts/ — TDS layouts, field mappings, JSON Schemas,<br/>reference data. The only thing edited to onboard a project"]
+        CONTRACTS["<b>Contract Store</b><br/><i>[Container: YAML / JSON Schema in Git]</i><br/>contracts/ — TDS layouts (pipe-delimited CSV), field mappings, JSON Schemas,<br/>reference data. The only thing edited to onboard a project"]
 
         EXT["<b>Extractor App</b><br/><i>[Container: Java, Maven]</i><br/>apps/extractor-app — pulls TDS + artefacts from the<br/>mainframe lane, writes .FLG/.CHS/.ERR/.RPT"]
 

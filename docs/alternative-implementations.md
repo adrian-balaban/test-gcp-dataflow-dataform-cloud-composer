@@ -84,8 +84,8 @@ Across all four proposals (with E the documented exception on one edge):
 - **The harness oracle** — `harness/generate.py` generates 405 synthetic records
   (400 written + 5 rejected) **and** a
   `manifest.json` answer key **before** the pipeline runs; deterministic via
-  `--seed`; supports both copybook and CSV layouts (both produce identical
-  parsed fields). **Runner-agnostic.** This is the fact that makes every
+  `--seed`; emits pipe-delimited CSV (the fixed-width copybook layout was
+  removed 2026-09-02). **Runner-agnostic.** This is the fact that makes every
   proposal valid: the harness proves the *expected* numbers independent of any
   runtime.
 - **The 8 acceptance criteria** (`tests/acceptance.py`) — they assert
@@ -180,8 +180,9 @@ doubles down on one it does.
 ### Swaps
 
 Beam pipelines → **dbt models** on BigQuery (staging → intermediate → marts).
-One thin **Cloud Run Job** ingests raw TDS into BigQuery (fixed-width → raw
-string → BQ `LOAD`). Dataform SQLX folds into dbt. `json_producer` batch-emit
+One thin **Cloud Run Job** ingests raw TDS into BigQuery (pipe-delimited CSV →
+BQ `LOAD` with `field_delimiter='|'`, the header row `skip_leading_rows=1`).
+Dataform SQLX folds into dbt. `json_producer` batch-emit
 and the loader stay as small Cloud Run services; recon stays Java (reads BQ).
 Orchestrator → Composer calling dbt, or Cloud Workflows.
 
@@ -194,7 +195,7 @@ that existing pattern to the whole engine.
 
 | Stage | SQL / tool |
 |---|---|
-| parse | BigQuery `LOAD` the raw line as STRING + a staging view with `SUBSTR` / `SPLIT` extracts driven by the mapping YAML offsets (the copybook-offset logic the harness already proves yields identical fields) |
+| parse | BigQuery `LOAD` the raw line as STRING + a staging view with `SPLIT` extracts on the pipe delimiter, driven by the mapping YAML's column indices |
 | filter(exclude) | `WHERE` on `client_type` |
 | dedup | `QUALIFY ROW_NUMBER() OVER (PARTITION BY dedup_key ORDER BY survivor_rank) = 1` (the json_producer pattern, generalised) |
 | map | `JOIN`s + `CASE` for enum mapping; the six reason codes surface here |
@@ -216,7 +217,8 @@ top of the harness oracle.
 SQL assertion over lineage, the fastest thing to audit; cheapest to operate; no
 Dataflow shuffle; most C1-faithful (BigQuery is in C1, Beam is not).
 
-**Cons:** fixed-width parse in SQL is ugly (raw-string + `SUBSTR`); the
+**Cons:** the CSV parse in SQL is still hand-rolled (`SPLIT` on `|` per column,
+header row skipped by hand); the
 JSON-Schema stage needs a Cloud Run post-hook; **loses "engine as shared
 importable code across Python + Java"** — `contracts/` becomes SQL-generator
 input, so drift-prevention shifts from "one imported module" to "the generator
@@ -304,7 +306,7 @@ Kafka / Pub/Sub streaming produce (Kafka is already in C2).
 ### The C1 modification (explicit)
 
 ```diff
-- MF -->|"TDS fixed-width files + .FLG/.CHS artefacts [PGP over SFTP/GCS]"| SYS
+- MF -->|"TDS pipe-delimited CSV files + .FLG/.CHS artefacts [PGP over SFTP/GCS]"| SYS
 + MF -->|"Db2 change stream (INSERT/UPDATE/DELETE) [Datastream → Pub/Sub]"| SYS
 ```
 
@@ -324,7 +326,7 @@ checkpoint; `record_lineage` per event. The shared `route_intake` /
 
 ### Harness / acceptance (the honest cost)
 
-Needs a CDC-emitting harness variant (`generate.py --format cdc` materialising
+Needs a CDC-emitting harness variant (a `generate.py` change-event mode materialising
 the same 405 records as change events + the same manifest). Criteria 2, 3, 4, 6,
 7, 10 pass essentially unchanged; 1 and 9 pass with reinterpretation (per-window
 rather than per-batch); **criteria 5 (batches of 200) and 8 (the five batch
@@ -448,7 +450,7 @@ keyed-state requirement returns.
 - **Most C1-faithful + cheapest to operate, SQL-strong team → C (dbt +
   BigQuery).** Removes a runtime C1 never names (Beam), doubles down on one it
   does (BigQuery); dbt tests add a second acceptance layer. Make-or-break is
-  fixed-width parsing in SQL.
+  parsing the pipe-delimited CSV in SQL.
 - **Lean MVP on GCP without Dataflow → D (Cloud Run + Workflows).** The repo
   already proves the shape locally via `run_pipeline.py`; the scale ceiling is
   the catch.

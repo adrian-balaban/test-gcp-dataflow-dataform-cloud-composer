@@ -1,0 +1,76 @@
+{
+  "runId" : "run-dag-20260903-0223",
+  "generatedAt" : "2026-09-02T23:45:57.620987664Z",
+  "sourceReconciliation" : {
+    "extractorReportedRecords" : 55,
+    "extractionErrors" : 0,
+    "loadedToExtractionDataset" : 52,
+    "distinctAccountKeys" : 52,
+    "duplicateKeysInExtraction" : 0
+  },
+  "transformationLoadReconciliation" : {
+    "curatedRows" : 52,
+    "enrichedRows" : 52,
+    "targetDocuments" : 50,
+    "targetDistinctKeys" : 50,
+    "orphanTargetKeys" : 0,
+    "loaderDocumentsRead" : 50,
+    "loaderErrors" : 0
+  },
+  "targetSystemReconciliation" : {
+    "enabled" : true,
+    "targetRows" : 50,
+    "confirmations" : 50,
+    "confirmedTargetRows" : 50,
+    "unconfirmedTargetRows" : 0,
+    "allTargetRowsConfirmed" : true,
+    "unconfirmedAccountKeys" : [ ]
+  },
+  "balancingEquation" : {
+    "srcRead" : 55,
+    "written" : 50,
+    "rejected" : 5,
+    "accounted" : 55,
+    "balances" : true,
+    "imbalance" : 0
+  },
+  "ledgerAgreement" : {
+    "rejectLogRejected" : 5,
+    "lineageRejected" : 5,
+    "agrees" : true
+  },
+  "rejectsByReason" : [ {
+    "stage" : "map",
+    "reason" : "MAP_UNMAPPED_ENUM_VALUE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_COLUMN_COUNT",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_DATE",
+    "count" : 1
+  }, {
+    "stage" : "parse",
+    "reason" : "PARSE_BAD_NUMERIC",
+    "count" : 1
+  }, {
+    "stage" : "schema",
+    "reason" : "SCHEMA_INVALID",
+    "count" : 1
+  } ],
+  "migrability" : {
+    "candidates" : 55,
+    "migrated" : 50,
+    "blockedByDataQuality" : 5,
+    "migrabilityRate" : 90.91,
+    "balanceBands" : [ {
+      "band" : "HIGH",
+      "count" : 43
+    }, {
+      "band" : "MEDIUM",
+      "count" : 9
+    } ]
+  }
+}

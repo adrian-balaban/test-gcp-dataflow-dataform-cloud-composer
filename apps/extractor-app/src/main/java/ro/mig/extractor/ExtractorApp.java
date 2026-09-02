@@ -50,6 +50,15 @@ public final class ExtractorApp {
         store.createBucket(a.bucket);
 
         List<String> lines = readSource(a.input);
+        // The pipe-delimited CSV extract always carries a header row as its first line
+        // (contracts/README.md), which is transport, not a record — the Extractor is
+        // otherwise deliberately format-agnostic (it never parses fields), but "how many
+        // records did I read" is a claim the .RPT makes about actual records, and
+        // counting the header would report one too many, the same way ReadBundleFn
+        // downstream must not count it into src_read.
+        if (!lines.isEmpty()) {
+            lines = lines.subList(1, lines.size());
+        }
         Split split = split(lines, a.splitSize, a.injectExtractErrors);
 
         Map<String, byte[]> bundleFiles = new LinkedHashMap<>();

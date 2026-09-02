@@ -25,7 +25,6 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from pipelines.common.config import Config, require_identifier  # noqa: E402
-from pipelines.common.mapping import load_mapping  # noqa: E402
 
 # This orchestrator runs the Beam pipelines as local subprocesses. Even against real GCP
 # (`--profile real`, used by `make smoke-gcp`) the pipelines must run in-process on
@@ -103,15 +102,14 @@ def gcp_endpoints(cfg: Config) -> tuple[str, str]:
     return "https://storage.googleapis.com", "https://bigquery.googleapis.com"
 
 
-def run_once(cfg: Config, run_id: str, accounts: int, layout: str, sinks: str) -> None:
+def run_once(cfg: Config, run_id: str, accounts: int, sinks: str) -> None:
     """One complete pass through all three lanes of arch.diagram — one full snapshot."""
     py = sys.executable
     gcs_host, bq_host = gcp_endpoints(cfg)
 
-    banner("harness", f"generating {accounts} accounts ({layout})")
+    banner("harness", f"generating {accounts} accounts (csv)")
     sh([py, "-m", "harness.generate",
-        "--accounts", str(accounts),
-        "--format", layout], "harness")
+        "--accounts", str(accounts)], "harness")
 
     banner("E — Extractor App", "5 artefacts → archive → gzip → PGP → File Storage")
     sh([*java_cmd("extractor"),
@@ -194,22 +192,13 @@ def main() -> int:
         # the path that most needs checking.
         cfg = replace(cfg, profile=args.profile).validate()
 
-    # The harness must emit the layout the *contract* declares, because the file
-    # processor parses with that contract. This used to be inferred from whether a .env
-    # file existed on disk — which is false inside the toolbox container (the Makefile
-    # passes --env-file, so the variables exist but the file does not). The container
-    # therefore generated CSV, the project1 contract parsed fixed-width, and every record
-    # was rejected. Nothing failed: 76 = 0 migrated + 76 rejected balances perfectly, so a
-    # run where *nothing migrated* looked healthy. Asking the mapping removes the guess.
-    layout = {"fixed": "copybook", "csv": "csv"}[load_mapping(cfg.mapping_path).source_layout]
-
     ensure_java_built()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
 
     # The run id names GCS object paths and is interpolated into every DELETE the
     # pipelines issue, so it is checked once here, at the outermost entry point.
     run_id = require_identifier("--run-id", args.run_id or f"run-{stamp}")
-    run_once(cfg, run_id, args.accounts, layout, args.sinks)
+    run_once(cfg, run_id, args.accounts, args.sinks)
 
     print(f"\n\033[1mrun:\033[0m {run_id}")
 
