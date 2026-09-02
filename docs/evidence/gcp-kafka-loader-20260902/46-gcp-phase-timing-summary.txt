@@ -1,0 +1,21 @@
+# GCP Composer DAG run — per-phase record counts and timing
+# Run: run-dag-20260902-1852, Airflow run manual__2026-09-02T18:52:44+00:00
+# All 8 tasks green. Wall clock: 18:52:44 -> 19:10:24 = 17.5 minutes.
+
+task                    duration   records
+wait_for_extract_flg       1.2s   (sensor — .FLG present immediately, pre-staged)
+file_processor            383.2s   505 read -> 502 migrated, 3 not_migrated, 0 imbalance
+dataform_run               40.9s   502 rows -> account_curated
+data_enrichment           262.7s   502 read -> 502 enriched
+json_producer              270.8s  500 written, 3 batches of <=200
+                                    -> GCS: 3 files, 500 documents
+                                    -> Kafka: target-system-target, 3 batches, 500 messages
+loader_app                  30.4s  500 documentsRead -> 500 published -> 500 accepted, 0 unsettled
+reconciliation               20.3s  500/500 TARGET rows confirmed by Target System
+assert_run_balanced           9.2s  balancing equation closes: 505 = 500 migrated + 5 not migrated
+
+Notably: loader_app (the Kafka Load edge under test) completed in 30 seconds —
+well under the 120s --settle-timeout-seconds default — once the mock's Cloud Run
+instance was kept warm (min_instance_count=1, see docs/evidence/gcp-kafka-loader-20260902/README.md
+"Defect 3"). The mock had already confirmed most of the run's documents in near
+real time while json_producer's evidence-only Kafka write was still in flight.

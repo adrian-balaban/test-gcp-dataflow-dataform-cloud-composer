@@ -335,6 +335,63 @@ def main() -> int:
 
     check("9. every TARGET row confirmed by Target System", target_confirmed)
 
+    # ── 10. nothing published to Kafka went unsettled ────────────────────────
+    def load_settled() -> str:
+        """Every document the Loader published got a verdict back.
+
+        On the HTTP path this was free: the response code settled each document as it was
+        sent, so "published but unaccounted for" was not a state the code could reach. On
+        the Kafka path it is the characteristic failure — a broker ack means the bytes are
+        durable, not that Target System applied them — so `unsettled` counts documents
+        that were published and never confirmed or rejected. It is the number that catches
+        a dead consumer or a poison message stalling a partition, both of which otherwise
+        look exactly like a successful run.
+
+        Criterion 9 is the mirror of this from the reconciliation side; this one reads the
+        Loader's own .RPT, so a disagreement between the two is itself visible.
+        """
+        rpt = json.loads(
+            gcs.get(cfg.recon_bucket, f"load/{run_id}/ACCOUNT.RPT")
+        )
+        # reportVersion 1 is the HTTP-only report, which has no `unsettled` field because
+        # the concept did not exist. Skip rather than assert on a missing key, so archived
+        # evidence from before the Kafka switch stays readable.
+        if rpt.get("reportVersion", 1) < 2:
+            return "skipped — pre-Kafka load report (reportVersion 1)"
+        if rpt.get("sink") != "kafka":
+            return f"skipped — loader ran with --sink {rpt.get('sink')}"
+
+        unsettled = rpt["unsettled"]
+        published = rpt["published"]
+        assert unsettled == 0, (
+            f"{unsettled} of {published} published document(s) were never confirmed or "
+            f"rejected by Target System — published is not applied"
+        )
+        # The report must also balance. `errors` mixes two populations: documents
+        # rejected before sending (missing accountId/dedupKey — never published) and
+        # documents rejected by Target System (published, then refused). So the identity
+        # is over documentsRead, not over published:
+        #
+        #   documentsRead = accepted + errors + unsettled
+        #
+        # with published = accepted + unsettled + (the rejected subset of errors). Testing
+        # the documentsRead form catches the case that matters — a document read and then
+        # accounted for nowhere, which is silent loss.
+        read = rpt["documentsRead"]
+        dupes = rpt["duplicatesIgnored"]
+        accounted = rpt["accepted"] + dupes + rpt["errors"] + unsettled
+        assert accounted == read, (
+            f"load .RPT does not balance: accepted({rpt['accepted']}) + "
+            f"duplicatesIgnored({dupes}) + errors({rpt['errors']}) + "
+            f"unsettled({unsettled}) = {accounted}, but documentsRead = {read}"
+        )
+        return (
+            f"{published} published, {rpt['accepted']} confirmed, {dupes} duplicate, "
+            f"{rpt['errors']} rejected, 0 unsettled"
+        )
+
+    check("10. every published document settled (Kafka load path)", load_settled)
+
     # ── summary ──────────────────────────────────────────────────────────────
     print()
     if failures:

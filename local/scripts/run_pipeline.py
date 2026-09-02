@@ -145,7 +145,16 @@ def run_once(cfg: Config, run_id: str, accounts: int, layout: str, sinks: str) -
         "--json-bucket", cfg.json_bucket,
         "--recon-bucket", cfg.recon_bucket,
         "--target-system-url", cfg.target_system_url,
-        "--max-retries", str(cfg.target_system_max_retries)], "loader-app")
+        "--max-retries", str(cfg.target_system_max_retries),
+        # The Load edge (docs/PLAN-CHANGES-02092026-kafka-loader.md). On `kafka` the
+        # loader produces to the target topic and settles against the confirmation and
+        # rejection streams; on `http` it POSTs as before and these are inert.
+        "--sink", cfg.loader_sink,
+        "--kafka-bootstrap", cfg.kafka_bootstrap,
+        "--kafka-topic", cfg.kafka_topic,
+        "--confirmation-topic", cfg.target_system_confirmation_topic,
+        "--rejection-topic", cfg.target_system_rejection_topic,
+        "--settle-timeout-seconds", str(cfg.loader_settle_timeout_seconds)], "loader-app")
 
     banner("R — Reconciliation Services", "source + transformation/load recon, migrability reports")
     sh([*java_cmd("recon"),
@@ -159,7 +168,13 @@ def run_once(cfg: Config, run_id: str, accounts: int, layout: str, sinks: str) -
         "--ds-transformation", cfg.ds_transformation,
         "--ds-recon", cfg.ds_recon,
         "--confirmation-bootstrap", cfg.target_system_confirmation_bootstrap,
-        "--confirmation-topic", cfg.target_system_confirmation_topic], "recon-service")
+        "--confirmation-topic", cfg.target_system_confirmation_topic,
+        # Fail closed unless the loader used HTTP, where its own status-code
+        # classification is the verdict and the confirmation stream adds nothing
+        # (docs/PLAN-CHANGES-02092026-kafka-loader.md §3.4). Derived from the sink so the
+        # two settings cannot disagree.
+        "--allow-unconfirmed-load",
+        "true" if cfg.loader_sink == "http" else "false"], "recon-service")
 
 
 def main() -> int:

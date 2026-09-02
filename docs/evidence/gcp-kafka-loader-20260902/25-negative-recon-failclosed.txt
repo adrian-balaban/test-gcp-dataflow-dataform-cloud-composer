@@ -1,0 +1,9 @@
+# Negative path C — recon fails closed with no confirmation stream (plan §3.4)
+# Same run, same data, but no --confirmation-bootstrap. Before this change recon reported
+# enabled=false and exited 0, so a run that proved nothing passed as green.
+
+recon: reports at gs://mig-000001-1-dev-recon/reconciliation/run-20260902-152833/
+recon: balancing equation closes; key-level reconciliation clean.
+RECONCILIATION FAILED: no confirmation bootstrap configured, so no evidence exists that Target System persisted anything. With the Kafka load path the confirmation stream is the only proof the load happened; a run without it has not been reconciled. Pass --confirmation-bootstrap, or --allow-unconfirmed-load true to accept an unverified load deliberately (only valid when the loader ran with --sink http).
+
+recon exit code (no bootstrap): 1

@@ -3,7 +3,17 @@
 > **Traducere în română a [`PLAN-CHANGES-02092026-kafka-loader.md`](PLAN-CHANGES-02092026-kafka-loader.md).** Versiunea
 > engleză rămâne cea de referință; dacă cele două diferă, engleza câștigă.
 >
-> **Stare:** propunere pentru discuție. Neimplementată, necuplată la `make verify`.
+> **Stare:** **implementată, deployată și demonstrată pe GCP real.** Secțiunea 3 (muchia de
+> ieșire) este construită și cuplată la `make verify` drept criteriul 10; secțiunea 6
+> (muchia de intrare) rămâne amânată, așa cum s-a recomandat. O rulare completă a DAG-ului
+> Composer pe Managed Kafka real a mers 8/8 task-uri verzi, cu 500/500 rânduri TARGET
+> confirmate (criteriul 9) și 500/500 documente publicate decontate (criteriul 10) — vezi
+> [`docs/evidence/gcp-kafka-loader-20260902/`](evidence/gcp-kafka-loader-20260902/).
+> Întrebările deschise din secțiunea 7 au primit răspuns în timpul
+> implementării — vezi [§9, Note de implementare](#9-note-de-implementare--ce-s-a-schimbat-după-construire),
+> care consemnează și trei defecte pe care propunerea nu le-a anticipat — două pe stack-ul
+> local, unul doar pe GCP real — pe care doar un
+> sistem care rulează le-a scos la iveală.
 > **Dată:** 2026-09-02. Bazată pe arborele de lucru de la acel commit.
 > **Public:** alinierea din 2026-09-03, apoi grupul de backend devs.
 > Document complementar la [`alternative-implementations.md`](alternative-implementations.md),
@@ -212,3 +222,106 @@ Facem muchia de ieșire (secțiunea 3), păstrăm `--sink http|kafka` pentru o v
 căi să fie rulabile în paralel împotriva aceleiași suite de acceptanță, și **rezolvăm Î1 și Î4
 înainte de a scrie cod** — Î1 poate face toată schimbarea inutilă, iar Î4 o poate face
 nelivrabilă.
+
+---
+
+## 9. Note de implementare — ce s-a schimbat după construire
+
+Construit pe 2026-09-02 pe arborele de lucru de mai sus. Secțiunea consemnează răspunsurile
+pe care le-au primit efectiv întrebările deschise și — mai util — cele două defecte care au
+apărut abia când lucrul a rulat. Ambele erau invizibile la review și s-ar fi livrat.
+
+### 9.1 Cum au fost răspunse întrebările deschise
+
+| Î | Răspuns, așa cum a fost construit |
+|---|---|
+| **Î1** | Loader-ul rămâne. Sink-ul Kafka al lui `json_producer` rămâne doar evidență; Loader-ul deține muchia de Load. Secțiunea 6 rămâne amânată. |
+| **Î2** | Target System deduplică pe cheia mesajului **și publică o confirmare care poartă `outcome: created \| duplicate`**. `duplicatesIgnored` supraviețuiește cu sensul inițial. Vezi 9.3. |
+| **Î3** | Versionat, nu redenumit. `accepted` își păstrează numele; `reportVersion: 2` și `sink` spun ce definiție se aplică. |
+| **Î4** | Asumat. `target-system-rejections` este un topic real (Terraform), mock-ul publică în el, iar Loader-ul îi transformă evenimentele în rânduri `.ERR` cu motivul dat de Target System. |
+| **Î5** | `--settle-timeout-seconds`, implicit 120, transmis explicit de DAG. Vezi 9.2 — acum chiar contează, nu mai e o plasă de siguranță. |
+| **Î6** | **Rămâne deschisă.** Nimic nu urmărește lag-ul consumatorului. Rămâne lacuna onestă numită în secțiunea 4, iar mutarea pe Kafka nu a închis-o. |
+
+### 9.2 Defectul 1 — citirea mărginită de end-offset raportează tăcut în minus
+
+Planul spune să „reutilizăm exact tiparul din `ReconService.readConfirmations`" — instantaneu
+`endOffsets`, apoi poll până când fiecare partiție îl atinge. Este corect în recon, care
+rulează mult după load. Este **greșit în loader**, și tăcut greșit.
+
+Loader-ul publică și apoi citește imediat. În clipa instantaneului, Target System nu a
+consumat aproape nimic, deci end-offset-urile sunt aproape goale; citirea atinge „toate
+partițiile la capăt" din prima trecere și se întoarce după ce a văzut o mână de confirmări.
+Timeout-ul — exact lucrul care trebuia să mărginească așteptarea — nu se declanșează deloc.
+
+Măsurat: **96 din 500 de documente decontate, 404 raportate `unsettled`** într-o rulare în
+care fiecare document a fost de fapt confirmat câteva secunde mai târziu.
+
+Corecția este să terminăm pe *întrebarea la care răspundem*, nu pe lungimea topicului: poll
+până când fiecare cheie publicată are un verdict, și oprire devreme doar la deadline. Asta
+promovează și timeout-ul de la Î5 dintr-o plasă nefolosită în limita reală, adică exact ce
+voia planul să fie. Ambele topicuri de retur sunt citite de o singură buclă, ca un flux lent
+de confirmări să nu consume tot bugetul și să înfometeze respingerile.
+
+### 9.3 Defectul 2 — un duplicat tăcut pică o re-rulare legitimă
+
+Pe HTTP, un lot reluat primea **200** — un verdict pozitiv pe care loader-ul îl contoriza ca
+duplicat și mergea mai departe. Prima implementare Kafka nu publica nimic pentru o reluare,
+oglindind regula existentă a mock-ului („un duplicat întoarce 200 și nu publică nimic").
+
+Sub decontare-prin-diferență-de-mulțimi asta este fatal: un document reluat nu primește *niciun
+verdict*, deci re-rularea unui lot deja încărcat raportează **100% `unsettled` și pică
+rularea**. Cum reluarea-după-eșec este principalul motiv operațional pentru a fi pe Kafka
+(topicul reține 7 zile tocmai ca un val să poată fi re-consumat), designul și-ar fi rupt
+propriul beneficiu principal.
+
+Corectat prin adăugarea unui câmp `outcome` în evenimentul de confirmare: `created` la prima
+aplicare, `duplicate` la o reluare. Ambele decontează documentul; diferă doar contorizarea,
+deci `duplicatesIgnored` păstrează sensul de pe calea HTTP. `outcome` lipsește din
+evenimentele scrise înainte de existența câmpului și are implicit `created`, adică exact ce
+însemnau toate.
+
+O consecință care merită numită: la o reluare, împărțirea `accepted`/`duplicates` **nu este
+deterministă**. Bucla de decontare se oprește imediat ce fiecare cheie are un verdict, deci
+poate citi evenimentul `created` mai vechi al unei chei sau pe cel `duplicate` mai nou, în
+funcție de sincronizare. *Totalul* este exact și `unsettled` rămâne 0 — variază doar
+împărțirea între cele două coloane. O reluare măsurată a raportat `accepted=236
+duplicates=264` acolo unde o citire strictă ar spune `0/500`. Dacă împărțirea trebuie vreodată
+să fie exactă, bucla trebuie să dreneze până la end-offset-urile reale după satisfacerea
+numărătorii, nu să se oprească la prima suficiență.
+
+### 9.3b Defectul 3 — Cloud Run scale-to-zero înfometează consumatorul (găsit doar pe GCP real)
+
+Testarea locală (redpanda + un mock podman-compose care nu se oprește niciodată) nu putea
+găsi acest defect; a apărut abia când mock-ul a rulat ca un serviciu Cloud Run real.
+
+`min_instance_count` al mock-ului era `0` necondiționat — corect pe calea HTTP, unde primul
+POST al Loader-ului *este* declanșatorul de cold-start și singurul cost e că acea cerere
+așteaptă mai mult. Pe calea Kafka nu există nicio cerere care să trezească instanța:
+firul de consumator fie rulează deja (pentru că altceva a lovit endpoint-ul HTTP), fie
+mesajele pe care ar trebui să le aplice stau pur și simplu pe topic. O rulare completă a
+DAG-ului cu 500 de documente măsurată pe GCP: loader-ul a publicat toate cele 500 cu succes
+(autentificarea SASL_SSL/OAUTHBEARER către Managed Kafka a funcționat), apoi a raportat
+**500 unsettled și a picat** — nu pentru că ceva era greșit cu mesajele, ci pentru că mock-ul
+s-a trezit prea încet ca să le confirme în fereastra de 120s. Cu timp, a consumat și
+confirmat totul; DAG-ul picase deja până atunci.
+
+Corectat legând `min_instance_count` de existența unui topic țintă de consumat:
+`var.target_topic == "" ? 0 : 1` (`terraform/modules/target_system_mock/main.tf`). Zero
+(implicitul vechi) când Kafka e oprit; unu ori de câte ori consumatorul are ceva de ascultat.
+Re-rulare după corecție: `loader_app` s-a terminat în **30 de secunde**, toate cele 8 task-uri
+DAG verzi — vezi `docs/evidence/gcp-kafka-loader-20260902/`.
+
+### 9.4 Recon pică închis
+
+Conform §3.4, absența bootstrap-ului de confirmări nu mai raportează `enabled=false` cu ieșire
+0. Pică, dacă nu se transmite `--allow-unconfirmed-load true` — pe care DAG-ul și runner-ul
+local îl derivă din sink, deci poate fi adevărat doar când loader-ul a rulat cu `--sink http`
+și propriile lui coduri de stare au fost verdictul. Asta închide devierea deja semnalată în
+`docs/production-readiness.md`.
+
+### 9.5 Unde a ajuns configurația Kafka partajată
+
+Schimbarea #2 a aterizat ca `apps/common/.../KafkaClients.java`, acum sursa unică pentru
+proprietățile de producer, cele de consumer și blocul `KAFKA_SECURITY_PROTOCOL` →
+SASL_SSL/OAUTHBEARER. `TargetSystemMock` și `ReconService` au fost ambele re-cablate pe el,
+deci a treia copie prezisă de plan nu a existat niciodată.

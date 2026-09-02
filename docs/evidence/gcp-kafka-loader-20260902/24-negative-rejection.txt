@@ -1,0 +1,15 @@
+# Negative path B — a refused document must become an .ERR row, not an unsettled one
+# Publishes a document with a blank accountId straight to target-system-target and reads
+# back the rejection event. This is the Q4 dependency: without the rejection topic a bad
+# document is indistinguishable from a slow one.
+
+published runId=neg-3aeda909 key=negkey-025f34aa with a blank accountId
+
+rejection event received on target-system-rejections:
+{
+  "runId": "neg-3aeda909",
+  "accountId": "<unidentified>",
+  "accountKey": "negkey-025f34aa",
+  "reason": "missing_accountId",
+  "rejectedAt": "2026-09-02T15:31:43.601731901Z"
+}

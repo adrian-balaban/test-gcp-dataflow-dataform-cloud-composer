@@ -85,6 +85,13 @@ services:
       # the host-mapped 19092), since the mock is itself a container on this network.
       TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP: "redpanda:9092"
       TARGET_SYSTEM_CONFIRMATION_TOPIC: "target-system-confirmations"
+      # The Kafka intake (docs/PLAN-CHANGES-02092026-kafka-loader.md): the mock consumes
+      # what the Loader produces, applies it through the same idempotency map as the POST
+      # handler, and publishes the verdict — a confirmation per accepted document, a
+      # rejection per refused one. Setting the target topic is what starts the consumer
+      # thread; leaving it empty keeps the mock HTTP-only.
+      TARGET_SYSTEM_TARGET_TOPIC: "target-system-target"
+      TARGET_SYSTEM_REJECTION_TOPIC: "target-system-rejections"
     ports:
       - "8080:8080"
     healthcheck:

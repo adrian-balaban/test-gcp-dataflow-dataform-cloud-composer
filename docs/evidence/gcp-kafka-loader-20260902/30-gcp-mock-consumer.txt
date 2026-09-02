@@ -1,0 +1,24 @@
+# GCP — the mock's Kafka consumer attached to real Managed Kafka (2026-09-02)
+#
+# The riskiest part of the change: the target-system-mock now CONSUMES the loader's
+# topic over SASL_SSL/OAUTHBEARER from Cloud Run, through the Serverless VPC Access
+# connector, using its own service account's roles/managedkafka.client grant.
+# All 12 partitions assigned across 3 brokers, no auth errors.
+
+[target-topic-consumer] INFO org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker - [Consumer clientId=consumer-target-system-mock-1, groupId=target-system-mock] Adding newly assigned partitions: [target-system-target-0, target-system-target-1, target-system-target-2, target-system-target-3, target-system-target-4, target-system-target-5, target-system-target-6, target-system-target-7, target-system-target-8, target-system-target-9, target-system-target-10, target-system-target-11]
+[target-topic-consumer] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=consumer-target-system-mock-1, groupId=target-system-mock] Successfully synced group in generation Generation{generationId=1, memberId='consumer-target-system-mock-1-bea367d2-fb91-4959-a358-9dfbd46ec6c2', protocol='range'}
+[kafka-producer-network-thread | producer-1] INFO org.apache.kafka.clients.Metadata - [Producer clientId=producer-1] Cluster ID: 90eZMDCSR-ShIdig8Mev3g
+[target-topic-consumer] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=consumer-target-system-mock-1, groupId=target-system-mock] Cluster ID: 90eZMDCSR-ShIdig8Mev3g
+[mock] consuming target-system-target → confirmations=target-system-confirmations rejections=target-system-rejections
+
+# /__admin/stats — the new counters prove the new image is serving:
+{
+  "received" : 0,
+  "accepted" : 0,
+  "duplicatesIgnored" : 0,
+  "injectedFailures" : 0,
+  "confirmationsPublished" : 0,
+  "rejectionsPublished" : 0,
+  "consumedFromTopic" : 0,
+  "distinctAccounts" : 0
+}

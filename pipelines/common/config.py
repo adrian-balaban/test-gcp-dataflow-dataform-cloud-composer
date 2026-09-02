@@ -122,6 +122,16 @@ class Config:
     target_system_confirmation_bootstrap: str
     target_system_confirmation_topic: str
 
+    # The rejection stream and the Load edge itself
+    # (docs/PLAN-CHANGES-02092026-kafka-loader.md). `loader_sink` picks between producing
+    # to `kafka_topic` and the original POST /v1/accounts; on the Kafka path the two
+    # return topics carry the verdict that the HTTP status code used to, and
+    # `loader_settle_timeout_seconds` bounds how long the loader waits for it before
+    # declaring the remainder unsettled.
+    target_system_rejection_topic: str
+    loader_sink: str
+    loader_settle_timeout_seconds: int
+
     pgp_home: str
     pgp_recipient: str
 
@@ -235,6 +245,22 @@ class Config:
             ),
             target_system_confirmation_topic=_env(
                 "TARGET_SYSTEM_CONFIRMATION_TOPIC", "target-system-confirmations"
+            ),
+            target_system_rejection_topic=_env(
+                "TARGET_SYSTEM_REJECTION_TOPIC", "target-system-rejections"
+            ),
+            # Defaults to the Kafka edge only when there is a broker to publish to.
+            # Without this a no-Kafka profile would pick a sink whose bootstrap is empty
+            # and the loader would refuse to start, turning "Kafka is off" into a broken
+            # Load lane rather than the HTTP one.
+            loader_sink=_env(
+                "MIG_LOADER_SINK",
+                "kafka"
+                if _env("KAFKA_BOOTSTRAP", "localhost:19092" if profile == "local" else "")
+                else "http",
+            ),
+            loader_settle_timeout_seconds=int(
+                _env("LOADER_SETTLE_TIMEOUT_SECONDS", "120")
             ),
             pgp_home=_env("PGP_HOME", "local/keys"),
             pgp_recipient=_env("PGP_RECIPIENT", "mig-prototype@example.invalid"),

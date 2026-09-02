@@ -47,7 +47,8 @@ EN  --> JP
 JP  --> FS2
 RS  --> RPT
 FS2 --> LA
-LA  --> VC : Loader APIs
+LA  --> VC : produce target-system-target
+VC  --> LA : confirmations + rejections
 
 CC ..> FP : orchestrates
 CC ..> DF : orchestrates

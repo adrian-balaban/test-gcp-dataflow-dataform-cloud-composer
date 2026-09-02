@@ -118,6 +118,17 @@ TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP = os.environ.get(
 TARGET_SYSTEM_CONFIRMATION_TOPIC = os.environ.get(
     "TARGET_SYSTEM_CONFIRMATION_TOPIC", "target-system-confirmations"
 )
+# The rejection stream (docs/PLAN-CHANGES-02092026-kafka-loader.md). Once the Load edge is
+# Kafka there is no response code to classify, so the loader's `.ERR` rows come from here
+# instead of from HTTP 4xx. A document that gets neither a confirmation nor a rejection is
+# reported as `unsettled`, and a non-zero `unsettled` fails the loader task.
+TARGET_SYSTEM_REJECTION_TOPIC = os.environ.get(
+    "TARGET_SYSTEM_REJECTION_TOPIC", "target-system-rejections"
+)
+# How long the loader waits on the two return topics before calling the rest unsettled.
+# New operational parameter with no HTTP analogue: HTTP settled every document
+# synchronously, so "how long do we wait" was never a question anyone had to answer.
+LOADER_SETTLE_TIMEOUT_SECONDS = os.environ.get("LOADER_SETTLE_TIMEOUT_SECONDS", "120")
 # Managed Kafka speaks SASL_SSL/OAUTHBEARER; local redpanda speaks PLAINTEXT. Both the
 # Python sink (pipelines/common/sinks.py) and the Java consumer (ReconService) read this
 # from the environment, so it has to reach the *pods* — the Composer environment variable
@@ -127,6 +138,12 @@ TARGET_SYSTEM_CONFIRMATION_TOPIC = os.environ.get(
 KAFKA_SECURITY_PROTOCOL = os.environ.get("KAFKA_SECURITY_PROTOCOL", "PLAINTEXT")
 KAFKA_BOOTSTRAP = os.environ.get("KAFKA_BOOTSTRAP", "")
 KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", "target-system-target")
+# Which Load edge to use. `kafka` is the target design; `http` keeps the original
+# POST /v1/accounts path runnable for one release so both can be compared against the same
+# acceptance suite. Defaults to http when no broker exists, so a no-Kafka environment still
+# has a working Load lane rather than a loader that refuses to start on a missing
+# bootstrap. Declared after KAFKA_BOOTSTRAP because it reads it.
+LOADER_SINK = os.environ.get("MIG_LOADER_SINK", "kafka" if KAFKA_BOOTSTRAP else "http")
 
 DEFAULT_ARGS = {
     "owner": "our-team",
@@ -413,7 +430,20 @@ with DAG(
             "--gcs-host", GCS_API,
             "--json-bucket", JSON_BUCKET,
             "--recon-bucket", RECON_BUCKET,
+            # Still passed on both paths: --sink http uses it, and --sink kafka ignores
+            # it, so flipping the sink back needs no other change.
             "--target-system-url", TARGET_SYSTEM_URL,
+            # The Load edge (docs/PLAN-CHANGES-02092026-kafka-loader.md). On `kafka` the
+            # loader produces to KAFKA_TOPIC and then settles the run against the two
+            # return topics; the confirmation topic gives it `accepted`, the rejection
+            # topic gives it `.ERR`, and whatever neither mentions is `unsettled` and
+            # fails the task. On `http` these are inert and the POST path runs as before.
+            "--sink", LOADER_SINK,
+            "--kafka-bootstrap", KAFKA_BOOTSTRAP,
+            "--kafka-topic", KAFKA_TOPIC,
+            "--confirmation-topic", TARGET_SYSTEM_CONFIRMATION_TOPIC,
+            "--rejection-topic", TARGET_SYSTEM_REJECTION_TOPIC,
+            "--settle-timeout-seconds", LOADER_SETTLE_TIMEOUT_SECONDS,
         ],
         service_account=LOADER_SERVICE_ACCOUNT,
     )
@@ -434,10 +464,15 @@ with DAG(
             "--ds-extraction", DATASET_EXTRACTION,
             "--ds-transformation", DATASET_TRANSFORMATION,
             "--ds-recon", DATASET_RECON,
-            # The confirmation stream is skipped cleanly when the bootstrap is empty,
-            # which is the no-Kafka DAG path — recon reports enabled=false and the
-            # acceptance criterion for it skips rather than asserting zero confirmations.
+            # The confirmation stream is the only evidence a Kafka load happened, so an
+            # empty bootstrap now *fails* recon rather than reporting enabled=false and
+            # exiting 0 (docs/PLAN-CHANGES-02092026-kafka-loader.md §3.4). The opt-out is
+            # tied to the sink rather than set independently: on --sink http the loader's
+            # own 201/4xx classification is the verdict and the stream adds nothing, so
+            # skipping is legitimate; on --sink kafka nothing else proves the load, so the
+            # two settings cannot be allowed to disagree.
             "--confirmation-bootstrap", TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP,
+            "--allow-unconfirmed-load", "true" if LOADER_SINK == "http" else "false",
             "--confirmation-topic", TARGET_SYSTEM_CONFIRMATION_TOPIC,
         ],
         service_account=RECON_SERVICE_ACCOUNT,

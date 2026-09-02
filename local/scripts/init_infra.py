@@ -53,6 +53,13 @@ KAFKA_TOPIC = os.environ.get("KAFKA_TOPIC", "target-system-target")
 CONFIRMATION_TOPIC = os.environ.get(
     "TARGET_SYSTEM_CONFIRMATION_TOPIC", "target-system-confirmations"
 )
+# The rejection stream topic (docs/PLAN-CHANGES-02092026-kafka-loader.md) — the other half
+# of the mock's write-back. Once the Load edge is Kafka the loader has no HTTP status to
+# classify, so a refused document arrives here with a reason string and becomes an .ERR
+# row. Absent topic = every published document reports as `unsettled`.
+REJECTION_TOPIC = os.environ.get(
+    "TARGET_SYSTEM_REJECTION_TOPIC", "target-system-rejections"
+)
 
 LANDING = os.environ.get("GCS_LANDING_BUCKET", "mig-landing")
 JSON_BUCKET = os.environ.get("GCS_JSON_BUCKET", "mig-json-out")
@@ -202,9 +209,10 @@ def create_kafka_topic() -> None:
             if attempt == RETRIES - 1:
                 raise
             time.sleep(RETRY_DELAY)
-    # Both the target topic (the loader's outbound stream) and the confirmation topic
-    # (the mock's write-back, docs/PLAN-CHANGES-22082026.md) live on the same cluster.
-    for topic in (KAFKA_TOPIC, CONFIRMATION_TOPIC):
+    # The target topic (the loader's outbound stream) and both return topics — the
+    # mock's confirmations (docs/PLAN-CHANGES-22082026.md) and rejections
+    # (docs/PLAN-CHANGES-02092026-kafka-loader.md) — live on the same cluster.
+    for topic in (KAFKA_TOPIC, CONFIRMATION_TOPIC, REJECTION_TOPIC):
         if topic in existing:
             ok(f"topic {topic} (exists)")
             continue

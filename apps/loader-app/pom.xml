@@ -19,6 +19,23 @@
       <artifactId>common</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!--
+      The Load edge moved from POST /v1/accounts onto Kafka
+      (docs/PLAN-CHANGES-02092026-kafka-loader.md): the loader produces to
+      target-system-target and then settles the run against the confirmation and
+      rejection streams. Both directions are kafka-clients.
+    -->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+    </dependency>
+    <!-- Same reason as recon-service and the mock: without a binder, kafka-clients'
+         own SASL/network diagnostics are discarded and a failed publish reads only as
+         "Topic not present in metadata after 60000 ms". -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

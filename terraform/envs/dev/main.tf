@@ -223,7 +223,7 @@ module "iam" {
   project_id = var.project_id
   buckets    = module.storage.buckets
   # Empty when Kafka is off → no roles/managedkafka.client grants are created. Non-empty
-  # only when enable_kafka=true, and then it grants the client role to the three broker
+  # only when enable_kafka=true, and then it grants the client role to the four broker
   # principals (see terraform/modules/iam).
   kafka_cluster_id = module.kafka.cluster_id
 }
@@ -296,6 +296,12 @@ module "target_system_mock" {
   # run behaves as before. Non-empty only when enable_kafka=true, and then only reachable
   # from Cloud Run via a Serverless VPC Access connector (module.vpc_connector below).
   confirmation_bootstrap = try(module.kafka.bootstrap_servers, "")
+  # The mock's second intake and the rejection half of its verdict. Both come from the
+  # kafka module's topics map rather than being hardcoded, so "what Terraform built" and
+  # "what the mock reads" cannot drift. Empty when Kafka is off → no consumer thread and
+  # no rejection producer, which is the unchanged HTTP-only behaviour.
+  target_topic    = try(module.kafka.topics["target"], "")
+  rejection_topic = try(module.kafka.topics["rejections"], "")
   # The mock runs as its own SA so it can hold roles/managedkafka.client, and egresses
   # through the connector to reach the VPC-internal broker. Both empty when Kafka is off.
   service_account  = module.iam.service_accounts["target-system-mock"]
@@ -346,8 +352,12 @@ module "composer" {
   # Recon reads the confirmation topic; the bootstrap is empty when Kafka is off, which
   # makes recon skip the confirmation read (docs/PLAN-CHANGES-22082026.md).
   target_system_confirmation_bootstrap = try(module.kafka.bootstrap_servers, "")
-  dataflow_subnetwork                  = "regions/${var.region}/subnetworks/mig-subnet"
-  dataflow_service_account             = module.iam.service_accounts["dataflow-worker"]
+  # The loader settles against both return topics. Sourced from the kafka module's map so
+  # the topic Terraform creates and the topic the loader reads cannot drift apart.
+  target_system_confirmation_topic = try(module.kafka.topics["confirmations"], "target-system-confirmations")
+  target_system_rejection_topic    = try(module.kafka.topics["rejections"], "target-system-rejections")
+  dataflow_subnetwork              = "regions/${var.region}/subnetworks/mig-subnet"
+  dataflow_service_account         = module.iam.service_accounts["dataflow-worker"]
 }
 
 # Composer does not grant its Airflow workers permission to create pods, so every

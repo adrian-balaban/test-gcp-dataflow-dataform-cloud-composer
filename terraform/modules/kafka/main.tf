@@ -34,6 +34,17 @@ variable "topics" {
       topic_id   = "target-system-confirmations"
       partitions = 1
     }
+    rejections = {
+      # The other half of the Loader's verdict once the Load edge moved off HTTP
+      # (docs/PLAN-CHANGES-02092026-kafka-loader.md): one event per refused document,
+      # carrying Target System's own reason string, which becomes the .ERR row that an
+      # HTTP 4xx used to produce. Same shape and same single partition as confirmations —
+      # rejections are rarer still, and the loader's bounded read makes the same
+      # assumption. Without this topic a bad document is indistinguishable from a slow
+      # one and the whole batch reports as `unsettled`.
+      topic_id   = "target-system-rejections"
+      partitions = 1
+    }
   }
   description = "Topics on the cluster. Keys are local labels (target, confirmations) used to address outputs; topic_id is the real Kafka topic name."
 }

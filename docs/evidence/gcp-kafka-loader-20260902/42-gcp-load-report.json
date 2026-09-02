@@ -1,0 +1,17 @@
+{
+  "lane" : "load",
+  "record" : "ACCOUNT",
+  "runId" : "run-dag-20260902-1852",
+  "reportVersion" : 2,
+  "sink" : "kafka",
+  "generatedAt" : "2026-09-02T19:09:37.918566810Z",
+  "jsonFilesRead" : 3,
+  "documentsRead" : 500,
+  "published" : 500,
+  "accepted" : 500,
+  "duplicatesIgnored" : 0,
+  "errors" : 0,
+  "unsettled" : 0,
+  "retriesPerformed" : 0,
+  "sourceFiles" : [ "json/run-dag-20260902-1852/ACCOUNT.00000.json", "json/run-dag-20260902-1852/ACCOUNT.00001.json", "json/run-dag-20260902-1852/ACCOUNT.00002.json" ]
+}

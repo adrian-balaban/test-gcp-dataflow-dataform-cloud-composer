@@ -1,0 +1,13 @@
+Executing the command: [ airflow tasks states-for-dag-run mig_000001_1_migration manual__2026-09-02T18:52:44+00:00 ]...
+Command has been started. execution_id=d01827d1-d831-4c51-a098-dae4d6f29f35
+Use ctrl-c to interrupt the command
+dag_id                 | execution_date            | task_id              | state   | start_date                       | end_date
+=======================+===========================+======================+=========+==================================+=================================
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | wait_for_extract_flg | success | 2026-09-02T18:52:52.949291+00:00 | 2026-09-02T18:52:54.153383+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | file_processor       | success | 2026-09-02T18:52:57.909104+00:00 | 2026-09-02T18:59:21.110354+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | dataform_run         | success | 2026-09-02T18:59:26.734910+00:00 | 2026-09-02T19:00:07.677740+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | data_enrichment      | success | 2026-09-02T19:00:11.086641+00:00 | 2026-09-02T19:04:33.796580+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | json_producer        | success | 2026-09-02T19:04:38.445017+00:00 | 2026-09-02T19:09:09.283618+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | loader_app           | success | 2026-09-02T19:09:13.587750+00:00 | 2026-09-02T19:09:43.964293+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | reconciliation       | success | 2026-09-02T19:09:50.615484+00:00 | 2026-09-02T19:10:10.908727+00:00
+mig_000001_1_migration | 2026-09-02T18:52:44+00:00 | assert_run_balanced  | success | 2026-09-02T19:10:15.118671+00:00 | 2026-09-02T19:10:24.362094+00:00

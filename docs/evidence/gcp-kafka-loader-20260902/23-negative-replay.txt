@@ -1,0 +1,6 @@
+# Negative path A — replay of an already-loaded batch must settle, not fail
+# Re-runs the loader on the SAME run id. Every key is already applied at Target System,
+# so every document comes back as outcome=duplicate. unsettled must be 0 and exit 0.
+
+loader: run=run-20260902-152833 sink=kafka files=3 documents=500 published=500 accepted=236 duplicates=264 errors=0 unsettled=0 retries=0 -> gs://mig-000001-1-dev-recon/load/run-20260902-152833/
+loader exit code: 0

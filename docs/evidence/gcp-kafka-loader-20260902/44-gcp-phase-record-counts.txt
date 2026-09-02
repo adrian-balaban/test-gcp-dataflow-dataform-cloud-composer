@@ -1,0 +1,3 @@
+[base] data_enrichment: {"enriched": 502, "read": 502, "reference_unmatched": 502}
+[base] file_processor: {"accounted": 505, "balances": true, "by_reason": {}, "imbalance": 0, "migrated": 502, "not_migrated": 3, "rejected": 3, "src_read": 505, "written": 502}
+[base] json_producer: {"batch_size": 200, "batches": 3, "rejected": 2, "sinks": {"sinks": [{"batches": 3, "messages": 500, "sink": "kafka", "topic": "target-system-target"}, {"batches": 3, "bucket": "mig-000001-1-dev-json-out", "documents": 500, "files": ["json/run-dag-20260902-1852/ACCOUNT.00000.json", "json/run-dag-20260902-1852/ACCOUNT.00001.json", "json/run-dag-20260902-1852/ACCOUNT.00002.json"], "prefix": "json/run-dag-20260902-1852/", "sink": "gcs-json"}]}, "written": 500}

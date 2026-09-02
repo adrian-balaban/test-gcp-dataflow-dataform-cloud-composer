@@ -483,6 +483,8 @@ def _config(**overrides):
         kafka_topic="", kafka_batch_size=200, kafka_security_protocol="",
         target_system_url="", target_system_max_retries=1, pgp_home="", pgp_recipient="",
         target_system_confirmation_bootstrap="", target_system_confirmation_topic="",
+        target_system_rejection_topic="", loader_sink="http",
+        loader_settle_timeout_seconds=120,
         mapping="contracts/mappings/mapping-project1.yaml",
     )
     base.update(overrides)

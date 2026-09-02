@@ -134,6 +134,25 @@ only way to keep it genuinely opt-in.
 
 ### B0. Status — applied and run
 
+> **Update 2026-09-02 — the Kafka Load edge is proven on GCP.** Following
+> `docs/PLAN-CHANGES-02092026-kafka-loader.md`, the Loader moved from `POST /v1/accounts`
+> to producing `target-system-target` and settling against `target-system-confirmations` /
+> the new `target-system-rejections`. A full Composer DAG run (`run-dag-20260902-1852`)
+> went 8/8 tasks green in 17.5 minutes wall clock, `loader_app` itself in 30 seconds —
+> 500/500 documents published, accepted and settled, 0 unsettled. Acceptance criteria 9 and
+> 10 both closed from live GCP evidence (500/500 TARGET rows confirmed; 500/500 published
+> documents settled). See
+> [`evidence/gcp-kafka-loader-20260902/`](evidence/gcp-kafka-loader-20260902/).
+>
+> Three defects surfaced only by running this on real infrastructure and a real timing
+> profile, not by review: (1) the plan's prescribed bounded end-offset read silently
+> under-reported settled documents because the loader publishes and reads back
+> near-instantly, unlike recon which reads long after the load; (2) a silent Kafka
+> duplicate (no HTTP-style 200 equivalent) made replaying an already-loaded batch fail at
+> 100% unsettled; (3) — found only on GCP — the mock's Cloud Run `min_instance_count=0`
+> meant nothing woke its consumer thread on the Kafka path, so a cold mock left an entire
+> run unsettled past its timeout. All three are fixed; see §9 of the plan doc for detail.
+>
 > **Update 2026-08-23 — the confirmation stream is proven on GCP.** A full Composer DAG pass
 > under `-var=enable_composer=true -var=enable_kafka=true` ran all 8 tasks green and closed
 > acceptance criterion 9 from *live* Managed Kafka confirmations (50 of 50 TARGET rows
@@ -327,10 +346,15 @@ is an infrastructure one.
 
 ### B8. Managed Kafka — VPC connector, IAM, OAUTHBEARER
 
-The confirmation stream (`docs/PLAN-CHANGES-22082026.md`) needs Managed Kafka reachable
-over `SASL_SSL`/`OAUTHBEARER` from both the mock (publishing confirmations) and recon
-(consuming them). Three things the broker needs beyond `enable_kafka=true`, all provisioned
-by the same apply — none of them is a manual step:
+Since `docs/PLAN-CHANGES-02092026-kafka-loader.md` the broker carries the **Load edge
+itself**, not only the confirmation stream: the loader produces account documents to
+`target-system-target`, the mock consumes them, and the mock's verdict comes back on
+`target-system-confirmations` and `target-system-rejections`. Three topics, and four
+principals that open a socket — the loader is now one of them.
+
+All of it needs Managed Kafka reachable over `SASL_SSL`/`OAUTHBEARER`. Three things the
+broker needs beyond `enable_kafka=true`, all provisioned by the same apply — none of them
+is a manual step:
 
 1. **Serverless VPC Access connector** (`module.vpc_connector`, `mig-vpc-connector`). Managed
    Kafka is VPC-internal (no public endpoint). The Cloud Run mock egresses through this
@@ -343,9 +367,11 @@ by the same apply — none of them is a manual step:
    cluster-level IAM resource: the Terraform provider exposes only `cluster`, `topic` and
    `acl` (verified via `terraform providers schema -json`, not assumed). The client role is a
    project-level grant via `google_project_iam_member`, conditionally merged into
-   `local.project_roles` in `terraform/modules/iam` when `kafka_cluster_id != ""`. Three
-   principals receive it: `dataflow-worker` (json_producer on the DAG), `recon-service`
-   (consumes confirmations on the DAG) and `target-system-mock` (publishes confirmations from
+   `local.project_roles` in `terraform/modules/iam` when `kafka_cluster_id != ""`. Four
+   principals receive it: `dataflow-worker` (json_producer on the DAG), `loader-app`
+   (produces `target-system-target`, then reads both return topics to settle the run),
+   `recon-service` (consumes confirmations on the DAG) and `target-system-mock` (consumes
+   the target topic and publishes confirmations and rejections from
    Cloud Run). Without it the OAUTHBEARER handshake authenticates the SA but the broker
    refuses the connection as unauthorized.
 

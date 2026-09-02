@@ -43,6 +43,27 @@ variable "confirmation_topic" {
   default     = "target-system-confirmations"
   description = "Topic the mock writes one confirmation event per accepted write to."
 }
+variable "rejection_topic" {
+  type        = string
+  default     = "target-system-rejections"
+  description = <<-EOT
+    Topic the mock writes one rejection event per refused document to, carrying its own
+    reason string (docs/PLAN-CHANGES-02092026-kafka-loader.md). This is what gives the
+    Loader's .ERR a source once the Load edge is Kafka: without it a bad document is
+    indistinguishable from a slow one and lands in `unsettled`.
+  EOT
+}
+variable "target_topic" {
+  type        = string
+  default     = ""
+  description = <<-EOT
+    The Loader's target topic, which the mock consumes as a second intake alongside the
+    POST endpoint. Empty (the default, and the value when Kafka is off) means no consumer
+    thread is started and the mock is HTTP-only, exactly as before. Non-empty only makes
+    sense together with confirmation_bootstrap, since the verdict for a consumed document
+    is published rather than returned.
+  EOT
+}
 
 variable "vpc_connector_id" {
   type        = string
@@ -86,7 +107,17 @@ resource "google_cloud_run_v2_service" "this" {
     service_account = var.service_account
 
     scaling {
-      min_instance_count = 0
+      # On the HTTP path scale-to-zero is free: the Loader's first POST is itself the
+      # cold-start trigger, so the only cost is that one request waiting longer. On the
+      # Kafka path there is no request to wake the instance — the consumer thread either
+      # happens to be running already or the messages it should be applying just sit on
+      # the topic. Measured on GCP: a cold mock left an entire 500-document run
+      # `unsettled` past a 120s loader timeout, because nothing woke the consumer until
+      # unrelated traffic (e.g. a stray /__admin/stats poll) happened to hit it minutes
+      # later. So min_instance_count follows target_topic — pinned to 1 whenever the
+      # consumer has something to listen for, back to 0 (its old, harmless default)
+      # otherwise.
+      min_instance_count = var.target_topic == "" ? 0 : 1
       max_instance_count = 2
     }
 
@@ -122,6 +153,17 @@ resource "google_cloud_run_v2_service" "this" {
       env {
         name  = "TARGET_SYSTEM_CONFIRMATION_TOPIC"
         value = var.confirmation_topic
+      }
+      # The other half of the verdict on the Kafka path, and the second intake that makes
+      # a verdict necessary at all (docs/PLAN-CHANGES-02092026-kafka-loader.md). An empty
+      # target topic leaves the consumer thread unstarted, so the mock stays HTTP-only.
+      env {
+        name  = "TARGET_SYSTEM_REJECTION_TOPIC"
+        value = var.rejection_topic
+      }
+      env {
+        name  = "TARGET_SYSTEM_TARGET_TOPIC"
+        value = var.target_topic
       }
       # Tells the mock's Java producer to wire SASL_SSL/OAUTHBEARER instead of PLAINTEXT.
       # The mock reads it directly (Cloud Run service, not a DAG pod fed by env_file).

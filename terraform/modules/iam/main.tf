@@ -15,8 +15,10 @@ variable "kafka_cluster_id" {
     The Managed Kafka cluster id ("mig-kafka"), or empty when Kafka is off. Drives the
     roles/managedkafka.client grants below: empty (the default) creates no Kafka IAM, so a
     no-Kafka apply is unchanged. Non-empty grants the client role to every account that
-    needs a broker socket — json_producer's dataflow-worker, recon-service, and the
-    target-system-mock (docs/PLAN-CHANGES-22082026.md).
+    needs a broker socket — json_producer's dataflow-worker, the loader-app (which now
+    produces the target topic and reads back the return streams), recon-service, and the
+    target-system-mock (docs/PLAN-CHANGES-22082026.md,
+    docs/PLAN-CHANGES-02092026-kafka-loader.md).
   EOT
 }
 
@@ -36,10 +38,10 @@ locals {
     # The pipeline pods submit their own Dataflow jobs, so the account they impersonate
     # needs dataflow.developer too — without it the submit fails with
     #   403 Could not create workflow; user does not have write access to project
-    "roles/dataflow.worker"              = ["dataflow-worker"]
-    "roles/dataflow.developer"           = ["dataflow-worker", "composer-runner"]
-    "roles/bigquery.jobUser"             = ["dataflow-worker", "dataform-runner", "recon-service", "composer-runner"]
-    "roles/bigquery.dataEditor"          = ["dataflow-worker", "dataform-runner"]
+    "roles/dataflow.worker"     = ["dataflow-worker"]
+    "roles/dataflow.developer"  = ["dataflow-worker", "composer-runner"]
+    "roles/bigquery.jobUser"    = ["dataflow-worker", "dataform-runner", "recon-service", "composer-runner"]
+    "roles/bigquery.dataEditor" = ["dataflow-worker", "dataform-runner"]
     # composer-runner reads too, not only submits: `assert_run_balanced` is a
     # PythonOperator running inside the Airflow worker rather than a pod, so it queries
     # run_ledger as this account. bigquery.jobUser lets it *start* a job; without
@@ -51,15 +53,17 @@ locals {
     "roles/dataform.editor"              = ["composer-runner"]
     "roles/secretmanager.secretAccessor" = ["dataflow-worker", "loader-app"]
     "roles/artifactregistry.reader"      = ["dataflow-worker", "composer-runner"]
-  }, var.kafka_cluster_id == "" ? {} : {
+    }, var.kafka_cluster_id == "" ? {} : {
     # Managed Kafka has no cluster-level IAM resource (the provider exposes only cluster,
     # topic and acl). The client role is project-level: it grants the SA permission to open
     # a socket to the broker, which is all the SASL_SSL/OAUTHBEARER handshake needs. The
-    # three broker principals are the dataflow-worker (json_producer on the DAG),
-    # recon-service (consumes confirmations on the DAG) and target-system-mock (publishes
-    # confirmations from Cloud Run). Gated on kafka_cluster_id so a no-Kafka apply creates
+    # four broker principals are the dataflow-worker (json_producer on the DAG),
+    # loader-app (produces target-system-target and reads back the confirmation and
+    # rejection streams to settle the run), recon-service (consumes confirmations on the
+    # DAG) and target-system-mock (consumes the target topic, publishes confirmations and
+    # rejections from Cloud Run). Gated on kafka_cluster_id so a no-Kafka apply creates
     # no grants — the map is empty and google_project_iam_member.this binds nothing for it.
-    "roles/managedkafka.client" = ["dataflow-worker", "recon-service", "target-system-mock"]
+    "roles/managedkafka.client" = ["dataflow-worker", "loader-app", "recon-service", "target-system-mock"]
   })
 
   # bucket => { account => role }
@@ -83,8 +87,8 @@ locals {
       # "does not have storage.objects.delete access". That never showed up while every
       # pod ran as dataflow-worker; it appeared the moment the loader started using the
       # narrow identity actually written for it, which is the point of having one.
-      loader-app      = "roles/storage.objectAdmin"
-      recon-service   = "roles/storage.objectAdmin"
+      loader-app    = "roles/storage.objectAdmin"
+      recon-service = "roles/storage.objectAdmin"
     }
     dataflow-temp = {
       dataflow-worker = "roles/storage.objectAdmin"
@@ -163,10 +167,12 @@ resource "google_service_account_iam_member" "composer_runner_impersonates_dataf
 #
 # Every client that opens a socket to Managed Kafka needs roles/managedkafka.client —
 # without it the SASL_SSL/OAUTHBEARER handshake authenticates the SA but the broker
-# refuses the connection as unauthorized. The three principals:
+# refuses the connection as unauthorized. The four principals:
 #   * dataflow-worker — json_producer writes target-system-target on the DAG path
+#   * loader-app       — produces target-system-target, then reads target-system-confirmations
+#                        and target-system-rejections to settle the run into its .RPT/.ERR
 #   * recon-service    — consumes target-system-confirmations on the DAG path
-#   * target-system-mock — publishes confirmations from Cloud Run
+#   * target-system-mock — consumes target-system-target, publishes confirmations and rejections
 # Managed Kafka has no cluster-level IAM resource (the provider exposes only cluster,
 # topic and acl), so the grant is project-level via the shared google_project_iam_member.this
 # above, conditionally added to local.project_roles when kafka_cluster_id is non-empty

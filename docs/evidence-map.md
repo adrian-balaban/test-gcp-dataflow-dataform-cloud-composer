@@ -67,14 +67,23 @@ GROUP BY door, stage, reason ORDER BY n DESC
 models live in `dataform/definitions/*.sqlx`, pushed to a linked git remote
 (`make deploy-dataform`).
 
-## Optional sink — Managed Kafka
+## The Load edge — Managed Kafka
 
-**Managed Service for Kafka → Clusters → `mig-kafka`**, two topics:
+Since `docs/PLAN-CHANGES-02092026-kafka-loader.md` this is not an optional sink alongside
+the HTTP Load lane — it **is** the Load lane. `--sink http` still exists for one release.
+
+**Managed Service for Kafka → Clusters → `mig-kafka`**, three topics:
 
 | Topic | Who writes | Who reads |
 |---|---|---|
-| `target-system-target` | `json_producer` (the enriched TARGET JSON) | the Loader team |
-| `target-system-confirmations` | `target-system-mock` — one `{runId, accountId, accountKey, confirmedAt}` per accepted write (HTTP 201) | `recon-service` — set-differences the keys against `account_target`, fails the run on an unconfirmed row (criterion 9) |
+| `target-system-target` | `loader-app` (key = `dedupKey`, headers `run-id`/`idempotency-key`/`batch-id`); also `json_producer`, as evidence | `target-system-mock` — applies each document through the same idempotency map as the POST handler |
+| `target-system-confirmations` | `target-system-mock` — one `{runId, accountId, accountKey, outcome, confirmedAt}` per applied document, `outcome` = `created` or `duplicate` | `loader-app` — settles the run into `accepted`/`duplicatesIgnored`; `recon-service` — set-differences the keys against `account_target`, fails the run on an unconfirmed row (criterion 9) |
+| `target-system-rejections` | `target-system-mock` — one `{runId, accountId, accountKey, reason, rejectedAt}` per refused document | `loader-app` — each becomes an `.ERR` row carrying Target System's own reason string, in place of an HTTP 4xx |
+
+**What to look for.** A published document that appears on neither return topic is
+`unsettled` in the loader's `.RPT`, and a non-zero `unsettled` fails the task (criterion
+10). That is the failure mode with no HTTP analogue: it covers a dead consumer and a poison
+message stalling a partition, both of which otherwise look exactly like a successful run.
 
 Default `enable_kafka=false` and torn down between runs, so it is not visible unless
 `terraform apply -var=enable_kafka=true`. Three things the broker needs beyond the flag,
@@ -85,8 +94,10 @@ all provisioned by the same apply:
   reach the broker. `egress = PRIVATE_RANGES_ONLY` routes only RFC1918 (the broker) through it.
 - **`roles/managedkafka.client`** granted at the **project** level (not cluster level — the
   Terraform provider exposes no `google_managed_kafka_cluster_iam_member` resource, only
-  `cluster`/`topic`/`acl`) to three service accounts: `dataflow-worker` (json_producer),
-  `recon-service` (consumes confirmations), `target-system-mock` (publishes confirmations).
+  `cluster`/`topic`/`acl`) to four service accounts: `dataflow-worker` (json_producer),
+  `loader-app` (produces the target topic, reads both return topics), `recon-service`
+  (consumes confirmations), `target-system-mock` (consumes the target topic, publishes
+  confirmations and rejections).
   Without it the SASL_SSL/OAUTHBEARER handshake authenticates the SA but the broker refuses
   the connection as unauthorized.
 - **`KAFKA_SECURITY_PROTOCOL=SASL_SSL`** env on the mock — flips its Java producer from

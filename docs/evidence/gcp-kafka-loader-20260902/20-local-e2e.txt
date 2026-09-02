@@ -1,0 +1,20 @@
+# Local end-to-end on the Kafka Load edge — 2026-09-02
+# .venv/bin/python local/scripts/run_pipeline.py --profile local
+
+[1m▶ harness[0m generating 500 accounts (copybook)
+[1m▶ E — Extractor App[0m 5 artefacts → archive → gzip → PGP → File Storage
+extractor: run=run-20260902-152833 records=505 dat_files=2 extraction_errors=0 -> gs://mig-000001-1-dev-landing/extraction/run-20260902-152833/
+[1m▶ T — Dataflow File Processor[0m decrypt, verify .CHS, TDS parse → BigQuery
+file_processor: {"accounted": 505, "balances": true, "by_reason": {}, "imbalance": 0, "migrated": 502, "not_migrated": 3, "rejected": 3, "src_read": 505, "written": 502}
+[1m▶ T — Dataform[0m SQL transformation: Extraction → Transformation dataset
+dataform: compiling dataform (runId=run-20260902-152833)
+[1m▶ T — Dataflow Data Enrichment[0m reference-data join
+data_enrichment: {"enriched": 502, "read": 502, "reference_unmatched": 502}
+[1m▶ T — Dataflow JSON Data Producer[0m map + schema, emit to both, batches of 200
+json_producer: {"batch_size": 200, "batches": 3, "rejected": 2, "sinks": {"sinks": [{"batches": 3, "messages": 500, "sink": "kafka", "topic": "target-system-target"}, {"batches": 3, "bucket": "mig-000001-1-dev-json-out", "documents": 500, "files": ["json/run-20260902-152833/ACCOUNT.00000.json", "json/run-20260902-152833/ACCOUNT.00001.json", "json/run-20260902-152833/ACCOUNT.00002.json"], "prefix": "json/run-20260902-152833/", "sink": "gcs-json"}]}, "written": 500}
+[1m▶ L — Loader App[0m download JSON → Target System APIs with retries → load artefacts
+loader: run=run-20260902-152833 sink=kafka files=3 documents=500 published=500 accepted=500 duplicates=0 errors=0 unsettled=0 retries=0 -> gs://mig-000001-1-dev-recon/load/run-20260902-152833/
+[1m▶ R — Reconciliation Services[0m source + transformation/load recon, migrability reports
+recon: reports at gs://mig-000001-1-dev-recon/reconciliation/run-20260902-152833/
+recon: balancing equation closes; key-level reconciliation clean.
+recon: target system confirmed all 500 TARGET rows.

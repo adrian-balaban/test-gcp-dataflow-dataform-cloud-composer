@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import ro.mig.common.Artefacts;
 import ro.mig.common.BigQueryRest;
 import ro.mig.common.HttpObjectStore;
+import ro.mig.common.KafkaClients;
 import ro.mig.common.ObjectStore;
 
 import java.nio.charset.StandardCharsets;
@@ -343,8 +342,30 @@ public final class ReconService {
                         targetSystem.confirmations());
                 System.exit(1);
             }
+        } else if (a.allowUnconfirmedLoad) {
+            // The old behaviour, now reachable only by asking for it. Retained for the
+            // --sink http path, where the loader's own 201/4xx classification is the
+            // verdict and the confirmation stream genuinely adds nothing.
+            System.out.println(
+                    "recon: target system reconciliation skipped (no confirmation bootstrap, "
+                            + "--allow-unconfirmed-load set).");
         } else {
-            System.out.println("recon: target system reconciliation skipped (no confirmation bootstrap).");
+            // Fail closed (docs/PLAN-CHANGES-02092026-kafka-loader.md §3.4). Once the Load
+            // edge is Kafka the confirmation stream is the *only* evidence the load
+            // happened — there is no response code behind it any more. An absent bootstrap
+            // then stops meaning "this run doesn't need Kafka" and starts meaning "this run
+            // proved nothing", and reporting enabled=false and exiting 0 would let it pass
+            // as green. The flag was already flagged as a deviation in
+            // docs/production-readiness.md; this is that deviation closed.
+            System.err.println(
+                    "RECONCILIATION FAILED: no confirmation bootstrap configured, so no "
+                            + "evidence exists that Target System persisted anything. With the "
+                            + "Kafka load path the confirmation stream is the only proof the "
+                            + "load happened; a run without it has not been reconciled. Pass "
+                            + "--confirmation-bootstrap, or --allow-unconfirmed-load true to "
+                            + "accept an unverified load deliberately (only valid when the "
+                            + "loader ran with --sink http).");
+            System.exit(1);
         }
     }
 
@@ -435,30 +456,11 @@ public final class ReconService {
      * what makes the read terminate.
      */
     private static Set<String> readConfirmations(String bootstrap, String topic, String runId) {
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         // Fresh group per run → always read from the earliest offset, never a committed
-        // position from a previous run. The run id is already identifier-validated.
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "recon-" + runId);
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        // The confirmation stream is small and short-lived; keep the polls cheap.
-        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "500");
-        // Same OAUTHBEARER wiring as the mock producer: GCP Managed Kafka is SASL_SSL with a
-        // Google access token, locally redpanda is PLAINTEXT. KAFKA_SECURITY_PROTOCOL gates
-        // it so the local stack (PLAINTEXT, the default) is unchanged. The callback handler
-        // reuses the GcpToken token source; the JAAS module is required even with a custom
-        // handler (see apps/common GcpTokenOauthCallbackHandler).
-        if (!"PLAINTEXT".equals(System.getenv().getOrDefault("KAFKA_SECURITY_PROTOCOL", "PLAINTEXT"))) {
-            props.put("security.protocol", "SASL_SSL");
-            props.put("sasl.mechanism", "OAUTHBEARER");
-            props.put("sasl.login.callback.handler.class",
-                    "ro.mig.common.GcpTokenOauthCallbackHandler");
-            props.put("sasl.jaas.config",
-                    "org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;");
-        }
+        // position from a previous run. The run id is already identifier-validated. The
+        // property set, including the OAUTHBEARER wiring for GCP Managed Kafka, is shared
+        // with the mock and the loader via ro.mig.common.KafkaClients.
+        Properties props = KafkaClients.consumerProps(bootstrap, "recon-" + runId);
 
         Set<String> keys = new HashSet<>();
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props)) {
@@ -606,6 +608,10 @@ public final class ReconService {
         String runId = "";
         String confirmationBootstrap = "";
         String confirmationTopic = "target-system-confirmations";
+        // Default false = fail closed. An absent confirmation stream is a run that proved
+        // nothing, and only an explicit opt-in should let it exit 0
+        // (docs/PLAN-CHANGES-02092026-kafka-loader.md §3.4).
+        boolean allowUnconfirmedLoad = false;
 
         static Args parse(String[] argv) {
             Args a = new Args();
@@ -623,6 +629,11 @@ public final class ReconService {
                     case "--run-id" -> a.runId = v;
                     case "--confirmation-bootstrap" -> a.confirmationBootstrap = v;
                     case "--confirmation-topic" -> a.confirmationTopic = v;
+                    // Takes an explicit true/false rather than being a bare switch: this
+                    // parser walks argv in pairs, so a valueless flag would consume the
+                    // next option's name as its value and silently drop that option.
+                    case "--allow-unconfirmed-load" ->
+                        a.allowUnconfirmedLoad = Boolean.parseBoolean(v);
                     default -> throw new IllegalArgumentException("unknown option: " + argv[i]);
                 }
             }

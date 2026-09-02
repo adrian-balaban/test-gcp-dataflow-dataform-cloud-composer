@@ -43,6 +43,27 @@ variable "target_system_confirmation_topic" {
   default     = "target-system-confirmations"
   description = "Topic the mock writes confirmations to and recon reads them from."
 }
+variable "target_system_rejection_topic" {
+  type        = string
+  default     = "target-system-rejections"
+  description = <<-EOT
+    Topic the mock writes one rejection event per refused document to, and the loader
+    reads to settle the run (docs/PLAN-CHANGES-02092026-kafka-loader.md). Together with
+    the confirmation topic this is the Loader's verdict once the Load edge is Kafka
+    rather than HTTP: confirmations become `accepted`, rejections become `.ERR` rows, and
+    anything in neither is `unsettled` and fails the run.
+  EOT
+}
+variable "loader_settle_timeout_seconds" {
+  type        = number
+  default     = 120
+  description = <<-EOT
+    How long the loader waits on the return topics before declaring the remaining
+    documents unsettled. A new operational parameter with no HTTP analogue (plan Q5): too
+    short and a slow consumer looks like data loss, too long and a genuinely stalled
+    consumer holds the DAG open. 120s suits the prototype's ~400-document runs.
+  EOT
+}
 variable "dataflow_subnetwork" {
   type        = string
   default     = ""
@@ -144,8 +165,12 @@ resource "google_composer_environment" "this" {
         # recon pod. The mock reads its own copy from the target_system_mock module.
         TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP = var.target_system_confirmation_bootstrap
         TARGET_SYSTEM_CONFIRMATION_TOPIC     = var.target_system_confirmation_topic
-        DATAFLOW_SUBNETWORK                  = var.dataflow_subnetwork
-        DATAFLOW_SERVICE_ACCOUNT             = var.dataflow_service_account
+        # The rejection stream and the settle budget, both read by the DAG and passed to
+        # the loader pod as --rejection-topic / --settle-timeout-seconds.
+        TARGET_SYSTEM_REJECTION_TOPIC = var.target_system_rejection_topic
+        LOADER_SETTLE_TIMEOUT_SECONDS = tostring(var.loader_settle_timeout_seconds)
+        DATAFLOW_SUBNETWORK           = var.dataflow_subnetwork
+        DATAFLOW_SERVICE_ACCOUNT      = var.dataflow_service_account
       }
 
       airflow_config_overrides = {

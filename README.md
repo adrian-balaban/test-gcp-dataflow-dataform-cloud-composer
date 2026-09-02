@@ -40,7 +40,8 @@ flowchart LR
         RS[Reconciliation<br/>Services] --> RPT[Migrability /<br/>Reconciliability reports]
     end
     subgraph L["Load (Other Team)"]
-        FS2 --> LA[Loader App] -->|Loader APIs| VC[Target System]
+        FS2 --> LA[Loader App] -->|"produce<br/>target-system-target"| VC[Target System]
+        VC -->|"confirmations<br/>+ rejections"| LA
     end
 ```
 
@@ -67,7 +68,7 @@ graph TB
     SYS["<b>Mainframe → Target System<br/>Migration Platform</b><br/><i>[Software System]</i><br/>Extracts mainframe TDS files, routes every record through<br/>the two-door engine (parse→map→schema),<br/>loads survivors into Target System and BigQuery,<br/>proves src_read == migrated + not_migrated,<br/>and reconciles the load against Target System's<br/>confirmation streams [JSON/protobuf, Kafka]"]
 
     MF["<b>Mainframe / Legacy Core</b><br/><i>[External System]</i><br/>System of record being<br/>migrated away from"]
-    VC["<b>Target System</b><br/><i>[External System]</i><br/>Target banking core<br/>(mocked locally by target-system-mock)<br/>Publishes confirmation/audit<br/>streams [JSON or protobuf]"]
+    VC["<b>Target System</b><br/><i>[External System]</i><br/>Target banking core<br/>(mocked locally by target-system-mock)<br/>Consumes the account topic; publishes<br/>confirmation and rejection<br/>streams [JSON or protobuf]"]
     DS["<b>Downstream Consumers</b><br/><i>[External System]</i><br/>Consume enriched account<br/>JSON events"]
     PLAT["<b>Google Cloud Platform</b><br/><i>[External System]</i><br/>GCS, BigQuery, Dataflow,<br/>Composer, Dataform, Secret Manager"]
     SCM["<b>Source Control</b><br/><i>[External System]</i><br/>Holds contracts/, pipelines,<br/>Dataform models, Terraform"]
@@ -81,8 +82,8 @@ graph TB
     SYS -->|"hands off TARGET JSON<br/>+ .RPT [GCS]"| LDT
 
     MF -->|"TDS fixed-width files +<br/>.FLG/.CHS artefacts [PGP over SFTP/GCS]"| SYS
-    SYS -->|"upserts accounts, idempotent<br/>[HTTPS/JSON, X-Idempotency-Key]"| VC
-    VC -->|"confirmation / audit events<br/>as streams [JSON or protobuf, Kafka]"| SYS
+    SYS -->|"publishes accounts, idempotent<br/>[Kafka, key = dedupKey]"| VC
+    VC -->|"confirmation and rejection events<br/>as streams [JSON or protobuf, Kafka]"| SYS
     SYS -->|"publishes enriched<br/>account JSON [Kafka]"| DS
     SYS -->|"runs pipelines, stores state<br/>and evidence [GCP APIs]"| PLAT
     SCM -->|"contracts, pipeline code,<br/>IaC [Git]"| SYS
@@ -140,13 +141,13 @@ graph TB
 
         JP["<b>JSON Producer Pipeline</b><br/><i>[Container: Apache Beam / Python]</i><br/>pipelines/json_producer — emits schema-valid<br/>account JSON to GCS and Kafka"]
 
-        LOAD["<b>Loader App</b><br/><i>[Container: Java, Maven]</i><br/>apps/loader-app — posts survivors to Target System<br/>keyed on accountKey, writes .RPT"]
+        LOAD["<b>Loader App</b><br/><i>[Container: Java, Maven]</i><br/>apps/loader-app — publishes survivors to Target System<br/>keyed on accountKey, settles against the<br/>confirmation + rejection streams, writes .RPT"]
 
         RECON["<b>Recon Service</b><br/><i>[Container: Java, Maven]</i><br/>apps/recon-service — rebuilds the balancing equation,<br/>consumes Target System confirmation streams,<br/>renders the reconciliation report"]
 
         DF["<b>Curation Transforms</b><br/><i>[Container: Dataform SQLX on BigQuery]</i><br/>dataform/definitions — account_src → account_curated"]
 
-        MOCK["<b>Target System Mock</b><br/><i>[Container: Java HTTP service — local only]</i><br/>apps/target-system-mock — stands in for Target System<br/>in the podman-compose stack"]
+        MOCK["<b>Target System Mock</b><br/><i>[Container: Java — HTTP + Kafka consumer]</i><br/>apps/target-system-mock — stands in for Target System;<br/>consumes the target topic, publishes confirmations<br/>and rejections back"]
 
         LAKE[("<b>Object Store</b><br/><i>[Container: GCS — landing, json-out,<br/>recon, dataflow-temp, dataflow-templates]</i><br/>Files and artefacts on both lanes")]
 
@@ -473,14 +474,18 @@ flowchart LR
 | 3 | Extend, not rewrite — zero engine diff for project2 | `make verify-project2` |
 | 4 | Idempotent replays by `run_id` (re-run replaces, never duplicates) | re-run same `run_id` → `make verify` |
 
-These are the four **must-proves**. `make verify` checks them through **9 acceptance criteria**
+These are the four **must-proves**. `make verify` checks them through **10 acceptance criteria**
 in `tests/acceptance.py`: the balancing equation closes, seeded malformed records carry the
 right reason codes, every TARGET document validates against the JSON Schema, TARGET is emitted
 in 200-element batches, every key appears exactly once, every rejected record is named in
 `record_lineage` and agrees with the ledger, all five artefact types are present in both lanes,
-`.CHS` checksums verify on both sides, and every TARGET row is confirmed by Target System
+`.CHS` checksums verify on both sides, every TARGET row is confirmed by Target System
 (criterion 9 — the Target System confirmation stream [`docs/PLAN-CHANGES-22082026.md`](docs/PLAN-CHANGES-22082026.md)
-adds; the only criterion that checks an external system's own claim, not an internal invariant).
+adds; the only criterion that checks an external system's own claim, not an internal invariant),
+and every document the Loader published came back settled — confirmed, duplicate or rejected
+(criterion 10, added with the Kafka Load edge in
+[`docs/PLAN-CHANGES-02092026-kafka-loader.md`](docs/PLAN-CHANGES-02092026-kafka-loader.md);
+a produce ack proves the broker holds the bytes, not that Target System applied them).
 
 ---
 
@@ -489,7 +494,7 @@ adds; the only criterion that checks an external system's own claim, not an inte
 ```bash
 make bootstrap && make up && make init-infra   # local stack, no GCP account
 make java-build && make run-initial
-make verify                                    # all 8 criteria must pass
+make verify                                    # all 10 criteria must pass
 ```
 
 `make help` prints the same sequence as its "typical first run" line — if the two ever

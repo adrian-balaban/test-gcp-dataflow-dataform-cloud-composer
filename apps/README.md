@@ -34,8 +34,10 @@ flowchart LR
     GCS1 --> BEAM["Beam pipelines<br/>(../pipelines)"]
     BEAM --> GCS2[("JSON out<br/>bucket")]
     GCS2 --> LD["<b>loader-app</b>"]
-    LD -->|"REST + retries"| VC["<b>target-system-mock</b><br/>(mock)"]
+    LD -->|"produce<br/>target-system-target"| VC["<b>target-system-mock</b><br/>(mock)"]
+    VC -->|"confirmations<br/>+ rejections"| LD
     BEAM --> RC["<b>recon-service</b>"]
+    VC -->|"confirmations"| RC
     LD --> RC
     RC --> REP[("Reports<br/>JSON + HTML")]
 
@@ -93,30 +95,51 @@ change if that trade ever stops making sense.
 
 ## `loader-app` — the interesting one
 
-Pushing 400 documents into a REST API that deliberately fails ~15% of requests is where
-"at-least-once delivery" stops being a slogan.
+Delivering documents to a system that is allowed to be slow, refuse them, or be down is
+where "at-least-once delivery" stops being a slogan.
+
+Two sinks, selected with `--sink` (see
+[docs/PLAN-CHANGES-02092026-kafka-loader.md](../docs/PLAN-CHANGES-02092026-kafka-loader.md)):
+`kafka` is the design, `http` is the original POST path kept runnable for one release so
+both can be compared against the same acceptance suite.
 
 ```mermaid
 flowchart TD
     A["read JSON batch"] --> B{"has accountId<br/>AND dedupKey?"}
     B -->|no| ERR["→ .ERR file<br/><i>never sent</i>"]
-    B -->|yes| C["POST + X-Idempotency-Key"]
-    C --> D{response}
-    D -->|201 created| OK["accepted"]
-    D -->|200 already seen| DUP["duplicate — fine"]
-    D -->|429 / 503| E["backoff + jitter, retry"]
-    E --> C
-    D -->|4xx| ERR
+    B -->|yes| P["produce to target-system-target<br/>key = dedupKey"]
+    P --> F["flush — every send acked"]
+    F --> S["settle: poll both return topics<br/>until every key has a verdict"]
+    S -->|"confirmation<br/>outcome=created"| OK["accepted"]
+    S -->|"confirmation<br/>outcome=duplicate"| DUP["duplicate — fine"]
+    S -->|"rejection + reason"| ERR
+    S -->|"nothing, by deadline"| UN["unsettled → run FAILS"]
     style ERR fill:#a13b3b,color:#fff
+    style UN fill:#a13b3b,color:#fff
     style OK fill:#2d7a3e,color:#fff
 ```
 
-**Idempotency is real, not hopeful.** The server remembers the key, so a retry after a
-timeout returns 200 instead of creating a second account. That is what makes retrying safe.
+**A produce ack is not a verdict.** `acks=all` means the broker durably holds the bytes —
+not that Target System parsed, accepted or persisted anything. On the HTTP path the status
+code *was* the verdict; here it has to be relocated, not deleted. That is what the settle
+phase is: after publishing, read back the confirmation and rejection topics for this run
+and derive the tallies from what Target System actually said.
+
+**`unsettled` is the number that matters.** Published, and never spoken about — the failure
+mode HTTP could not express, covering a dead consumer and a poison message stalling a
+partition. Both otherwise look exactly like a successful run. A non-zero `unsettled` exits
+non-zero and fails the DAG.
+
+**Idempotency is real, not hopeful.** `dedupKey` was the `X-Idempotency-Key` header and is
+now the message key, so it still both dedupes and — being a hash of the account-key fields
+— partitions by account, preserving per-account ordering. A replay is confirmed with
+`outcome=duplicate` rather than silently ignored, which is what makes re-running a failed
+wave safe instead of reporting it as total loss.
 
 The `accountId`/`dedupKey` check exists because it once didn't: defaulting a missing key
 to `""` made every key-less document collide with the first, silently discarding the rest
-while reporting success.
+while reporting success. A blank message key partitions arbitrarily and defeats the dedupe
+just as thoroughly, so the check survives the transport change unchanged.
 
 ## `recon-service` — the gate
 
