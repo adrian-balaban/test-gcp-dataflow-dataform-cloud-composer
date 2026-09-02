@@ -46,3 +46,15 @@ tfplan*
 .project
 .classpath
 .settings/
+docs/plantuml/Arhi*.jpeg
+docs/plantuml/prepare*.org
+various/*
+docs/reusable-patterns*.md
+docs/status26082026/*
+docs/plantuml/17-*.*
+docs/plantuml/18-*.*
+docs/plantuml/19-*.*
+docs/plantuml/20-*.*
+docs/plantuml/21-*.*
+docs/plantuml/22-*.*
+docs/plantuml/23-*.*
