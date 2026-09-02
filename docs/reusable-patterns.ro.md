@@ -89,6 +89,10 @@ dbt + BigQuery, Cloud Run Jobs + Workflows, o variantă streaming/CDC — plus o
 bazată pe Flink pentru cea din urmă), documentate în
 [`docs/alternative-implementations.md`](alternative-implementations.md).
 
+Chiar modelul C4 — de la C1 System Context până la C4 Code — a fost generat ca surse PlantUML
+randate în SVG, câte un fișier per nivel; perechile de fișiere sunt enumerate în
+[anexă](#anexă--diagramele-c4-ca-fișiere).
+
 ### 1.2 Predarea prin semaforul `.FLG` ⭐ *cea mai portabilă idee de aici*
 
 `apps/README.md`, `composer/dags/mig_000001_1.py` (`GCSObjectExistenceSensor`)
@@ -376,3 +380,24 @@ fixează Python, Beam și JRE — ca „merge pe laptopul meu” să nu facă pa
 3. **Nu puneți valoare implicită pe un câmp de identitate** (1.5) — și aici s-au pierdut date în tăcere.
 4. **Ecuația de echilibru cu un cod de ieșire** (1.3) — transformă un raport într-o poartă.
 5. **Tag-uri de imagine cu SHA de git + `pull_policy: Always`** (2.3) — reproductibilitate gratuită.
+
+---
+
+## Anexă — diagramele C4, ca fișiere
+
+Diagramele C4 — de la C1 System Context până la C4 Code — au fost generate ca surse
+PlantUML și randate în SVG, câte o pereche de fișiere `.puml` + `.svg` pentru fiecare
+nivel, în [`docs/plantuml/`](plantuml), indexate în
+[`docs/plantuml/README.md`](plantuml/README.md):
+
+| Nivel | Sursă PlantUML | SVG randat |
+|---|---|---|
+| C1 System Context | [`readme-03-c1-system-context.puml`](plantuml/readme-03-c1-system-context.puml) | [`readme-03-c1-system-context.svg`](plantuml/readme-03-c1-system-context.svg) |
+| C2 Containers | [`readme-04-c2-containers.puml`](plantuml/readme-04-c2-containers.puml) | [`readme-04-c2-containers.svg`](plantuml/readme-04-c2-containers.svg) |
+| C3 Components — File Processor | [`architecture-01-c3-file-processor.puml`](plantuml/architecture-01-c3-file-processor.puml) | [`architecture-01-c3-file-processor.svg`](plantuml/architecture-01-c3-file-processor.svg) |
+| C3 Components — Recon Service | [`architecture-02-c3-recon-service.puml`](plantuml/architecture-02-c3-recon-service.puml) | [`architecture-02-c3-recon-service.svg`](plantuml/architecture-02-c3-recon-service.svg) |
+| C4 Code — two-door engine | [`architecture-03-c4-code-two-door-engine.puml`](plantuml/architecture-03-c4-code-two-door-engine.puml) | [`architecture-03-c4-code-two-door-engine.svg`](plantuml/architecture-03-c4-code-two-door-engine.svg) |
+
+Le regenerați pe toate cu `./render.sh` — are nevoie doar de un JRE și `plantuml.jar`;
+diagramele C4 folosesc stdlib-ul C4-PlantUML cu `layout smetana`, deci nu au nevoie de
+Graphviz.

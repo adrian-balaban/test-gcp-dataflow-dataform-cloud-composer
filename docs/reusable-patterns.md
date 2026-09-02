@@ -86,6 +86,10 @@ BigQuery, Cloud Run Jobs + Workflows, a streaming/CDC variant — plus a Flink s
 latter), documented in
 [`docs/alternative-implementations.md`](alternative-implementations.md).
 
+The C4 model itself — C1 System Context through C4 Code — was generated as PlantUML sources
+rendered to SVG, one file per level; the file pairs are listed in the
+[appendix](#appendix--the-c4-diagrams-as-files).
+
 ### 1.2 The `.FLG` semaphore handoff ⭐ *the single most portable idea here*
 
 `apps/README.md`, `composer/dags/mig_000001_1.py` (`GCSObjectExistenceSensor`)
@@ -362,3 +366,23 @@ JRE — so "works on my laptop" is not part of the result.
 3. **Never default an identity field** (1.5) — this one silently lost data too.
 4. **The balancing equation with an exit code** (1.3) — turns a report into a gate.
 5. **Git-SHA image tags + `pull_policy: Always`** (2.3) — reproducibility for free.
+
+---
+
+## Appendix — the C4 diagrams, as files
+
+The C4 model — C1 System Context through C4 Code — was generated as PlantUML sources and
+rendered to SVG, one `.puml` + `.svg` pair per level, committed under
+[`docs/plantuml/`](plantuml) and indexed in
+[`docs/plantuml/README.md`](plantuml/README.md):
+
+| Level | PlantUML source | Rendered SVG |
+|---|---|---|
+| C1 System Context | [`readme-03-c1-system-context.puml`](plantuml/readme-03-c1-system-context.puml) | [`readme-03-c1-system-context.svg`](plantuml/readme-03-c1-system-context.svg) |
+| C2 Containers | [`readme-04-c2-containers.puml`](plantuml/readme-04-c2-containers.puml) | [`readme-04-c2-containers.svg`](plantuml/readme-04-c2-containers.svg) |
+| C3 Components — File Processor | [`architecture-01-c3-file-processor.puml`](plantuml/architecture-01-c3-file-processor.puml) | [`architecture-01-c3-file-processor.svg`](plantuml/architecture-01-c3-file-processor.svg) |
+| C3 Components — Recon Service | [`architecture-02-c3-recon-service.puml`](plantuml/architecture-02-c3-recon-service.puml) | [`architecture-02-c3-recon-service.svg`](plantuml/architecture-02-c3-recon-service.svg) |
+| C4 Code — the two-door engine | [`architecture-03-c4-code-two-door-engine.puml`](plantuml/architecture-03-c4-code-two-door-engine.puml) | [`architecture-03-c4-code-two-door-engine.svg`](plantuml/architecture-03-c4-code-two-door-engine.svg) |
+
+Regenerate them all with `./render.sh` — it needs only a JRE and `plantuml.jar`; the C4
+diagrams use the C4-PlantUML stdlib with `layout smetana`, so no Graphviz is required.
