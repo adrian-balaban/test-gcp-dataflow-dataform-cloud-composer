@@ -11,7 +11,7 @@ work._
 > as "the remaining verification step" is done, and the "What this loop does NOT verify"
 > section below is now **superseded**: a full Composer DAG pass under `enable_kafka=true` ran
 > all 8 tasks green with acceptance criterion 9 closing on *live* Managed Kafka confirmations
-> (50/50 TARGET rows confirmed) — `docs/evidence/gcp-composer-20260823/`. Getting there took
+> (50/50 TARGET rows confirmed) — `docs/evidence/gcp-composer-20260823-0300/`. Getting there took
 > five fixes that only real infrastructure could surface (pod env vars, the Python `oauth_cb`
 > contract, the Managed Kafka token encoding, kafka-clients on JDK 25, and the Cloud Run mock
 > never being rebuilt by `make build-images`); all five are in `docs/runbook-gcp.md` §B8.

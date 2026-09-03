@@ -157,7 +157,7 @@ only way to keep it genuinely opt-in.
 > under `-var=enable_composer=true -var=enable_kafka=true` ran all 8 tasks green and closed
 > acceptance criterion 9 from *live* Managed Kafka confirmations (50 of 50 TARGET rows
 > confirmed, 0 unconfirmed) — see
-> [`evidence/gcp-composer-20260823/`](evidence/gcp-composer-20260823/). That pass also found
+> [`evidence/gcp-composer-20260823-0300/`](evidence/gcp-composer-20260823-0300/). That pass also found
 > and closed five defects that only real GCP could surface: the pod env-var gap (§B8.4), the
 > Python `oauth_cb` signature/priming bug, the Managed Kafka token *encoding* (a bare access
 > token is not accepted — see §B8.5), kafka-clients 3.7.1 being unusable for OAUTHBEARER on

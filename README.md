@@ -450,7 +450,7 @@ flowchart LR
   `make smoke-gcp` 8/8 green against real GCS/BigQuery — see
   [`docs/evidence/gcp-smoke-20260822/`](docs/evidence/gcp-smoke-20260822/).
   The newest pass,
-  [`docs/evidence/gcp-composer-20260823/`](docs/evidence/gcp-composer-20260823/), is the one
+  [`docs/evidence/gcp-composer-20260823-0300/`](docs/evidence/gcp-composer-20260823-0300/), is the one
   that proves Slide 7's claim rather than describing it: a full DAG run with Managed Kafka
   enabled, all 8 tasks green, and **criterion 9 closing on live confirmations** — 50 of 50
   TARGET rows corroborated by Target System's own stream, consumed over SASL_SSL/OAUTHBEARER

@@ -150,7 +150,7 @@ gcloud composer environments list --locations="$TF_VAR_region" --project="$TF_VA
 ```
 
 Captured evidence of real runs (all 9 acceptance criteria passing), newest first:
-[`evidence/gcp-composer-20260823/`](evidence/gcp-composer-20260823/) (full DAG green **with
+[`evidence/gcp-composer-20260823-0300/`](evidence/gcp-composer-20260823-0300/) (full DAG green **with
 Managed Kafka on** — criterion 9 closed on live confirmations, 50/50 TARGET rows),
 [`evidence/gcp-smoke-20260822/`](evidence/gcp-smoke-20260822/) (two-door + rename HEAD
 re-verified via `make smoke-gcp`),
