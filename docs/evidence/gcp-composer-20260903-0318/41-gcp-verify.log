@@ -1,0 +1,18 @@
+.venv/bin/python -m tests.acceptance
+%3|1788420222.451|FAIL|rdkafka#consumer-1| [thrd:bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.]: bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092/bootstrap: Failed to resolve 'bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092': Name or service not known (after 5ms in state CONNECT)
+%3|1788420223.475|FAIL|rdkafka#consumer-1| [thrd:bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.]: bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092/bootstrap: Failed to resolve 'bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092': Name or service not known (after 6ms in state CONNECT, 1 identical error(s) suppressed)
+[1mverify — run run-dag-20260903-0657[0m
+
+  [32m✓[0m 1. balancing equation closes (whole lane): 55 = 50 migrated + 5 not migrated
+  [32m✓[0m 2. seeded malformed records rejected with correct reason codes: 5 reason codes, all matching: MAP_UNMAPPED_ENUM_VALUE, PARSE_BAD_COLUMN_COUNT, PARSE_BAD_DATE, PARSE_BAD_NUMERIC, SCHEMA_INVALID
+  [32m✓[0m 3. every TARGET document validates against the JSON Schema: 50/50 documents valid
+  [31m✗[0m 4. TARGET emitted in 200-element batches (Kafka too, when that sink ran): KafkaException: KafkaError{code=_ALL_BROKERS_DOWN,val=-187,str="Failed to get watermark offsets: Local: All broker connections are down"}
+  [32m✓[0m 5. every key appears exactly once in TARGET: 50 keys, each present exactly once, 0 orphans
+  [32m✓[0m 6. every not-migrated record is named in record_lineage: 5 not-migrated records named (rejected=5)
+  [32m✓[0m 7. all five artefact types present in both lanes: extraction 2 + 3, load 4; .FLG vouches for 4
+  [32m✓[0m 8. .CHS checksums verify on both sides: extraction 1 entries parsed, load 1 files re-hashed and matching
+  [32m✓[0m 9. every TARGET row confirmed by Target System: 50/50 TARGET rows confirmed (50 confirmation events)
+  [32m✓[0m 10. every published document settled (Kafka load path): 50 published, 0 confirmed, 50 duplicate, 0 rejected, 0 unsettled
+
+[31m[1mVERIFY FAILED[0m — 1/10: 4. TARGET emitted in 200-element batches (Kafka too, when that sink ran)
+make: *** [Makefile:100: verify] Error 1

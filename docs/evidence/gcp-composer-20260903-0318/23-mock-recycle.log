@@ -1,0 +1,6 @@
+Deploying...
+Creating Revision...................................................................................................................................................................................................................done
+Routing traffic.....done
+Done.
+Service [[1mtarget-system-mock[m] revision [[1mtarget-system-mock-00002-cfs[m] has been deployed and is serving [1m100[m percent of traffic.
+Service URL: [1mhttps://target-system-mock-818861037691.europe-west1.run.app[m

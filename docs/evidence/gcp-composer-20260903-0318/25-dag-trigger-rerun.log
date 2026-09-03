@@ -1,0 +1,11 @@
+Executing the command: [ airflow dags trigger mig_000001_1_migration --conf {"run_id":"run-dag-20260903-0657"} ]...
+Command has been started. execution_id=40948f05-b760-47f3-b7ea-747a8e8a77ae
+Use ctrl-c to interrupt the command
+[2026-09-03T07:00:15.178+0000] {__init__.py:43} INFO - Loaded API auth backend: airflow.composer.api.backend.composer_auth
+[2026-09-03T07:00:15.185+0000] {__init__.py:43} INFO - Loaded API auth backend: airflow.api.auth.backend.session
+|                   |                   | data_interval_sta |                   |          |                  | last_scheduling_ |                   |          |            |
+conf               | dag_id            | dag_run_id        | rt                | data_interval_end | end_date | external_trigger | decision         | logical_date      | run_type | start_date | state
+===================+===================+===================+===================+===================+==========+==================+==================+===================+==========+============+=======
+{'run_id':         | mig_000001_1_migr | manual__2026-09-0 | 2026-09-03        | 2026-09-03        | None     | True             | None             | 2026-09-03        | manual   | None       | queued
+'run-dag-20260903- | ation             | 3T07:00:15+00:00  | 07:00:15+00:00    | 07:00:15+00:00    |          |                  |                  | 07:00:15+00:00    |          |            |
+0657'}             |                   |                   |                   |                   |          |                  |                  |                   |          |            |

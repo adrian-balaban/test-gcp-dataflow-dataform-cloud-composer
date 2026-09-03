@@ -1,0 +1,120 @@
+=== terraform apply base infra (78 resources) ===
+Acquiring state lock. This may take a few moments...
+[0m[1mmodule.bootstrap.google_project_service.this["vpcaccess.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["managedkafka.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["target-system-mock"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["logging.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["composer-runner"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataflow-worker"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["loader-app"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataform-runner"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["monitoring.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["monitoring.googleapis.com"]: Creation complete after 6s [id=mig-000001-1-dev/monitoring.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataform.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["managedkafka.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["loader-app"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataflow-worker"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["target-system-mock"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["composer-runner"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["logging.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataform-runner"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["vpcaccess.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["loader-app"]: Creation complete after 13s [id=projects/mig-000001-1-dev/serviceAccounts/loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["bigquery.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataflow-worker"]: Creation complete after 13s [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudbuild.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataform.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["composer-runner"]: Creation complete after 17s [id=projects/mig-000001-1-dev/serviceAccounts/composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["iam.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataform-runner"]: Creation complete after 17s [id=projects/mig-000001-1-dev/serviceAccounts/dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["compute.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["bigquery.googleapis.com"]: Creation complete after 5s [id=mig-000001-1-dev/bigquery.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["secretmanager.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["managedkafka.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["logging.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["target-system-mock"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["vpcaccess.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["iam.googleapis.com"]: Creation complete after 4s [id=mig-000001-1-dev/iam.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["compute.googleapis.com"]: Creation complete after 4s [id=mig-000001-1-dev/compute.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudresourcemanager.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["composer.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudbuild.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["target-system-mock"]: Creation complete after 24s [id=projects/mig-000001-1-dev/serviceAccounts/target-system-mock@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["artifactregistry.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataform.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["artifactregistry.googleapis.com"]: Creation complete after 2s [id=mig-000001-1-dev/artifactregistry.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["storage.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["secretmanager.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["managedkafka.googleapis.com"]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["vpcaccess.googleapis.com"]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["logging.googleapis.com"]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["vpcaccess.googleapis.com"]: Creation complete after 30s [id=mig-000001-1-dev/vpcaccess.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["managedkafka.googleapis.com"]: Creation complete after 30s [id=mig-000001-1-dev/managedkafka.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["logging.googleapis.com"]: Creation complete after 30s [id=mig-000001-1-dev/logging.googleapis.com][0m
+[0m[1mmodule.iam.google_service_account_iam_member.dataflow_worker_acts_as_itself: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["run.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataflow.googleapis.com"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["composer.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudresourcemanager.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudbuild.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataform.googleapis.com"]: Creation complete after 27s [id=mig-000001-1-dev/dataform.googleapis.com][0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountTokenCreator"]: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account_iam_member.dataflow_worker_acts_as_itself: Creation complete after 5s [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com/roles/iam.serviceAccountUser/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountUser"]: Creating...[0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["storage.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["secretmanager.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["run.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataflow.googleapis.com"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountTokenCreator"]: Creation complete after 7s [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com/roles/iam.serviceAccountTokenCreator/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudbuild.googleapis.com"]: Creation complete after 28s [id=mig-000001-1-dev/cloudbuild.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["secretmanager.googleapis.com"]: Creation complete after 23s [id=mig-000001-1-dev/secretmanager.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudresourcemanager.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["composer.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountUser"]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountUser"]: Creation complete after 11s [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com/roles/iam.serviceAccountUser/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["storage.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["composer.googleapis.com"]: Creation complete after 28s [id=mig-000001-1-dev/composer.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudresourcemanager.googleapis.com"]: Creation complete after 28s [id=mig-000001-1-dev/cloudresourcemanager.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["storage.googleapis.com"]: Creation complete after 22s [id=mig-000001-1-dev/storage.googleapis.com][0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["run.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataflow.googleapis.com"]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataflow.googleapis.com"]: Creation complete after 27s [id=mig-000001-1-dev/dataflow.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["run.googleapis.com"]: Creation complete after 27s [id=mig-000001-1-dev/run.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_storage_bucket.tfstate: Creating...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Creation complete after 1m27s [id=projects/mig-000001-1-dev/serviceAccounts/recon-service@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.dataform.google_dataform_repository.this: Creating...[0m[0m
+[0m[1mmodule.dataform.google_dataform_repository.this: Creation complete after 1s [id=projects/mig-000001-1-dev/locations/europe-west1/repositories/mig-000001-1][0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mgoogleapi: Error 409: The requested bucket name is not available. The bucket namespace is shared by all users of the system. Please select a different name and try again., conflict[0m
+[31m│[0m [0m
+[31m│[0m [0m[0m  with module.bootstrap.google_storage_bucket.tfstate,
+[31m│[0m [0m  on ../../modules/bootstrap/main.tf line 85, in resource "google_storage_bucket" "tfstate":
+[31m│[0m [0m  85: resource "google_storage_bucket" "tfstate" [4m{[0m[0m
+[31m│[0m [0m
+[31m╵[0m[0m
+Releasing state lock. This may take a few moments...
+EXIT: 0
+Apply complete: 03:24:31 UTC
+Acquiring state lock. This may take a few moments...
+[0m[1mdata.google_client_config.this: Reading...[0m[0m
+[0m[1mmodule.bootstrap.google_storage_bucket.tfstate: Importing from ID "mig-000001-1-dev-tfstate"...[0m
+[0m[1m[32mmodule.bootstrap.google_storage_bucket.tfstate: Import prepared![0m
+[0m[32m  Prepared google_storage_bucket for import[0m
+[0m[1mmodule.bootstrap.google_storage_bucket.tfstate: Refreshing state... [id=mig-000001-1-dev-tfstate][0m
+[0m[1mdata.google_client_config.this: Read complete after 0s [id=projects/mig-000001-1-dev/regions/europe-west1/zones/][0m
+[0m[32m
+Import successful!
+
+The resources that were imported are shown above. These resources are now in
+your Terraform state and will henceforth be managed by Terraform.
+[0m
+Releasing state lock. This may take a few moments...

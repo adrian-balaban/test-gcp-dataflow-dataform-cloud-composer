@@ -1,0 +1,5 @@
+Executing the command: [ airflow dags list -o plain ]...
+Command has been started. execution_id=1999e5aa-9209-4e52-ba2e-4fa79e5f0954
+Use ctrl-c to interrupt the command
+dag_id              fileloc                                       owners       is_paused
+airflow_monitoring  /home/airflow/gcs/dags/airflow_monitoring.py  ['airflow']  False

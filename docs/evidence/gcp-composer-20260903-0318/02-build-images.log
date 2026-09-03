@@ -1,0 +1,622 @@
+building every image on tag csv-e2e-20260903
+image version: csv-e2e-20260903
+▶ building loader-app → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:csv-e2e-20260903
+[1/2] STEP 1/14: FROM docker.io/maven:3.9-eclipse-temurin-25 AS build
+[1/2] STEP 2/14: ARG MIG_APP
+--> Using cache e829c7fc24b72838739eef81d5e730dd1fa784fe6c2c7b62591122a4a686b749
+--> e829c7fc24b7
+[1/2] STEP 3/14: WORKDIR /build
+--> Using cache f6d0134177bf09840b127de6a8cb99407ba17fb796bc258d3a5f14aaae2c40ed
+--> f6d0134177bf
+[1/2] STEP 4/14: COPY pom.xml ./
+--> Using cache cec5c8ba38c615672d162de4143ccb6ec8fb4f25a71a418b0ddd1523a94eaa7e
+--> cec5c8ba38c6
+[1/2] STEP 5/14: COPY apps/common/pom.xml ./apps/common/pom.xml
+--> Using cache 505bbd31840555c69f14c1b98693ce7fa9d24cdbf6b0233f70aaa7a36fc2ce44
+--> 505bbd318405
+[1/2] STEP 6/14: COPY apps/extractor-app/pom.xml ./apps/extractor-app/pom.xml
+--> Using cache d990f8d6b509e17985a9642fb0d4c214f94e3141d1cdc0a4b9c7a6fc741ac2e3
+--> d990f8d6b509
+[1/2] STEP 7/14: COPY apps/loader-app/pom.xml ./apps/loader-app/pom.xml
+--> Using cache a8034f42c01a79bfc9a25df4f014badaa415722ecb270d62d9527e23e07c8322
+--> a8034f42c01a
+[1/2] STEP 8/14: COPY apps/recon-service/pom.xml ./apps/recon-service/pom.xml
+--> Using cache eb55baf7e4fea3a64c137cc81883b3ad32473d40ccd04515d342f68c73c0391d
+--> eb55baf7e4fe
+[1/2] STEP 9/14: COPY apps/target-system-mock/pom.xml ./apps/target-system-mock/pom.xml
+--> Using cache 2cee56ef48bd8fe9faf27bfc090af31a4780d2bedbb7cb4be06e02d3bf391992
+--> 2cee56ef48bd
+[1/2] STEP 10/14: RUN mvn -B -q -pl "apps/${MIG_APP}" -am dependency:go-offline -DskipTests
+--> Using cache 92cda743f26c60c4e94d8e1332c7977e578ce371255cb109670c74b6d5614a3a
+--> 92cda743f26c
+[1/2] STEP 11/14: COPY contracts/artefacts.json ./contracts/artefacts.json
+--> Using cache bd1f424b34b96bd279258f39c3f1e77c64c1e358d755002f4e56c7ebf3b2f8eb
+--> bd1f424b34b9
+[1/2] STEP 12/14: COPY apps/common/src ./apps/common/src
+--> Using cache 58ee10cf40d1601bd744215a9d0601cd62220f25a4e7343dd5597d2a3b695b4f
+--> 58ee10cf40d1
+[1/2] STEP 13/14: COPY apps/${MIG_APP}/src ./apps/${MIG_APP}/src
+--> Using cache 1f261313fb7ad42b4393ebbb4cda752955310245cc0f50d0c03b75eb90237df1
+--> 1f261313fb7a
+[1/2] STEP 14/14: RUN mvn -B -q -pl "apps/${MIG_APP}" -am package -DskipTests  && cp "apps/${MIG_APP}/target/${MIG_APP}.jar" /build/app.jar
+--> Using cache ed2ea9d6975ef1565c356553c9e27efeffdd4b71e67da178c5b1fecc01a20750
+--> ed2ea9d6975e
+[2/2] STEP 1/3: FROM docker.io/eclipse-temurin:25-jre
+[2/2] STEP 2/3: COPY --from=build /build/app.jar /opt/app.jar
+--> Using cache 3501a5551d574a421e1565f9e934b80a061f9124eb2048692a70327c81e0e048
+--> 3501a5551d57
+[2/2] STEP 3/3: ENTRYPOINT ["java", "-jar", "/opt/app.jar"]
+--> Using cache ae6e72780458ecde8bfa13443661de286ba5c03c16529de89462b53ec1036446
+[2/2] COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:csv-e2e-20260903
+--> ae6e72780458
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:acedc65-dirty
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:fd92e81-dirty
+ae6e72780458ecde8bfa13443661de286ba5c03c16529de89462b53ec1036446
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:fd936bc88dd63c9571d9e146a7966e37dc78c606eca940738d202427cc65b8e5
+Copying blob sha256:d474aac4fedc48314243c3b7171e47cc0ce524fe5ad4bfb97745d08dafca9325
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:25af61f342fcba618b23291dc54216d5222a33608820298a2af464a5a2921359
+Copying blob sha256:24d9bad9efb08e44497f74cc79f9b0400818037a24628fd910db9145e5048649
+Copying blob sha256:c83e5dc3396b085be5beef9cbd69a49c599699a67b3b7ca17536990313480767
+Copying blob sha256:0dbaa458093a927a351d124a044e77dea1dfaf13d9320a234382ee126c98ebe9
+Copying config sha256:ae6e72780458ecde8bfa13443661de286ba5c03c16529de89462b53ec1036446
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:fd936bc88dd63c9571d9e146a7966e37dc78c606eca940738d202427cc65b8e5
+Copying blob sha256:24d9bad9efb08e44497f74cc79f9b0400818037a24628fd910db9145e5048649
+Copying blob sha256:c83e5dc3396b085be5beef9cbd69a49c599699a67b3b7ca17536990313480767
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:25af61f342fcba618b23291dc54216d5222a33608820298a2af464a5a2921359
+Copying blob sha256:d474aac4fedc48314243c3b7171e47cc0ce524fe5ad4bfb97745d08dafca9325
+Copying blob sha256:0dbaa458093a927a351d124a044e77dea1dfaf13d9320a234382ee126c98ebe9
+Copying config sha256:ae6e72780458ecde8bfa13443661de286ba5c03c16529de89462b53ec1036446
+Writing manifest to image destination
+▶ building recon-service → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:csv-e2e-20260903
+[1/2] STEP 1/14: FROM docker.io/maven:3.9-eclipse-temurin-25 AS build
+[1/2] STEP 2/14: ARG MIG_APP
+--> Using cache e829c7fc24b72838739eef81d5e730dd1fa784fe6c2c7b62591122a4a686b749
+--> e829c7fc24b7
+[1/2] STEP 3/14: WORKDIR /build
+--> Using cache f6d0134177bf09840b127de6a8cb99407ba17fb796bc258d3a5f14aaae2c40ed
+--> f6d0134177bf
+[1/2] STEP 4/14: COPY pom.xml ./
+--> Using cache cec5c8ba38c615672d162de4143ccb6ec8fb4f25a71a418b0ddd1523a94eaa7e
+--> cec5c8ba38c6
+[1/2] STEP 5/14: COPY apps/common/pom.xml ./apps/common/pom.xml
+--> Using cache 505bbd31840555c69f14c1b98693ce7fa9d24cdbf6b0233f70aaa7a36fc2ce44
+--> 505bbd318405
+[1/2] STEP 6/14: COPY apps/extractor-app/pom.xml ./apps/extractor-app/pom.xml
+--> Using cache d990f8d6b509e17985a9642fb0d4c214f94e3141d1cdc0a4b9c7a6fc741ac2e3
+--> d990f8d6b509
+[1/2] STEP 7/14: COPY apps/loader-app/pom.xml ./apps/loader-app/pom.xml
+--> Using cache a8034f42c01a79bfc9a25df4f014badaa415722ecb270d62d9527e23e07c8322
+--> a8034f42c01a
+[1/2] STEP 8/14: COPY apps/recon-service/pom.xml ./apps/recon-service/pom.xml
+--> Using cache eb55baf7e4fea3a64c137cc81883b3ad32473d40ccd04515d342f68c73c0391d
+--> eb55baf7e4fe
+[1/2] STEP 9/14: COPY apps/target-system-mock/pom.xml ./apps/target-system-mock/pom.xml
+--> Using cache 2cee56ef48bd8fe9faf27bfc090af31a4780d2bedbb7cb4be06e02d3bf391992
+--> 2cee56ef48bd
+[1/2] STEP 10/14: RUN mvn -B -q -pl "apps/${MIG_APP}" -am dependency:go-offline -DskipTests
+--> Using cache 3a60c5d5d38f6bd88ef86f3b69ee8e2f39cd0eb336a018cae4068ced87bab967
+--> 3a60c5d5d38f
+[1/2] STEP 11/14: COPY contracts/artefacts.json ./contracts/artefacts.json
+--> Using cache 1570b77099c12c41e8ac672f5f3a707b718ce7b5a5ec42acde81e468f0492c11
+--> 1570b77099c1
+[1/2] STEP 12/14: COPY apps/common/src ./apps/common/src
+--> Using cache bcee10fc95af8497b5f6a668419e3ea97f02d29027efa3fd260a0065d307df03
+--> bcee10fc95af
+[1/2] STEP 13/14: COPY apps/${MIG_APP}/src ./apps/${MIG_APP}/src
+--> Using cache c5707f9355c166c6b5676bc0872f8dc66bc43e0c1b960707da8749ad82f1ec3e
+--> c5707f9355c1
+[1/2] STEP 14/14: RUN mvn -B -q -pl "apps/${MIG_APP}" -am package -DskipTests  && cp "apps/${MIG_APP}/target/${MIG_APP}.jar" /build/app.jar
+--> Using cache db7784e94bd1564c4c1488245b1cec16244eea83a3fc507dceca7e2e41767eb8
+--> db7784e94bd1
+[2/2] STEP 1/3: FROM docker.io/eclipse-temurin:25-jre
+[2/2] STEP 2/3: COPY --from=build /build/app.jar /opt/app.jar
+--> Using cache f46698e8e140bebdbefc0f1687095f8fd38480982741f1f171650723dcb4e879
+--> f46698e8e140
+[2/2] STEP 3/3: ENTRYPOINT ["java", "-jar", "/opt/app.jar"]
+--> Using cache d086dbbd5ac446d8db275a7a1528c174b94ce94ec4fa07f09c7776a36f585b50
+[2/2] COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:csv-e2e-20260903
+--> d086dbbd5ac4
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:acedc65-dirty
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:fd92e81-dirty
+d086dbbd5ac446d8db275a7a1528c174b94ce94ec4fa07f09c7776a36f585b50
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:fd936bc88dd63c9571d9e146a7966e37dc78c606eca940738d202427cc65b8e5
+Copying blob sha256:c83e5dc3396b085be5beef9cbd69a49c599699a67b3b7ca17536990313480767
+Copying blob sha256:24d9bad9efb08e44497f74cc79f9b0400818037a24628fd910db9145e5048649
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:d474aac4fedc48314243c3b7171e47cc0ce524fe5ad4bfb97745d08dafca9325
+Copying blob sha256:25af61f342fcba618b23291dc54216d5222a33608820298a2af464a5a2921359
+Copying blob sha256:36f433092f28d715ac69593f963d0d50da21b3c06433c476692b519aa2930fce
+Copying config sha256:d086dbbd5ac446d8db275a7a1528c174b94ce94ec4fa07f09c7776a36f585b50
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:24d9bad9efb08e44497f74cc79f9b0400818037a24628fd910db9145e5048649
+Copying blob sha256:fd936bc88dd63c9571d9e146a7966e37dc78c606eca940738d202427cc65b8e5
+Copying blob sha256:c83e5dc3396b085be5beef9cbd69a49c599699a67b3b7ca17536990313480767
+Copying blob sha256:25af61f342fcba618b23291dc54216d5222a33608820298a2af464a5a2921359
+Copying blob sha256:d474aac4fedc48314243c3b7171e47cc0ce524fe5ad4bfb97745d08dafca9325
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:36f433092f28d715ac69593f963d0d50da21b3c06433c476692b519aa2930fce
+Copying config sha256:d086dbbd5ac446d8db275a7a1528c174b94ce94ec4fa07f09c7776a36f585b50
+Writing manifest to image destination
+▶ building dataform-runner → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:csv-e2e-20260903
+STEP 1/10: FROM docker.io/node:20-bookworm-slim
+STEP 2/10: WORKDIR /app
+--> Using cache 1fedd68dc4e5ed5419ff5af7407f32d5f8b2ff9dfa7d901647f964c5e12b9a6c
+--> 1fedd68dc4e5
+STEP 3/10: RUN apt-get update  && apt-get install -y --no-install-recommends python3 python3-pip ca-certificates  && rm -rf /var/lib/apt/lists/*
+--> Using cache 1a5e0555887e80a7a747026f7b1e990976f73392d382d72fd3f99b653e682a0b
+--> 1a5e0555887e
+STEP 4/10: RUN pip3 install --no-cache-dir --break-system-packages       "google-cloud-bigquery>=3.25" "google-cloud-storage>=2.18" "google-auth>=2.30"
+--> Using cache 755370cf4d5e198dc1275dc4ddaccdf04b34cd3769bf5cf520b82a5732017ce3
+--> 755370cf4d5e
+STEP 5/10: RUN npx -y @dataform/cli@3.0.0 help >/dev/null 2>&1 || true
+--> Using cache 19485fcf5627a6ba890be4c7b0ecfb73be9f01c94db80232f4ea635def71843c
+--> 19485fcf5627
+STEP 6/10: COPY dataform/ ./dataform/
+--> Using cache fd28f5c1f438ccdb36ecaf3ca184dc2c87d3f99b23dffa44fe879009b149d6e9
+--> fd28f5c1f438
+STEP 7/10: COPY local/scripts/run_dataform.py ./run_dataform.py
+--> Using cache 6d011f32cb756d2e0ca8f9cea819c6f2dbd5ba0a8d18e53c7e54871729b63120
+--> 6d011f32cb75
+STEP 8/10: COPY pipelines/ ./pipelines/
+--> Using cache 9a6002f52a17e1a667de581d2ba7d66e5f28b0ced50745af16f9e2f91671b9f2
+--> 9a6002f52a17
+STEP 9/10: ENV TARGET_PROFILE=real     BQ_TARGET=real     PYTHONPATH=/app
+--> Using cache cd8d4d6e8cdb54f753558d887c5d2f56d44324721dcca7c7f3e65eb4b8d6096f
+--> cd8d4d6e8cdb
+STEP 10/10: ENTRYPOINT ["python3", "/app/run_dataform.py"]
+--> Using cache 1553a5e04452eb14dfb8474b5daccedf0aa702e9cb6b12809e68ce56a95bf8b5
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:csv-e2e-20260903
+--> 1553a5e04452
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:acedc65-dirty
+1553a5e04452eb14dfb8474b5daccedf0aa702e9cb6b12809e68ce56a95bf8b5
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:b2f37b25de0917af7664f8d45c5887e94113fc0521128bb056f49cfbb0fe6e6c
+Copying blob sha256:4337a9b79b842bfe58037ff8e3040c28e8e3366009befe7bc70694869e6ad9a1
+Copying blob sha256:f991bccee0f1f8f692280d0e1f83f48001576c08d33c53d6a1463d5062a6ff18
+Copying blob sha256:631e9f799a80c48d29ea547226d4c97b5c4e4698baadbae796fbcb67b1cbdcba
+Copying blob sha256:0da811fd3ed46c38cea69079fa395a3d715dbdbdd5c8177107c450bf6332bbfa
+Copying blob sha256:d592f6b23cfaeb0a7d534376e0d4a3a32255df78a9feda01e3a6a015bada66d5
+Copying blob sha256:a1819573415afad828875d081ca5b8e9263059d8ed2cdbc39767b914b75a1d99
+Copying blob sha256:efc8e17b1b79b953de3ebe47b612670889f78e88cd357d2a449e2dddb7dc04ad
+Copying blob sha256:3f9893b46a540fc88097520b6d6f3c2490ee77909f7f65f26bccd7594dcd7779
+Copying blob sha256:d626c249b23afb4f435e81c6e7956ec4ed970eeabdae11a7eb91fd4f916756ab
+Copying blob sha256:7ee6aa9c308e1578a9c436286dd8adef911d3fea784a8d64bebf975e59b17315
+Copying config sha256:1553a5e04452eb14dfb8474b5daccedf0aa702e9cb6b12809e68ce56a95bf8b5
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:b2f37b25de0917af7664f8d45c5887e94113fc0521128bb056f49cfbb0fe6e6c
+Copying blob sha256:f991bccee0f1f8f692280d0e1f83f48001576c08d33c53d6a1463d5062a6ff18
+Copying blob sha256:4337a9b79b842bfe58037ff8e3040c28e8e3366009befe7bc70694869e6ad9a1
+Copying blob sha256:0da811fd3ed46c38cea69079fa395a3d715dbdbdd5c8177107c450bf6332bbfa
+Copying blob sha256:d592f6b23cfaeb0a7d534376e0d4a3a32255df78a9feda01e3a6a015bada66d5
+Copying blob sha256:631e9f799a80c48d29ea547226d4c97b5c4e4698baadbae796fbcb67b1cbdcba
+Copying blob sha256:a1819573415afad828875d081ca5b8e9263059d8ed2cdbc39767b914b75a1d99
+Copying blob sha256:efc8e17b1b79b953de3ebe47b612670889f78e88cd357d2a449e2dddb7dc04ad
+Copying blob sha256:3f9893b46a540fc88097520b6d6f3c2490ee77909f7f65f26bccd7594dcd7779
+Copying blob sha256:d626c249b23afb4f435e81c6e7956ec4ed970eeabdae11a7eb91fd4f916756ab
+Copying blob sha256:7ee6aa9c308e1578a9c436286dd8adef911d3fea784a8d64bebf975e59b17315
+Copying config sha256:1553a5e04452eb14dfb8474b5daccedf0aa702e9cb6b12809e68ce56a95bf8b5
+Writing manifest to image destination
+▶ building target-system-mock → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:csv-e2e-20260903
+[1/2] STEP 1/13: FROM docker.io/maven:3.9-eclipse-temurin-25 AS build
+[1/2] STEP 2/13: WORKDIR /build
+--> Using cache fb79a456ddd792e59acebd04aa097a3ad894ed24e35fb6dd8134e13bf127beac
+--> fb79a456ddd7
+[1/2] STEP 3/13: COPY pom.xml ./
+--> Using cache 4bb1b477748062531c182aaf7a4a08757a7876263e6086b751be22e22e0e3ea7
+--> 4bb1b4777480
+[1/2] STEP 4/13: COPY apps/common/pom.xml ./apps/common/pom.xml
+--> Using cache b46d50faf0cfeaf4b528f2c8c582255f2d5af121cfd124d3dacfc36f9bf87f76
+--> b46d50faf0cf
+[1/2] STEP 5/13: COPY apps/extractor-app/pom.xml ./apps/extractor-app/pom.xml
+--> Using cache 8df0c026c4f368d704d66696344b18a6d3e5bb87a7e969557b247de319696414
+--> 8df0c026c4f3
+[1/2] STEP 6/13: COPY apps/loader-app/pom.xml ./apps/loader-app/pom.xml
+--> Using cache f8abad042d7ef92702a3705ac68a560f240d62f9026e31b79a00b6b458101b19
+--> f8abad042d7e
+[1/2] STEP 7/13: COPY apps/recon-service/pom.xml ./apps/recon-service/pom.xml
+--> Using cache b232b8298880330a4237af655798f50f185346bc693037a9b8f45a0ea46ad082
+--> b232b8298880
+[1/2] STEP 8/13: COPY apps/target-system-mock/pom.xml ./apps/target-system-mock/pom.xml
+--> Using cache a1ba50290b2bcc0103fbaa92afb33017be649c7bd5a00147110b56d4d890df73
+--> a1ba50290b2b
+[1/2] STEP 9/13: RUN mvn -B -q -pl apps/target-system-mock -am dependency:go-offline -DskipTests
+--> Using cache 72beb00b4bcbfdacf39fcfefd4f69eabf01baa6cf37924c6a6098c3922b6d601
+--> 72beb00b4bcb
+[1/2] STEP 10/13: COPY contracts/artefacts.json ./contracts/artefacts.json
+--> Using cache 3330cc3cda554f34dd6d318f1bbb7dba3597939ae9610b71904374480c3fd932
+--> 3330cc3cda55
+[1/2] STEP 11/13: COPY apps/common/src ./apps/common/src
+--> Using cache 8751dedadcd358aeda89ab5570ea78f1197dfdecc08d265ce3bbeb1c60fb080e
+--> 8751dedadcd3
+[1/2] STEP 12/13: COPY apps/target-system-mock/src ./apps/target-system-mock/src
+--> Using cache f5a2d7d7186197067127b8ff8dd53291d58a66a702c5243007db0850771d762f
+--> f5a2d7d71861
+[1/2] STEP 13/13: RUN mvn -B -q -pl apps/target-system-mock -am package -DskipTests
+--> Using cache 1621f3172596a98ac9a25d2ca9129818a166bd37f1927b2a1736ab261a10a271
+--> 1621f3172596
+[2/2] STEP 1/6: FROM docker.io/eclipse-temurin:25-jre
+[2/2] STEP 2/6: RUN apt-get update  && apt-get install -y --no-install-recommends curl  && rm -rf /var/lib/apt/lists/*
+--> Using cache 6ad057820359599c15edf7712c398fa2687e87e7a65c3fbe6571c4d10ca22623
+--> 6ad057820359
+[2/2] STEP 3/6: ENV TARGET_SYSTEM_PORT=8080     TARGET_SYSTEM_FAILURE_RATE=0.15     TARGET_SYSTEM_SEED=20260803
+--> Using cache 4253123d49a556b8fe2f7b44dc36960a29f16cd669b67173742ece8c4275b3e3
+--> 4253123d49a5
+[2/2] STEP 4/6: COPY --from=build /build/apps/target-system-mock/target/target-system-mock.jar /opt/target-system-mock.jar
+--> Using cache abed55c7840cd32061b6b15c7fb1bc4b8e75bcdbc571905b9d11a289bf7545e0
+--> abed55c7840c
+[2/2] STEP 5/6: EXPOSE 8080
+--> Using cache 30b9f0b31c9946abfdb3f02ed5b67c5b2e02f4a52db65a0ef165977f53fed62e
+--> 30b9f0b31c99
+[2/2] STEP 6/6: ENTRYPOINT ["java", "-jar", "/opt/target-system-mock.jar"]
+--> Using cache 1aa9a913c0c77efa3a0651d154d9e03aed1932175b03840cdea82d267d44fad5
+[2/2] COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:csv-e2e-20260903
+--> 1aa9a913c0c7
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:acedc65-dirty
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:fd92e81-dirty
+Successfully tagged localhost/mig-000001-1/target-system-mock:local
+1aa9a913c0c77efa3a0651d154d9e03aed1932175b03840cdea82d267d44fad5
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:fd936bc88dd63c9571d9e146a7966e37dc78c606eca940738d202427cc65b8e5
+Copying blob sha256:d474aac4fedc48314243c3b7171e47cc0ce524fe5ad4bfb97745d08dafca9325
+Copying blob sha256:25af61f342fcba618b23291dc54216d5222a33608820298a2af464a5a2921359
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:24d9bad9efb08e44497f74cc79f9b0400818037a24628fd910db9145e5048649
+Copying blob sha256:c83e5dc3396b085be5beef9cbd69a49c599699a67b3b7ca17536990313480767
+Copying blob sha256:72e489ddf5074114d8cd19f77e5368d68f8b006a84de1f1149e966186a9d444d
+Copying blob sha256:68b0e330eafbbb0f082c458e23ab8e0a1c1bcecb7eb0f6467f38e3b1aaff434b
+Copying config sha256:1aa9a913c0c77efa3a0651d154d9e03aed1932175b03840cdea82d267d44fad5
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:fd936bc88dd63c9571d9e146a7966e37dc78c606eca940738d202427cc65b8e5
+Copying blob sha256:25af61f342fcba618b23291dc54216d5222a33608820298a2af464a5a2921359
+Copying blob sha256:d474aac4fedc48314243c3b7171e47cc0ce524fe5ad4bfb97745d08dafca9325
+Copying blob sha256:c83e5dc3396b085be5beef9cbd69a49c599699a67b3b7ca17536990313480767
+Copying blob sha256:24d9bad9efb08e44497f74cc79f9b0400818037a24628fd910db9145e5048649
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:72e489ddf5074114d8cd19f77e5368d68f8b006a84de1f1149e966186a9d444d
+Copying blob sha256:68b0e330eafbbb0f082c458e23ab8e0a1c1bcecb7eb0f6467f38e3b1aaff434b
+Copying config sha256:1aa9a913c0c77efa3a0651d154d9e03aed1932175b03840cdea82d267d44fad5
+Writing manifest to image destination
+
+published:
+  europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/loader-app:csv-e2e-20260903
+  europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/recon-service:csv-e2e-20260903
+  europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/dataform-runner:csv-e2e-20260903
+  europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/target-system-mock:csv-e2e-20260903
+
+Set MIG_JAVA_IMAGE_TAG=csv-e2e-20260903 on the Composer environment so the DAG launches
+these exact images rather than whatever :latest happens to be.
+image version: csv-e2e-20260903
+▶ building file-processor (module=file_processor) → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:csv-e2e-20260903
+STEP 1/13: FROM gcr.io/dataflow-templates-base/python311-template-launcher-base:latest
+STEP 2/13: ARG MIG_MODULE=file_processor
+--> Using cache 13f27cc980940ff5eea49bd7ec80687a5749cf96d82f7e26e8ea24b33451aab6
+--> 13f27cc98094
+STEP 3/13: ENV MIG_MODULE=${MIG_MODULE}
+--> Using cache fabe448c246e6183de96de4b158ef0c510f30b3e211deb97c0afee1c38fd5163
+--> fabe448c246e
+STEP 4/13: WORKDIR /app
+--> Using cache fd1d06c52110864875f249be87cb2b841dff17f494dea782a0b13c64e01b4cf1
+--> fd1d06c52110
+STEP 5/13: COPY requirements.txt .
+--> Using cache 4096474e108ce195b3e996826f54f56debb3a71539830a4963e7216bdff746b4
+--> 4096474e108c
+STEP 6/13: RUN pip install --no-cache-dir -r requirements.txt
+--> Using cache e38a32d9628ac41201d436ecf114873fca07c2b798f1e89929eca50b64f418c1
+--> e38a32d9628a
+STEP 7/13: COPY pipelines/ ./pipelines/
+--> Using cache 5973ed84955869e2486959718d02231bf117e155445d96bb4553c4338453d413
+--> 5973ed849558
+STEP 8/13: COPY contracts/ ./contracts/
+--> Using cache 9c06b01924487142b3589c809875ba1b0b41c514f511585f1af64df352209a97
+--> 9c06b0192448
+STEP 9/13: ENV TARGET_PROFILE=real     BQ_TARGET=real     MIG_RUNNER=dataflow
+--> Using cache 0af7ff93d49a07794711b8b0854189ee97f49b31ee72db1fd8ebb062d31c1883
+--> 0af7ff93d49a
+STEP 10/13: ENV FLEX_TEMPLATE_PYTHON_PY_FILE=/app/dataflow_entrypoint.py
+--> Using cache 29c0ed7b11ec470b4beb7241cda1d3b751ea6b2f0ffff0440e9faa9b21796530
+--> 29c0ed7b11ec
+STEP 11/13: COPY dataflow_entrypoint.py ./dataflow_entrypoint.py
+--> Using cache 9c8bff950185b911a1fd4a45151c0112b8fd4df3f6eb34ef6e2a40fe6093b83e
+--> 9c8bff950185
+STEP 12/13: ENV PYTHONPATH=/app
+--> Using cache a75d65a9cfee5364a1898addd4b51c275b3642eaaec3cee453184cdde4d9eac5
+--> a75d65a9cfee
+STEP 13/13: CMD ["python", "-m", "pipelines.file_processor.pipeline", "--help"]
+--> Using cache 354e54f6a9662ab207a61fc7bf50265a5eb5af4e6807150573f4d85a51da8f4d
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:csv-e2e-20260903
+--> 354e54f6a966
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:acedc65-dirty
+354e54f6a9662ab207a61fc7bf50265a5eb5af4e6807150573f4d85a51da8f4d
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/file-processor:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:7edcec32e16bcdef2f6b04f41b3aa0971d33294b52890ae7ce65c6dd1380b9ca
+Copying blob sha256:af68230260cdbb7ac206fc2f95bf67c1a75ebdcf3e4014accffd3c8bcb478e15
+Copying blob sha256:dbf709da663a589d352ece218eb803c4f621e4d94c00a9784b6cdf65c882ec02
+Copying blob sha256:d13007d6a3979078792cbc2afff5c74eb1a14f5a02394f6cae0a873a0752c104
+Copying blob sha256:f2c42f900cb3b12d5456f76b4fa6454a52df3981323d3a1b1a17fe4c4955ab4a
+Copying blob sha256:ac06852f1f7254083486500d54ef4292d46b2c868df62ba93466e633c78a7cf1
+Copying blob sha256:35cd4242510143a873f7a0de9cafaaa818dec8c228d055c48ccaab196af49155
+Copying blob sha256:2365520e18bbec18412610155586d8da964b88230c876ccb79c213c3c72c5692
+Copying blob sha256:d8726260c272098e4fafa61322cb6513ac4e4ef5317fa2c97462ddfd7c5a7e12
+Copying blob sha256:663f88b8f4a56266cbb5e422cf4c53512b2cef06cdcfa22130096f00eeadc2fc
+Copying blob sha256:20d0ddccb9acbe03b4d2545bfc861ac336a90cd57426e5966a164265c0f543d6
+Copying blob sha256:f5f1920b7ce8d3c96796e3900d1b3bf0cd08431955cd9c80deaac3d6e8ea7ba4
+Copying blob sha256:275dd65b40728ce8710897b9dcf06f70add6edae381809a342a75bb8c90ba987
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:382482f097d13dbc2eaedcbeda6fb7e1bfaa6716db1c56aba47c97a7fffff632
+Copying blob sha256:d6226353b3c552315191217cc28d14a58b7af8b4a22d6620440d008f2f91a15b
+Copying blob sha256:21b7952cb05a02316283121be6b0494e7509d61a9a4a5a70f269df5829b1d774
+Copying blob sha256:4fcfcdb57eaf315d82ca0818c6b076664b911415b2ef0a44e9e44116ec4b58c3
+Copying blob sha256:bbd15b8acd5083e84bef49e488f4b9ad0d6feb27586986ff969b058f0744d54f
+Copying blob sha256:77e19e69043a95323ce930e6fda4254e3e3f64f91b79f8fa48ac131c906e79f4
+Copying blob sha256:216caa32534419b282d11ff7a71a6299bed8cb0a93d776bca3dbcb029f9b913e
+Copying blob sha256:9926b008b09f2b3601898afbd8573f31ca3a05d8f97b6f96ecf9e7d07b8ec46e
+Copying blob sha256:7238c2194a09849621224cb99859fc2156917faa9c05d6fc60ef8b1f6057ab96
+Copying blob sha256:baadc5e2207c466c88d53a7153bc01851b7da34955b8e7f430cfd1995eba6cfa
+Copying config sha256:354e54f6a9662ab207a61fc7bf50265a5eb5af4e6807150573f4d85a51da8f4d
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:f2c42f900cb3b12d5456f76b4fa6454a52df3981323d3a1b1a17fe4c4955ab4a
+Copying blob sha256:d13007d6a3979078792cbc2afff5c74eb1a14f5a02394f6cae0a873a0752c104
+Copying blob sha256:ac06852f1f7254083486500d54ef4292d46b2c868df62ba93466e633c78a7cf1
+Copying blob sha256:dbf709da663a589d352ece218eb803c4f621e4d94c00a9784b6cdf65c882ec02
+Copying blob sha256:af68230260cdbb7ac206fc2f95bf67c1a75ebdcf3e4014accffd3c8bcb478e15
+Copying blob sha256:7edcec32e16bcdef2f6b04f41b3aa0971d33294b52890ae7ce65c6dd1380b9ca
+Copying blob sha256:35cd4242510143a873f7a0de9cafaaa818dec8c228d055c48ccaab196af49155
+Copying blob sha256:2365520e18bbec18412610155586d8da964b88230c876ccb79c213c3c72c5692
+Copying blob sha256:d8726260c272098e4fafa61322cb6513ac4e4ef5317fa2c97462ddfd7c5a7e12
+Copying blob sha256:663f88b8f4a56266cbb5e422cf4c53512b2cef06cdcfa22130096f00eeadc2fc
+Copying blob sha256:20d0ddccb9acbe03b4d2545bfc861ac336a90cd57426e5966a164265c0f543d6
+Copying blob sha256:f5f1920b7ce8d3c96796e3900d1b3bf0cd08431955cd9c80deaac3d6e8ea7ba4
+Copying blob sha256:275dd65b40728ce8710897b9dcf06f70add6edae381809a342a75bb8c90ba987
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:382482f097d13dbc2eaedcbeda6fb7e1bfaa6716db1c56aba47c97a7fffff632
+Copying blob sha256:d6226353b3c552315191217cc28d14a58b7af8b4a22d6620440d008f2f91a15b
+Copying blob sha256:21b7952cb05a02316283121be6b0494e7509d61a9a4a5a70f269df5829b1d774
+Copying blob sha256:4fcfcdb57eaf315d82ca0818c6b076664b911415b2ef0a44e9e44116ec4b58c3
+Copying blob sha256:bbd15b8acd5083e84bef49e488f4b9ad0d6feb27586986ff969b058f0744d54f
+Copying blob sha256:77e19e69043a95323ce930e6fda4254e3e3f64f91b79f8fa48ac131c906e79f4
+Copying blob sha256:216caa32534419b282d11ff7a71a6299bed8cb0a93d776bca3dbcb029f9b913e
+Copying blob sha256:9926b008b09f2b3601898afbd8573f31ca3a05d8f97b6f96ecf9e7d07b8ec46e
+Copying blob sha256:7238c2194a09849621224cb99859fc2156917faa9c05d6fc60ef8b1f6057ab96
+Copying blob sha256:baadc5e2207c466c88d53a7153bc01851b7da34955b8e7f430cfd1995eba6cfa
+Copying config sha256:354e54f6a9662ab207a61fc7bf50265a5eb5af4e6807150573f4d85a51da8f4d
+Writing manifest to image destination
+▶ uploading spec → gs://mig-000001-1-dev-dataflow-templates/file-processor.json
+Copying file:///home/adrianb/.cache/podman-tmp/tmp.YqjR85sY1u/file-processor.json to gs://mig-000001-1-dev-dataflow-templates/file-processor.json
+  
+
+▶ building data-enrichment (module=data_enrichment) → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:csv-e2e-20260903
+STEP 1/13: FROM gcr.io/dataflow-templates-base/python311-template-launcher-base:latest
+STEP 2/13: ARG MIG_MODULE=file_processor
+--> Using cache 13f27cc980940ff5eea49bd7ec80687a5749cf96d82f7e26e8ea24b33451aab6
+--> 13f27cc98094
+STEP 3/13: ENV MIG_MODULE=${MIG_MODULE}
+--> Using cache fabe448c246e6183de96de4b158ef0c510f30b3e211deb97c0afee1c38fd5163
+--> fabe448c246e
+STEP 4/13: WORKDIR /app
+--> Using cache fd1d06c52110864875f249be87cb2b841dff17f494dea782a0b13c64e01b4cf1
+--> fd1d06c52110
+STEP 5/13: COPY requirements.txt .
+--> Using cache 4096474e108ce195b3e996826f54f56debb3a71539830a4963e7216bdff746b4
+--> 4096474e108c
+STEP 6/13: RUN pip install --no-cache-dir -r requirements.txt
+--> Using cache da0900c18e1294779bc75f973623e7d6fdb3ce85d4728638a6e9232bdb87da44
+--> da0900c18e12
+STEP 7/13: COPY pipelines/ ./pipelines/
+--> Using cache 791b1fd2e506f25c68d4f210ec6edd287ad569496b4a5a524d98dd9222d7d608
+--> 791b1fd2e506
+STEP 8/13: COPY contracts/ ./contracts/
+--> Using cache d03a7438eaba9215c3729a4882c1e5674162d815d5a522f659b3312720780c2e
+--> d03a7438eaba
+STEP 9/13: ENV TARGET_PROFILE=real     BQ_TARGET=real     MIG_RUNNER=dataflow
+--> Using cache 17ad042871e4e3b554c1f849e3cbf68e2bb8924a1456d064f54ab60c4f1e9651
+--> 17ad042871e4
+STEP 10/13: ENV FLEX_TEMPLATE_PYTHON_PY_FILE=/app/dataflow_entrypoint.py
+--> Using cache 7e7e53142384cabf0cd8ce5148c52164a8e5c706fb4b4e5c35491121670352a9
+--> 7e7e53142384
+STEP 11/13: COPY dataflow_entrypoint.py ./dataflow_entrypoint.py
+--> Using cache 32cccc4b55f88cd16d555c0e8fa9bcf6d5931783cd5b0852b2e86b6dbdba8e8a
+--> 32cccc4b55f8
+STEP 12/13: ENV PYTHONPATH=/app
+--> Using cache 389ee5e2719b775e1a3a78dc76a2e0ee15579aab425e5bfe34561d45f22ad1e2
+--> 389ee5e2719b
+STEP 13/13: CMD ["python", "-m", "pipelines.file_processor.pipeline", "--help"]
+--> Using cache 338a041dce0f46cd5fb01ba7b5451ad7a1676c932a4f65354bb812c2c1b14fee
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:csv-e2e-20260903
+--> 338a041dce0f
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:acedc65-dirty
+338a041dce0f46cd5fb01ba7b5451ad7a1676c932a4f65354bb812c2c1b14fee
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/data-enrichment:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:7edcec32e16bcdef2f6b04f41b3aa0971d33294b52890ae7ce65c6dd1380b9ca
+Copying blob sha256:d13007d6a3979078792cbc2afff5c74eb1a14f5a02394f6cae0a873a0752c104
+Copying blob sha256:f2c42f900cb3b12d5456f76b4fa6454a52df3981323d3a1b1a17fe4c4955ab4a
+Copying blob sha256:ac06852f1f7254083486500d54ef4292d46b2c868df62ba93466e633c78a7cf1
+Copying blob sha256:dbf709da663a589d352ece218eb803c4f621e4d94c00a9784b6cdf65c882ec02
+Copying blob sha256:af68230260cdbb7ac206fc2f95bf67c1a75ebdcf3e4014accffd3c8bcb478e15
+Copying blob sha256:35cd4242510143a873f7a0de9cafaaa818dec8c228d055c48ccaab196af49155
+Copying blob sha256:2365520e18bbec18412610155586d8da964b88230c876ccb79c213c3c72c5692
+Copying blob sha256:d8726260c272098e4fafa61322cb6513ac4e4ef5317fa2c97462ddfd7c5a7e12
+Copying blob sha256:663f88b8f4a56266cbb5e422cf4c53512b2cef06cdcfa22130096f00eeadc2fc
+Copying blob sha256:20d0ddccb9acbe03b4d2545bfc861ac336a90cd57426e5966a164265c0f543d6
+Copying blob sha256:f5f1920b7ce8d3c96796e3900d1b3bf0cd08431955cd9c80deaac3d6e8ea7ba4
+Copying blob sha256:275dd65b40728ce8710897b9dcf06f70add6edae381809a342a75bb8c90ba987
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:382482f097d13dbc2eaedcbeda6fb7e1bfaa6716db1c56aba47c97a7fffff632
+Copying blob sha256:d6226353b3c552315191217cc28d14a58b7af8b4a22d6620440d008f2f91a15b
+Copying blob sha256:21b7952cb05a02316283121be6b0494e7509d61a9a4a5a70f269df5829b1d774
+Copying blob sha256:4fcfcdb57eaf315d82ca0818c6b076664b911415b2ef0a44e9e44116ec4b58c3
+Copying blob sha256:bbd15b8acd5083e84bef49e488f4b9ad0d6feb27586986ff969b058f0744d54f
+Copying blob sha256:77e19e69043a95323ce930e6fda4254e3e3f64f91b79f8fa48ac131c906e79f4
+Copying blob sha256:0624639d5875ea1ab807205b5098658fc82202d265a3ee9b5e165e99bf76c407
+Copying blob sha256:6d0e036da281b59958685707d82cd3ec9241cf3e0ce7cacda727baa61fa7470f
+Copying blob sha256:0c42b3221b0866334b53989bf4feb3d466fa63c84cc3fff56cd63c1022072a4a
+Copying blob sha256:faf1ed53ed87e114ed599ee56603f3d02289d5d18830b91f4fcba900a6ad3251
+Copying config sha256:338a041dce0f46cd5fb01ba7b5451ad7a1676c932a4f65354bb812c2c1b14fee
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:7edcec32e16bcdef2f6b04f41b3aa0971d33294b52890ae7ce65c6dd1380b9ca
+Copying blob sha256:ac06852f1f7254083486500d54ef4292d46b2c868df62ba93466e633c78a7cf1
+Copying blob sha256:d13007d6a3979078792cbc2afff5c74eb1a14f5a02394f6cae0a873a0752c104
+Copying blob sha256:af68230260cdbb7ac206fc2f95bf67c1a75ebdcf3e4014accffd3c8bcb478e15
+Copying blob sha256:dbf709da663a589d352ece218eb803c4f621e4d94c00a9784b6cdf65c882ec02
+Copying blob sha256:f2c42f900cb3b12d5456f76b4fa6454a52df3981323d3a1b1a17fe4c4955ab4a
+Copying blob sha256:35cd4242510143a873f7a0de9cafaaa818dec8c228d055c48ccaab196af49155
+Copying blob sha256:2365520e18bbec18412610155586d8da964b88230c876ccb79c213c3c72c5692
+Copying blob sha256:d8726260c272098e4fafa61322cb6513ac4e4ef5317fa2c97462ddfd7c5a7e12
+Copying blob sha256:663f88b8f4a56266cbb5e422cf4c53512b2cef06cdcfa22130096f00eeadc2fc
+Copying blob sha256:20d0ddccb9acbe03b4d2545bfc861ac336a90cd57426e5966a164265c0f543d6
+Copying blob sha256:f5f1920b7ce8d3c96796e3900d1b3bf0cd08431955cd9c80deaac3d6e8ea7ba4
+Copying blob sha256:275dd65b40728ce8710897b9dcf06f70add6edae381809a342a75bb8c90ba987
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:382482f097d13dbc2eaedcbeda6fb7e1bfaa6716db1c56aba47c97a7fffff632
+Copying blob sha256:d6226353b3c552315191217cc28d14a58b7af8b4a22d6620440d008f2f91a15b
+Copying blob sha256:21b7952cb05a02316283121be6b0494e7509d61a9a4a5a70f269df5829b1d774
+Copying blob sha256:4fcfcdb57eaf315d82ca0818c6b076664b911415b2ef0a44e9e44116ec4b58c3
+Copying blob sha256:bbd15b8acd5083e84bef49e488f4b9ad0d6feb27586986ff969b058f0744d54f
+Copying blob sha256:77e19e69043a95323ce930e6fda4254e3e3f64f91b79f8fa48ac131c906e79f4
+Copying blob sha256:0624639d5875ea1ab807205b5098658fc82202d265a3ee9b5e165e99bf76c407
+Copying blob sha256:6d0e036da281b59958685707d82cd3ec9241cf3e0ce7cacda727baa61fa7470f
+Copying blob sha256:0c42b3221b0866334b53989bf4feb3d466fa63c84cc3fff56cd63c1022072a4a
+Copying blob sha256:faf1ed53ed87e114ed599ee56603f3d02289d5d18830b91f4fcba900a6ad3251
+Copying config sha256:338a041dce0f46cd5fb01ba7b5451ad7a1676c932a4f65354bb812c2c1b14fee
+Writing manifest to image destination
+▶ uploading spec → gs://mig-000001-1-dev-dataflow-templates/data-enrichment.json
+Copying file:///home/adrianb/.cache/podman-tmp/tmp.YqjR85sY1u/data-enrichment.json to gs://mig-000001-1-dev-dataflow-templates/data-enrichment.json
+  
+
+▶ building json-producer (module=json_producer) → europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:csv-e2e-20260903
+STEP 1/13: FROM gcr.io/dataflow-templates-base/python311-template-launcher-base:latest
+STEP 2/13: ARG MIG_MODULE=file_processor
+--> Using cache 13f27cc980940ff5eea49bd7ec80687a5749cf96d82f7e26e8ea24b33451aab6
+--> 13f27cc98094
+STEP 3/13: ENV MIG_MODULE=${MIG_MODULE}
+--> Using cache fabe448c246e6183de96de4b158ef0c510f30b3e211deb97c0afee1c38fd5163
+--> fabe448c246e
+STEP 4/13: WORKDIR /app
+--> Using cache fd1d06c52110864875f249be87cb2b841dff17f494dea782a0b13c64e01b4cf1
+--> fd1d06c52110
+STEP 5/13: COPY requirements.txt .
+--> Using cache 4096474e108ce195b3e996826f54f56debb3a71539830a4963e7216bdff746b4
+--> 4096474e108c
+STEP 6/13: RUN pip install --no-cache-dir -r requirements.txt
+--> Using cache 3caf922c118b9fcc5856bc8b46d17b9b2bb93f8dfb21a375667fa854048659da
+--> 3caf922c118b
+STEP 7/13: COPY pipelines/ ./pipelines/
+--> Using cache 3d36ce8e18ae64869d3c0500e5b9044c1ce39cfd3ed3644db1e572521127f905
+--> 3d36ce8e18ae
+STEP 8/13: COPY contracts/ ./contracts/
+--> Using cache 7898e7a69f54c7596d730530a9d99dcb176b09e8711e3a37acbd87dafffe05fe
+--> 7898e7a69f54
+STEP 9/13: ENV TARGET_PROFILE=real     BQ_TARGET=real     MIG_RUNNER=dataflow
+--> Using cache 0fcaa4de3083c57a9a72185a06e18a1b9ba0ebf9859ce0ec8ff6691254189f87
+--> 0fcaa4de3083
+STEP 10/13: ENV FLEX_TEMPLATE_PYTHON_PY_FILE=/app/dataflow_entrypoint.py
+--> Using cache b957cc50a9eab4a373ecb0a11e4c541f7f5fd985f4223454b4836f4a53c89db0
+--> b957cc50a9ea
+STEP 11/13: COPY dataflow_entrypoint.py ./dataflow_entrypoint.py
+--> Using cache 570f34ae4cd7408d15c5e12c0805f3bef19bac1d70163fe898093ccc56529aba
+--> 570f34ae4cd7
+STEP 12/13: ENV PYTHONPATH=/app
+--> Using cache 731338ff10230edd0a91f0ce8178d5db08a8e12b8368b84731d09ffba0e9b5ec
+--> 731338ff1023
+STEP 13/13: CMD ["python", "-m", "pipelines.file_processor.pipeline", "--help"]
+--> Using cache 54d870599e91716301330ca24d1c0a350082910fe592538b9cb6fc1816c4be6f
+COMMIT europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:csv-e2e-20260903
+--> 54d870599e91
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:latest
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:csv-e2e-20260903
+Successfully tagged europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:acedc65-dirty
+54d870599e91716301330ca24d1c0a350082910fe592538b9cb6fc1816c4be6f
+▶ pushing europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow/json-producer:csv-e2e-20260903 (and :latest)
+Getting image source signatures
+Copying blob sha256:7edcec32e16bcdef2f6b04f41b3aa0971d33294b52890ae7ce65c6dd1380b9ca
+Copying blob sha256:d13007d6a3979078792cbc2afff5c74eb1a14f5a02394f6cae0a873a0752c104
+Copying blob sha256:f2c42f900cb3b12d5456f76b4fa6454a52df3981323d3a1b1a17fe4c4955ab4a
+Copying blob sha256:ac06852f1f7254083486500d54ef4292d46b2c868df62ba93466e633c78a7cf1
+Copying blob sha256:af68230260cdbb7ac206fc2f95bf67c1a75ebdcf3e4014accffd3c8bcb478e15
+Copying blob sha256:dbf709da663a589d352ece218eb803c4f621e4d94c00a9784b6cdf65c882ec02
+Copying blob sha256:35cd4242510143a873f7a0de9cafaaa818dec8c228d055c48ccaab196af49155
+Copying blob sha256:2365520e18bbec18412610155586d8da964b88230c876ccb79c213c3c72c5692
+Copying blob sha256:d8726260c272098e4fafa61322cb6513ac4e4ef5317fa2c97462ddfd7c5a7e12
+Copying blob sha256:663f88b8f4a56266cbb5e422cf4c53512b2cef06cdcfa22130096f00eeadc2fc
+Copying blob sha256:20d0ddccb9acbe03b4d2545bfc861ac336a90cd57426e5966a164265c0f543d6
+Copying blob sha256:f5f1920b7ce8d3c96796e3900d1b3bf0cd08431955cd9c80deaac3d6e8ea7ba4
+Copying blob sha256:275dd65b40728ce8710897b9dcf06f70add6edae381809a342a75bb8c90ba987
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:382482f097d13dbc2eaedcbeda6fb7e1bfaa6716db1c56aba47c97a7fffff632
+Copying blob sha256:d6226353b3c552315191217cc28d14a58b7af8b4a22d6620440d008f2f91a15b
+Copying blob sha256:21b7952cb05a02316283121be6b0494e7509d61a9a4a5a70f269df5829b1d774
+Copying blob sha256:4fcfcdb57eaf315d82ca0818c6b076664b911415b2ef0a44e9e44116ec4b58c3
+Copying blob sha256:bbd15b8acd5083e84bef49e488f4b9ad0d6feb27586986ff969b058f0744d54f
+Copying blob sha256:77e19e69043a95323ce930e6fda4254e3e3f64f91b79f8fa48ac131c906e79f4
+Copying blob sha256:e30edacb9fad71fb0fef03752ffc9fc7d93f05e61f282d65d1a45d27ff920335
+Copying blob sha256:d7a3a53d9f38ce022a4958724dbcda1b5b76132a1afd1c91fff3eda0f12ce268
+Copying blob sha256:f9f4081f2fe779b3ddfc89a920ef437e67a85131fdb59a9e28e95da8c4ff67b7
+Copying blob sha256:96ce4ecce23711585230dc786f0407e97c33ac535cee68ac5b6c456abdc8380b
+Copying config sha256:54d870599e91716301330ca24d1c0a350082910fe592538b9cb6fc1816c4be6f
+Writing manifest to image destination
+Getting image source signatures
+Copying blob sha256:d13007d6a3979078792cbc2afff5c74eb1a14f5a02394f6cae0a873a0752c104
+Copying blob sha256:7edcec32e16bcdef2f6b04f41b3aa0971d33294b52890ae7ce65c6dd1380b9ca
+Copying blob sha256:ac06852f1f7254083486500d54ef4292d46b2c868df62ba93466e633c78a7cf1
+Copying blob sha256:af68230260cdbb7ac206fc2f95bf67c1a75ebdcf3e4014accffd3c8bcb478e15
+Copying blob sha256:f2c42f900cb3b12d5456f76b4fa6454a52df3981323d3a1b1a17fe4c4955ab4a
+Copying blob sha256:dbf709da663a589d352ece218eb803c4f621e4d94c00a9784b6cdf65c882ec02
+Copying blob sha256:35cd4242510143a873f7a0de9cafaaa818dec8c228d055c48ccaab196af49155
+Copying blob sha256:2365520e18bbec18412610155586d8da964b88230c876ccb79c213c3c72c5692
+Copying blob sha256:d8726260c272098e4fafa61322cb6513ac4e4ef5317fa2c97462ddfd7c5a7e12
+Copying blob sha256:663f88b8f4a56266cbb5e422cf4c53512b2cef06cdcfa22130096f00eeadc2fc
+Copying blob sha256:20d0ddccb9acbe03b4d2545bfc861ac336a90cd57426e5966a164265c0f543d6
+Copying blob sha256:f5f1920b7ce8d3c96796e3900d1b3bf0cd08431955cd9c80deaac3d6e8ea7ba4
+Copying blob sha256:275dd65b40728ce8710897b9dcf06f70add6edae381809a342a75bb8c90ba987
+Copying blob sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+Copying blob sha256:382482f097d13dbc2eaedcbeda6fb7e1bfaa6716db1c56aba47c97a7fffff632
+Copying blob sha256:d6226353b3c552315191217cc28d14a58b7af8b4a22d6620440d008f2f91a15b
+Copying blob sha256:21b7952cb05a02316283121be6b0494e7509d61a9a4a5a70f269df5829b1d774
+Copying blob sha256:4fcfcdb57eaf315d82ca0818c6b076664b911415b2ef0a44e9e44116ec4b58c3
+Copying blob sha256:bbd15b8acd5083e84bef49e488f4b9ad0d6feb27586986ff969b058f0744d54f
+Copying blob sha256:77e19e69043a95323ce930e6fda4254e3e3f64f91b79f8fa48ac131c906e79f4
+Copying blob sha256:e30edacb9fad71fb0fef03752ffc9fc7d93f05e61f282d65d1a45d27ff920335
+Copying blob sha256:d7a3a53d9f38ce022a4958724dbcda1b5b76132a1afd1c91fff3eda0f12ce268
+Copying blob sha256:f9f4081f2fe779b3ddfc89a920ef437e67a85131fdb59a9e28e95da8c4ff67b7
+Copying blob sha256:96ce4ecce23711585230dc786f0407e97c33ac535cee68ac5b6c456abdc8380b
+Copying config sha256:54d870599e91716301330ca24d1c0a350082910fe592538b9cb6fc1816c4be6f
+Writing manifest to image destination
+▶ uploading spec → gs://mig-000001-1-dev-dataflow-templates/json-producer.json
+Copying file:///home/adrianb/.cache/podman-tmp/tmp.YqjR85sY1u/json-producer.json to gs://mig-000001-1-dev-dataflow-templates/json-producer.json
+  
+
+
+✓ 3 Flex Templates published.
+  registry: europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow
+  specs:    gs://mig-000001-1-dev-dataflow-templates/{file-processor,data-enrichment,json-producer}.json
+
+all images published on tag csv-e2e-20260903
+pass it to terraform as -var=java_image_tag=csv-e2e-20260903

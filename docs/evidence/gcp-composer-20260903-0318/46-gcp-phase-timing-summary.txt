@@ -1,0 +1,59 @@
+# GCP Composer DAG run — per-phase record counts and timing
+# Run: run-dag-20260903-0657, Airflow run manual__2026-09-03T07:00:15+00:00
+# All 8 tasks GREEN. Wall clock: 07:00:18 -> 07:15:50 UTC = 15 minutes 32 seconds.
+# (Compare: run-dag-20260903-0223 in gcp-csv-input-20260903-0300 took 16m51s for 55 records;
+#  this run is ~80s faster — same workload, normal Dataflow variance.)
+
+task                    duration   records
+wait_for_extract_flg        1.2s   (sensor — .FLG present immediately, pre-staged)
+file_processor             292.0s   55 read (CSV header skipped from 56-line source)
+                                     -> 52 loaded to extraction
+                                     -> 3 parse rejects (PARSE_BAD_COLUMN_COUNT,
+                                        PARSE_BAD_DATE, PARSE_BAD_NUMERIC)
+dataform_run                21.5s   52 rows -> account_curated
+data_enrichment            258.2s   52 read -> 52 enriched
+json_producer              275.6s   52 enriched -> 50 target documents
+                                     (2 rejected at schema/map: SCHEMA_INVALID,
+                                      MAP_UNMAPPED_ENUM_VALUE)
+                                     -> GCS: 1 file, 50 documents
+                                     -> Kafka: target-system-target, 50 messages
+loader_app                  12.9s   50 documentsRead -> 50 published -> 50 settled
+                                     (0 accepted + 50 duplicatesIgnored, 0 errors,
+                                      0 unsettled)
+reconciliation              23.4s   50/50 TARGET rows confirmed by Target System
+                                     (50 confirmation events, 0 unconfirmed)
+assert_run_balanced         19.3s   balancing equation closes: 55 = 50 migrated + 5 rejected
+
+# ---------------------------------------------------------------------------
+# VERDICT: GREEN
+#   make verify (from laptop, BQ_TARGET=real): 9/10
+#     - the single red is criterion 4's Kafka half — the Managed Kafka bootstrap
+#       DNS resolves only inside Google's network, so a laptop cannot reach the
+#       broker (_ALL_BROKERS_DOWN / Failed to resolve). This is the documented
+#       host-reachability constraint, not a defect.
+#   In-cloud proof (DAG run + reconciliation-report.json): 10/10
+#     - balancing equation: srcRead=55, written=50, rejected=5, balances=true
+#     - target system reconciliation: 50/50 confirmed, allTargetRowsConfirmed=true
+#     - load settle: 50 published = 0 accepted + 50 duplicates + 0 errors + 0 unsettled
+#     - rejects by reason (5): MAP_UNMAPPED_ENUM_VALUE(1), PARSE_BAD_COLUMN_COUNT(1),
+#       PARSE_BAD_DATE(1), PARSE_BAD_NUMERIC(1), SCHEMA_INVALID(1)
+#
+# The accept/duplicate split (0 accepted / 50 duplicates) is a replay artefact,
+# not a defect — same as run-dag-20260903-0223 in the prior evidence pack. The
+# first DAG run (manual__2026-09-03T06:22:24) failed at loader_app because the
+# Cloud Run mock's kafka-clients OAUTHBEARER re-login wedged
+# ("logout() still needs to be called on a previous login = true" -> every broker
+# connection "terminated during authentication"), so the mock consumed nothing and
+# all 50 documents went unsettled. The fix was to recycle the Cloud Run mock by
+# name (gcloud run services update target-system-mock --image=<same image> ->
+# revision 00002-cfs, fresh instance, fresh login). The recycled mock drained the
+# failed run's 50 stale messages first, seeding its in-memory idempotency store,
+# so this run's 50 messages were all duplicates from the mock's point of view.
+# The settle equation still closes and recon confirms all 50 rows — a fresh-cluster
+# run with a pristine seed shows the clean accepted=50 split (see
+# docs/evidence/gcp-kafka-loader-20260902/README.md).
+#
+# The CSV-only source ran end to end on real Dataflow: the header row was skipped
+# (src_read=55 from a 56-line pipe-delimited source file), and the reject set
+# includes the new PARSE_BAD_COLUMN_COUNT reason code alongside the four
+# pre-existing ones (reconciliation-report.json, rejectsByReason).

@@ -1,0 +1,1 @@
+extractor: run=run-dag-20260903-0657 records=55 dat_files=1 extraction_errors=0 -> gs://mig-000001-1-dev-landing/extraction/run-dag-20260903-0657/

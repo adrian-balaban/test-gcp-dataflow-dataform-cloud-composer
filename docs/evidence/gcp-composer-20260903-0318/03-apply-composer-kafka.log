@@ -1,0 +1,16 @@
+=== terraform apply (composer+kafka) progress snapshots ===
+04:12Z kafka=CREATING composer=(none)
+04:19Z kafka=ACTIVE composer=CREATING
+linked account: 01D366-E3F489-E80499 (My Billing Account 2)
+OPEN=True, billingEnabled=True on mig-000001-1-dev
+no BQ billing export configured; budgets API not enabled
+05:05Z kafka=ACTIVE composer=CREATING (op f4af5466, ~47min, terraform still waiting)
+
+=== APPLY FAILED @ 05:52Z ===
+Composer create FAILED: zone europe-west1-b out of resources (CP_GKE_CLUSTER_CREATING).
+Kafka ACTIVE and retained. terraform exited; Composer env deleted by rollback.
+
+=== Composer RUNNING @ 06:15Z ===
+retry apply succeeded after europe-west1-b capacity cleared.
+outputs: kafka_bootstrap, 6 SAs, target_system_url, templates_bucket captured.
+RBAC via VM in progress.

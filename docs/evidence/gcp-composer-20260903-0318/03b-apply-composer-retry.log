@@ -1,0 +1,422 @@
+[0m[1mdata.google_client_config.this: Reading...[0m[0m
+[0m[1mmodule.composer.google_project_service.gke[0]: Refreshing state... [id=mig-000001-1-dev/container.googleapis.com][0m
+[0m[1mmodule.composer.data.google_project.this[0]: Reading...[0m[0m
+[0m[1mmodule.iam.google_service_account.this["dataflow-worker"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account.this["loader-app"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account.this["recon-service"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/recon-service@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account.this["dataform-runner"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account.this["composer-runner"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account.this["target-system-mock"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/target-system-mock@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["iam.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/iam.googleapis.com][0m
+[0m[1mdata.google_client_config.this: Read complete after 0s [id=projects/mig-000001-1-dev/regions/europe-west1/zones/][0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataflow.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/dataflow.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["composer.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/composer.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["vpcaccess.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/vpcaccess.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["monitoring.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/monitoring.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["storage.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/storage.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["dataform.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/dataform.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["managedkafka.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/managedkafka.googleapis.com][0m
+[0m[1mmodule.composer.data.google_project.this[0]: Read complete after 2s [id=projects/mig-000001-1-dev][0m
+[0m[1mmodule.bootstrap.google_project_service.this["artifactregistry.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/artifactregistry.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["logging.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/logging.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudresourcemanager.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/cloudresourcemanager.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["secretmanager.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/secretmanager.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["run.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/run.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["compute.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/compute.googleapis.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["cloudbuild.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/cloudbuild.googleapis.com][0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountUser"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com/roles/iam.serviceAccountUser/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.bootstrap.google_project_service.this["bigquery.googleapis.com"]: Refreshing state... [id=mig-000001-1-dev/bigquery.googleapis.com][0m
+[0m[1mmodule.iam.google_service_account_iam_member.dataflow_worker_acts_as_itself: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com/roles/iam.serviceAccountUser/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_service_account_iam_member.composer_runner_impersonates_dataflow_worker["roles/iam.serviceAccountTokenCreator"]: Refreshing state... [id=projects/mig-000001-1-dev/serviceAccounts/dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com/roles/iam.serviceAccountTokenCreator/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.composer.google_project_iam_member.composer_service_agent_ext[0]: Refreshing state... [id=mig-000001-1-dev/roles/composer.ServiceAgentV2Ext/serviceAccount:service-818861037691@cloudcomposer-accounts.iam.gserviceaccount.com][0m
+[0m[1mmodule.dataform.google_dataform_repository.this: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/repositories/mig-000001-1][0m
+[0m[1mmodule.bootstrap.google_storage_bucket.tfstate: Refreshing state... [id=mig-000001-1-dev-tfstate][0m
+[0m[1mmodule.network.google_compute_network.this: Refreshing state... [id=projects/mig-000001-1-dev/global/networks/mig-vpc][0m
+[0m[1mmodule.secrets.google_secret_manager_secret.this["pgp-passphrase"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/pgp-passphrase][0m
+[0m[1mmodule.secrets.google_secret_manager_secret.this["target-system-credentials"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/target-system-credentials][0m
+[0m[1mmodule.dataflow.google_artifact_registry_repository.templates: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/repositories/mig-dataflow][0m
+[0m[1mmodule.secrets.google_secret_manager_secret.this["dataform-git-token"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/dataform-git-token][0m
+[0m[1mmodule.secrets.google_secret_manager_secret.this["pgp-private-key"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/pgp-private-key][0m
+[0m[1mmodule.storage.google_storage_bucket.this["dataflow-templates"]: Refreshing state... [id=mig-000001-1-dev-dataflow-templates][0m
+[0m[1mmodule.bigquery.google_bigquery_dataset.this["bq_extraction"]: Refreshing state... [id=projects/mig-000001-1-dev/datasets/bq_extraction][0m
+[0m[1mmodule.bigquery.google_bigquery_dataset.this["bq_transformation"]: Refreshing state... [id=projects/mig-000001-1-dev/datasets/bq_transformation][0m
+[0m[1mmodule.bigquery.google_bigquery_dataset.this["bq_recon"]: Refreshing state... [id=projects/mig-000001-1-dev/datasets/bq_recon][0m
+[0m[1mmodule.storage.google_storage_bucket.this["landing"]: Refreshing state... [id=mig-000001-1-dev-landing][0m
+[0m[1mmodule.storage.google_storage_bucket.this["dataflow-temp"]: Refreshing state... [id=mig-000001-1-dev-dataflow-temp][0m
+[0m[1mmodule.storage.google_storage_bucket.this["recon"]: Refreshing state... [id=mig-000001-1-dev-recon][0m
+[0m[1mmodule.network.google_compute_firewall.dataflow_internal: Refreshing state... [id=projects/mig-000001-1-dev/global/firewalls/mig-allow-dataflow-internal][0m
+[0m[1mmodule.storage.google_storage_bucket.this["json-out"]: Refreshing state... [id=mig-000001-1-dev-json-out][0m
+[0m[1mmodule.network.google_compute_router.this: Refreshing state... [id=projects/mig-000001-1-dev/regions/europe-west1/routers/mig-router][0m
+[0m[1mmodule.network.google_compute_subnetwork.this: Refreshing state... [id=projects/mig-000001-1-dev/regions/europe-west1/subnetworks/mig-subnet][0m
+[0m[1mmodule.bigquery.google_bigquery_table.run_ledger: Refreshing state... [id=projects/mig-000001-1-dev/datasets/bq_recon/tables/run_ledger][0m
+[0m[1mmodule.bigquery.google_bigquery_table.reject_log: Refreshing state... [id=projects/mig-000001-1-dev/datasets/bq_recon/tables/reject_log][0m
+[0m[1mmodule.bigquery.google_bigquery_table.record_lineage: Refreshing state... [id=projects/mig-000001-1-dev/datasets/bq_recon/tables/record_lineage][0m
+[0m[1mmodule.secrets.google_secret_manager_secret_iam_member.accessors["target-system-credentials"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/target-system-credentials/roles/secretmanager.secretAccessor/serviceAccount:loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.vpc_connector.google_vpc_access_connector.this[0]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/connectors/mig-vpc-connector][0m
+[0m[1mmodule.secrets.google_secret_manager_secret_iam_member.accessors["pgp-passphrase"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/pgp-passphrase/roles/secretmanager.secretAccessor/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.secrets.google_secret_manager_secret_iam_member.accessors["dataform-git-token"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/dataform-git-token/roles/secretmanager.secretAccessor/serviceAccount:dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.secrets.google_secret_manager_secret_iam_member.accessors["pgp-private-key"]: Refreshing state... [id=projects/mig-000001-1-dev/secrets/pgp-private-key/roles/secretmanager.secretAccessor/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.network.google_compute_router_nat.this: Refreshing state... [id=mig-000001-1-dev/europe-west1/mig-router/mig-nat][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["landing/dataflow-worker"]: Refreshing state... [id=b/mig-000001-1-dev-landing/roles/storage.objectViewer/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.kafka.google_managed_kafka_cluster.this[0]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["recon/recon-service"]: Refreshing state... [id=b/mig-000001-1-dev-recon/roles/storage.objectAdmin/serviceAccount:recon-service@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["dataflow-temp/dataflow-worker"]: Refreshing state... [id=b/mig-000001-1-dev-dataflow-temp/roles/storage.objectAdmin/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["recon/loader-app"]: Refreshing state... [id=b/mig-000001-1-dev-recon/roles/storage.objectAdmin/serviceAccount:loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["recon/dataflow-worker"]: Refreshing state... [id=b/mig-000001-1-dev-recon/roles/storage.objectAdmin/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["json-out/loader-app"]: Refreshing state... [id=b/mig-000001-1-dev-json-out/roles/storage.objectViewer/serviceAccount:loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_storage_bucket_iam_member.this["json-out/dataflow-worker"]: Refreshing state... [id=b/mig-000001-1-dev-json-out/roles/storage.objectAdmin/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.kafka.google_managed_kafka_topic.this["rejections"]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka/topics/target-system-rejections][0m
+[0m[1mmodule.kafka.google_managed_kafka_topic.this["confirmations"]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka/topics/target-system-confirmations][0m
+[0m[1mmodule.kafka.google_managed_kafka_topic.this["target"]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/clusters/mig-kafka/topics/target-system-target][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_managedkafka.client/target-system-mock"]: Refreshing state... [id=mig-000001-1-dev/roles/managedkafka.client/serviceAccount:target-system-mock@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.dataViewer/composer-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.dataViewer/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.jobUser/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.jobUser/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_dataflow.developer/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/dataflow.developer/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_dataflow.worker/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/dataflow.worker/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_composer.worker/composer-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/composer.worker/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_secretmanager.secretAccessor/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/secretmanager.secretAccessor/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_artifactregistry.reader/composer-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/artifactregistry.reader/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_dataflow.developer/composer-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/dataflow.developer/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_secretmanager.secretAccessor/loader-app"]: Refreshing state... [id=mig-000001-1-dev/roles/secretmanager.secretAccessor/serviceAccount:loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.dataEditor/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.dataEditor/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_managedkafka.client/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/managedkafka.client/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_dataform.editor/composer-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/dataform.editor/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_managedkafka.client/loader-app"]: Refreshing state... [id=mig-000001-1-dev/roles/managedkafka.client/serviceAccount:loader-app@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.jobUser/dataform-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.jobUser/serviceAccount:dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.dataEditor/dataform-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.dataEditor/serviceAccount:dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_managedkafka.client/recon-service"]: Refreshing state... [id=mig-000001-1-dev/roles/managedkafka.client/serviceAccount:recon-service@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.dataViewer/recon-service"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.dataViewer/serviceAccount:recon-service@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.jobUser/recon-service"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.jobUser/serviceAccount:recon-service@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_artifactregistry.reader/dataflow-worker"]: Refreshing state... [id=mig-000001-1-dev/roles/artifactregistry.reader/serviceAccount:dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.iam.google_project_iam_member.this["roles_bigquery.jobUser/composer-runner"]: Refreshing state... [id=mig-000001-1-dev/roles/bigquery.jobUser/serviceAccount:composer-runner@mig-000001-1-dev.iam.gserviceaccount.com][0m
+[0m[1mmodule.target_system_mock.google_cloud_run_v2_service.this[0]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/services/target-system-mock][0m
+[0m[1mmodule.target_system_mock.google_cloud_run_v2_service_iam_member.public[0]: Refreshing state... [id=projects/mig-000001-1-dev/locations/europe-west1/services/target-system-mock/roles/run.invoker/allUsers][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+  [33m~[0m update in-place[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.composer.google_composer_environment.this[0][0m will be created
+[0m  [32m+[0m[0m resource "google_composer_environment" "this" {
+      [32m+[0m[0m effective_labels = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m name             = "mig-composer"
+      [32m+[0m[0m project          = "mig-000001-1-dev"
+      [32m+[0m[0m region           = "europe-west1"
+      [32m+[0m[0m terraform_labels = {
+          [32m+[0m[0m "goog-terraform-provisioned" = "true"
+        }
+
+      [32m+[0m[0m config {
+          [32m+[0m[0m airflow_uri                = (known after apply)
+          [32m+[0m[0m dag_gcs_prefix             = (known after apply)
+          [32m+[0m[0m enable_private_builds_only = (known after apply)
+          [32m+[0m[0m enable_private_environment = (known after apply)
+          [32m+[0m[0m environment_size           = "ENVIRONMENT_SIZE_SMALL"
+          [32m+[0m[0m gke_cluster                = (known after apply)
+          [32m+[0m[0m node_count                 = (known after apply)
+          [32m+[0m[0m resilience_mode            = (known after apply)
+
+          [32m+[0m[0m data_retention_config (known after apply)
+
+          [32m+[0m[0m database_config (known after apply)
+
+          [32m+[0m[0m encryption_config (known after apply)
+
+          [32m+[0m[0m maintenance_window (known after apply)
+
+          [32m+[0m[0m node_config {
+              [32m+[0m[0m composer_internal_ipv4_cidr_block = (known after apply)
+              [32m+[0m[0m composer_network_attachment       = (known after apply)
+              [32m+[0m[0m disk_size_gb                      = (known after apply)
+              [32m+[0m[0m enable_ip_masq_agent              = (known after apply)
+              [32m+[0m[0m machine_type                      = (known after apply)
+              [32m+[0m[0m network                           = "projects/mig-000001-1-dev/global/networks/mig-vpc"
+              [32m+[0m[0m oauth_scopes                      = (known after apply)
+              [32m+[0m[0m service_account                   = "composer-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+              [32m+[0m[0m subnetwork                        = "projects/mig-000001-1-dev/regions/europe-west1/subnetworks/mig-subnet"
+              [32m+[0m[0m zone                              = (known after apply)
+
+              [32m+[0m[0m ip_allocation_policy (known after apply)
+            }
+
+          [32m+[0m[0m private_environment_config {
+              [32m+[0m[0m cloud_composer_connection_subnetwork   = (known after apply)
+              [32m+[0m[0m cloud_composer_network_ipv4_cidr_block = (known after apply)
+              [32m+[0m[0m cloud_sql_ipv4_cidr_block              = (known after apply)
+              [32m+[0m[0m connection_type                        = (known after apply)
+              [32m+[0m[0m enable_private_endpoint                = false
+              [32m+[0m[0m enable_privately_used_public_ips       = (known after apply)
+              [32m+[0m[0m master_ipv4_cidr_block                 = (known after apply)
+              [32m+[0m[0m web_server_ipv4_cidr_block             = (known after apply)
+            }
+
+          [32m+[0m[0m software_config {
+              [32m+[0m[0m airflow_config_overrides = {
+                  [32m+[0m[0m "secrets-backend" = "airflow.providers.google.cloud.secrets.secret_manager.CloudSecretManagerBackend"
+                }
+              [32m+[0m[0m env_variables            = {
+                  [32m+[0m[0m "BQ_DATASET_EXTRACTION"                = "bq_extraction"
+                  [32m+[0m[0m "BQ_DATASET_RECON"                     = "bq_recon"
+                  [32m+[0m[0m "BQ_DATASET_TRANSFORMATION"            = "bq_transformation"
+                  [32m+[0m[0m "DATAFLOW_SERVICE_ACCOUNT"             = "dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com"
+                  [32m+[0m[0m "DATAFLOW_SUBNETWORK"                  = "regions/europe-west1/subnetworks/mig-subnet"
+                  [32m+[0m[0m "GCP_REGION"                           = "europe-west1"
+                  [32m+[0m[0m "GCS_JSON_BUCKET"                      = "mig-000001-1-dev-json-out"
+                  [32m+[0m[0m "GCS_LANDING_BUCKET"                   = "mig-000001-1-dev-landing"
+                  [32m+[0m[0m "GCS_RECON_BUCKET"                     = "mig-000001-1-dev-recon"
+                  [32m+[0m[0m "KAFKA_BOOTSTRAP"                      = "bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092"
+                  [32m+[0m[0m "KAFKA_SECURITY_PROTOCOL"              = "SASL_SSL"
+                  [32m+[0m[0m "KAFKA_TOPIC"                          = "target-system-target"
+                  [32m+[0m[0m "LOADER_SETTLE_TIMEOUT_SECONDS"        = "120"
+                  [32m+[0m[0m "MIG_EXECUTION_MODE"                   = "dataflow"
+                  [32m+[0m[0m "MIG_JAVA_IMAGE_TAG"                   = "csv-e2e-20260903"
+                  [32m+[0m[0m "MIG_TARGET_SYSTEM_URL"                = "https://target-system-mock-gztuytw7na-ew.a.run.app"
+                  [32m+[0m[0m "TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP" = "bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092"
+                  [32m+[0m[0m "TARGET_SYSTEM_CONFIRMATION_TOPIC"     = "target-system-confirmations"
+                  [32m+[0m[0m "TARGET_SYSTEM_REJECTION_TOPIC"        = "target-system-rejections"
+                }
+              [32m+[0m[0m image_version            = "composer-2.9.7-airflow-2.9.3"
+              [32m+[0m[0m python_version           = (known after apply)
+              [32m+[0m[0m scheduler_count          = (known after apply)
+              [32m+[0m[0m web_server_plugins_mode  = (known after apply)
+
+              [32m+[0m[0m cloud_data_lineage_integration (known after apply)
+            }
+
+          [32m+[0m[0m web_server_config (known after apply)
+
+          [32m+[0m[0m web_server_network_access_control (known after apply)
+
+          [32m+[0m[0m workloads_config {
+              [32m+[0m[0m dag_processor (known after apply)
+              [32m+[0m[0m scheduler {
+                  [32m+[0m[0m count      = 1
+                  [32m+[0m[0m cpu        = 0.5
+                  [32m+[0m[0m memory_gb  = 2
+                  [32m+[0m[0m storage_gb = 1
+                }
+              [32m+[0m[0m triggerer (known after apply)
+              [32m+[0m[0m web_server {
+                  [32m+[0m[0m cpu        = 0.5
+                  [32m+[0m[0m memory_gb  = 2
+                  [32m+[0m[0m storage_gb = 1
+                }
+              [32m+[0m[0m worker {
+                  [32m+[0m[0m cpu        = 0.5
+                  [32m+[0m[0m max_count  = 3
+                  [32m+[0m[0m memory_gb  = 2
+                  [32m+[0m[0m min_count  = 1
+                  [32m+[0m[0m storage_gb = 1
+                }
+            }
+        }
+
+      [32m+[0m[0m storage_config (known after apply)
+    }
+
+[1m  # module.target_system_mock.google_cloud_run_v2_service.this[0][0m will be updated in-place
+[0m  [33m~[0m[0m resource "google_cloud_run_v2_service" "this" {
+        id                      = "projects/mig-000001-1-dev/locations/europe-west1/services/target-system-mock"
+        name                    = "target-system-mock"
+        [90m# (33 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m scaling {
+          [31m-[0m[0m manual_instance_count = 0 [90m-> null[0m[0m
+          [31m-[0m[0m min_instance_count    = 0 [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+        [90m# (2 unchanged blocks hidden)[0m[0m
+    }
+
+[1mPlan:[0m 1 to add, 1 to change, 0 to destroy.
+[0m
+Changes to Outputs:
+  [33m~[0m[0m composer_airflow_uri = [90mnull[0m[0m -> (known after apply)
+  [33m~[0m[0m composer_dag_bucket  = [90mnull[0m[0m -> (known after apply)
+[0m[1mmodule.target_system_mock.google_cloud_run_v2_service.this[0]: Modifying... [id=projects/mig-000001-1-dev/locations/europe-west1/services/target-system-mock][0m[0m
+[0m[1mmodule.target_system_mock.google_cloud_run_v2_service.this[0]: Modifications complete after 1s [id=projects/mig-000001-1-dev/locations/europe-west1/services/target-system-mock][0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Creating...[0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [1m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [2m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [3m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [4m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [5m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [6m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [7m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [8m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [9m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [10m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [11m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [12m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [13m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [14m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [15m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [16m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m30s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m40s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [17m50s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [18m0s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [18m10s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Still creating... [18m20s elapsed][0m[0m
+[0m[1mmodule.composer.google_composer_environment.this[0]: Creation complete after 18m27s [id=projects/mig-000001-1-dev/locations/europe-west1/environments/mig-composer][0m
+[0m[1m[32m
+Apply complete! Resources: 1 added, 1 changed, 0 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mbuckets = {
+  "dataflow-temp" = "mig-000001-1-dev-dataflow-temp"
+  "dataflow-templates" = "mig-000001-1-dev-dataflow-templates"
+  "json-out" = "mig-000001-1-dev-json-out"
+  "landing" = "mig-000001-1-dev-landing"
+  "recon" = "mig-000001-1-dev-recon"
+}
+composer_airflow_uri = "https://aefcaa6c1bdd4a3393defbc24f06d2e7-dot-europe-west1.composer.googleusercontent.com"
+composer_dag_bucket = "gs://europe-west1-mig-composer-6aacf9fe-bucket/dags"
+dataflow_registry = "europe-west1-docker.pkg.dev/mig-000001-1-dev/mig-dataflow"
+dataform_repository = "mig-000001-1"
+datasets = {
+  "bq_extraction" = "bq_extraction"
+  "bq_recon" = "bq_recon"
+  "bq_transformation" = "bq_transformation"
+}
+env_file = <<EOT
+TARGET_PROFILE=real
+GCP_PROJECT=mig-000001-1-dev
+GCS_LANDING_BUCKET=mig-000001-1-dev-landing
+GCS_JSON_BUCKET=mig-000001-1-dev-json-out
+GCS_RECON_BUCKET=mig-000001-1-dev-recon
+BQ_TARGET=real
+KAFKA_SECURITY_PROTOCOL=SASL_SSL
+# KAFKA_BOOTSTRAP, not KAFKA_BOOTSTRAP_SERVERS: config.py reads the former (as does
+# .env.example). Under the old name the address was emitted but never read, so the
+# pipeline silently fell back to localhost:19092 — which inside a Dataflow worker is
+# nothing at all. H8 was recorded as passing because `terraform output` produced a
+# real address; that only ever proved the value existed, not that it reached anyone.
+KAFKA_BOOTSTRAP=bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092
+# runner.py defaults these to conventions ("mig-subnet", "dataflow-worker@<project>")
+# when unset. The convention is right on this environment and wrong on any other, and
+# the failure mode is the expensive one: a Dataflow job that starts against a
+# nonexistent subnet and then never progresses. Emitting the real values from state
+# means a run uses what Terraform actually built.
+DATAFLOW_SUBNETWORK=https://www.googleapis.com/compute/v1/projects/mig-000001-1-dev/regions/europe-west1/subnetworks/mig-subnet
+DATAFLOW_SERVICE_ACCOUNT=dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com
+# Without this the loader falls back to http://localhost:8080, which inside a
+# Dataflow worker or the toolbox container is nothing at all — every document then
+# fails "transport failure" after exhausting its retries, which reads like a data
+# problem and is an infrastructure one.
+TARGET_SYSTEM_URL=https://target-system-mock-gztuytw7na-ew.a.run.app
+# Confirmation stream (docs/PLAN-CHANGES-22082026.md). Empty when Kafka is off → the
+# mock and recon both skip the confirmation path and the run is green. Non-empty only
+# with enable_kafka=true, and the confirmation topic is the second topic on the
+# cluster (terraform/modules/kafka's topics map).
+TARGET_SYSTEM_CONFIRMATION_BOOTSTRAP=bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092
+TARGET_SYSTEM_CONFIRMATION_TOPIC=target-system-confirmations
+
+EOT
+kafka_bootstrap = "bootstrap.mig-kafka.europe-west1.managedkafka.mig-000001-1-dev.cloud.goog:9092"
+service_accounts = {
+  "composer-runner" = "composer-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+  "dataflow-worker" = "dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com"
+  "dataform-runner" = "dataform-runner@mig-000001-1-dev.iam.gserviceaccount.com"
+  "loader-app" = "loader-app@mig-000001-1-dev.iam.gserviceaccount.com"
+  "recon-service" = "recon-service@mig-000001-1-dev.iam.gserviceaccount.com"
+  "target-system-mock" = "target-system-mock@mig-000001-1-dev.iam.gserviceaccount.com"
+}
+target_system_url = "https://target-system-mock-gztuytw7na-ew.a.run.app"
+templates_bucket = "mig-000001-1-dev-dataflow-templates"

@@ -1,0 +1,11 @@
+▶ syncing composer/dags/ → gs://europe-west1-mig-composer-6aacf9fe-bucket/dags
+At file://composer/dags/**, worker process 2678128 thread 129566432896832 listed 2...
+At gs://europe-west1-mig-composer-6aacf9fe-bucket/dags/**, worker process 2678128 thread 129566432896832 listed 1...
+Copying file://composer/dags/.gitkeep to gs://europe-west1-mig-composer-6aacf9fe-bucket/dags/.gitkeep
+  
+Copying file://composer/dags/mig_000001_1.py to gs://europe-west1-mig-composer-6aacf9fe-bucket/dags/mig_000001_1.py
+Removing gs://europe-west1-mig-composer-6aacf9fe-bucket/dags/airflow_monitoring.py#1788415931248523...
+
+
+Average throughput: 648.3kiB/s
+✓ DAGs deployed. Composer will pick up changes within its poll interval.

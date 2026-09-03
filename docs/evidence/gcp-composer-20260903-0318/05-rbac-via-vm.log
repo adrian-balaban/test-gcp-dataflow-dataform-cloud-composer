@@ -1,0 +1,23 @@
+cluster: europe-west1-mig-composer-6aacf9fe-gke
+==> granting container.admin to the compute SA for the duration
+Updated IAM policy for project [mig-000001-1-dev].
+private endpoint: 10.20.0.28
+==> creating mig-rbac-helper on mig-subnet (no external IP; egress via Cloud NAT)
+Created [https://www.googleapis.com/compute/v1/projects/mig-000001-1-dev/zones/europe-west1-b/instances/mig-rbac-helper].
+==> waiting for the startup script (up to 6 minutes)
+  …still working (errors in log are often transient apt retries)
+  …still working (errors in log are often transient apt retries)
+==> RBAC applied in namespace: composer-2-9-7-airflow-2-9-3-6aacf9fe
+==> binding Workload Identity on the Google side
+Updated IAM policy for serviceAccount [dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com].
+    bound mig-pipeline -> dataflow-worker@mig-000001-1-dev.iam.gserviceaccount.com
+Updated IAM policy for serviceAccount [loader-app@mig-000001-1-dev.iam.gserviceaccount.com].
+    bound mig-loader -> loader-app@mig-000001-1-dev.iam.gserviceaccount.com
+Updated IAM policy for serviceAccount [recon-service@mig-000001-1-dev.iam.gserviceaccount.com].
+    bound mig-recon -> recon-service@mig-000001-1-dev.iam.gserviceaccount.com
+
+RBAC complete. Namespace: composer-2-9-7-airflow-2-9-3-6aacf9fe
+Record it so Terraform can adopt the same objects later:
+  terraform -chdir=terraform/envs/dev apply -var=create_project=false \
+    -var=enable_composer=true -var=composer_pod_namespace=composer-2-9-7-airflow-2-9-3-6aacf9fe
+==> cleaning up
