@@ -1,0 +1,36 @@
+# Full infrastructure teardown — 2026-09-03
+# Triggered by: "destroy all infra" (user), after the green CSV E2E round.
+
+terraform destroy -auto-approve (60-destroy-all.log):
+  - module.kafka.google_managed_kafka_cluster: Destruction complete after 9m16s
+  - module.network subnetwork/network: destroyed
+  - Composer environment, Cloud Run mock, BigQuery datasets, 6 mig SAs, VPC connector,
+    Artifact Registry repo, Dataform repo,Secret Manager secrets: all destroyed
+  - One error at tail: tfstate bucket could not be destroyed without force_destroy
+    (holds its own state — chicken-and-egg); removed manually below.
+
+Residual cleanup:
+  - Orphaned Composer DAG bucket gs://europe-west1-mig-composer-6aacf9fe-bucket: removed
+  - tfstate bucket gs://mig-000001-1-dev-tfstate: removed manually (gcloud storage rm -r)
+  - 12 terraform-enabled APIs disabled with --force (61-api-disable-round1.log):
+        composer, dataflow, dataform, run, managedkafka, vpcaccess, cloudbuild,
+        artifactregistry, secretmanager, storage, logging, cloudresourcemanager,
+        bigquerystorage  -> all OK
+  - 5 APIs could NOT be disabled (62-api-disable-stuck.log), all blocked by
+    COMMON_SU_SERVICES_HAVE_RESOURCES_DEACTIVATION_SUV1 — stale Cloud Asset Inventory
+    records of the already-deleted Composer GKE clusters:
+        bigquery, compute, container, iam, monitoring
+    --force does NOT bypass HAVE_RESOURCES. These are $0 when unused and the stale
+    records age out within days; same wall hit on the 2026-09-03 morning teardown.
+
+Final verification (zero billable):
+  - buckets: NONE
+  - composer env: gone (API SERVICE_DISABLED)
+  - kafka cluster: gone (API SERVICE_DISABLED)
+  - cloud run services: gone (API SERVICE_DISABLED)
+  - bigquery datasets: NONE
+  - mig service accounts: NONE (only project-default compute SA remains)
+
+VERDICT: all billable infrastructure destroyed. The only remaining enabled APIs are the
+5 stuck on stale GKE asset-inventory records ($0, age out) and ~28 project-default APIs
+that predate this work (gen-lang AI-studio template defaults, untouched).
