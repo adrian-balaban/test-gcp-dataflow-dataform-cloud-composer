@@ -343,6 +343,26 @@ it none.
 One tiny end-to-end run against real GCP, from a container that pins Python, Beam and the
 JRE — so "works on my laptop" is not part of the result.
 
+### 2.13 Long-lived secrets live in Secret Manager, not the image
+
+`Makefile:seed-secrets`, `local/scripts/gcp/seed_secrets.sh`, `pipelines/common/pgp.py`,
+`apps/common/.../Pgp.java`
+
+The extractor PGP-encrypts the extract with a public key (1.1); `file_processor` has to
+decrypt it, which needs the *private* key. A private key is long-lived — baking it into a
+container image (or a pod env var) leaks it on every pull and turns every rotation into a
+rebuild. `make seed-secrets` pushes `pgp-private-key` and `pgp-passphrase` into GCP Secret
+Manager once; the pod pulls them at runtime — `pgp.py` imports the key into a fresh temp
+GNUPG home and shreds it on exit, and `Pgp.java` states the same rule: *"the private key
+never lands on a worker: it lives in Secret Manager."*
+
+This generalises the split in 2.4: **short-lived tokens come from the metadata server and
+refresh; long-lived secrets come from Secret Manager and are referenced, never copied.**
+The same env-var seam the local orchestrator injects through keeps the two worlds
+identical — and the seeded entries are the only GCP resource Terraform does *not* own the
+contents of (it declares the secret containers; `seed-secrets` fills the versions), so a
+`terraform destroy` leaves the key material for the next apply.
+
 ---
 
 ## Part 3 — Ways of working worth stealing

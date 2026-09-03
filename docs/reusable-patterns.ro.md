@@ -357,6 +357,28 @@ putea fi vreodată corectă, nu-i dați niciuna.
 O singură rulare cap-coadă, minusculă, împotriva GCP-ului real, dintr-un container care
 fixează Python, Beam și JRE — ca „merge pe laptopul meu” să nu facă parte din rezultat.
 
+### 2.13 Secretele de durată lungă stau în Secret Manager, nu în imagine
+
+`Makefile:seed-secrets`, `local/scripts/gcp/seed_secrets.sh`, `pipelines/common/pgp.py`,
+`apps/common/.../Pgp.java`
+
+Extractor-ul criptează PGP extrasul cu o cheie publică (1.1); `file_processor` trebuie să-l
+decripteze, iar asta cere cheia *privată*. O cheie privată este de durată lungă — coacerea
+ei într-o imagine de container (sau într-o variabilă de mediu a pod-ului) o scurge la
+fiecare pull și transformă fiecare rotație într-o reconstrucție. `make seed-secrets` împinge
+`pgp-private-key` și `pgp-passphrase` în GCP Secret Manager o singură dată; pod-ul le trage
+la runtime — `pgp.py` importă cheia într-un home GNUPG temporar proaspăt și o distruge la
+ieșire, iar `Pgp.java` afirmă aceeași regulă: *„cheia privată nu ajunge niciodată pe un
+worker: stă în Secret Manager.”*
+
+Acest lucru generalizează scindarea din 2.4: **token-urile de durată scurtă vin de la
+metadata server și se reîmprospătează; secretele de durată lungă vin din Secret Manager și
+sunt referite, niciodată copiate.** Aceeași cusătură cu variabilă de mediu prin care
+injectează orchestratorul local păstrează cele două lumi identice — iar intrările seed-uite
+sunt singura resursă GCP al cărei *conținut* Terraform nu-l deține (el declară containerele
+secretului; `seed-secrets` umple versiunile), deci un `terraform destroy` lasă materialul
+cheii pentru apply-ul următor.
+
 ---
 
 ## Partea 3 — Moduri de lucru care merită "furate"
